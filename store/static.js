@@ -1,0 +1,250 @@
+export const state = () => ({
+  status,
+  gender,
+  bool_en,
+  bool_text,
+  week_days,
+  user_level,
+  person_type,
+  work_status,
+  supervisor_status_items,
+  bimehso_aramin,
+  aramin_domain,
+  call_status,
+  months,
+  mnue_tree,
+  country_division,
+  pik,
+  company_name,
+  menu_type,
+  repeatation_cycle
+});
+
+let mnue_tree = [
+  {
+    id: 1,
+    name: "کارتابل",
+    access: "*",
+    route: "/panel"
+  },
+  {
+    id: 2,
+    name: "کاربران",
+    children: [
+      {
+        id: 3,
+        name: "کاربران",
+        access: "*",
+        route: "/user"
+      },
+      {
+        id: 4,
+        name: "براساس نقش",
+        access: "*",
+        route: "/user/list"
+      },
+      {
+        id: 5,
+        name: "نقش ها",
+        access: "*",
+        route: "/role"
+      }
+    ]
+  },
+  {
+    id: 6,
+    name: "تنظیمات",
+    children: [
+      {
+        id: 7,
+        name: "تقسیمات کشوری",
+        access: "*",
+        route: "/country-division"
+      },
+      {
+        id:8,
+        name:'تنظیمات',
+        access:'*',
+        route:'/setting/public'
+      },
+      {
+        id:9,
+        name:'فهرست خطاها',
+        access:'*',
+        route:'/monitoring/exception-log'
+      },
+      {
+        id:10,
+        name:'فهرست درخواست ها',
+        access:'*',
+        route:'/monitoring/request-log'
+      },
+    ]
+  }
+];
+
+let status = [
+  { text: "فعال", value: "active" },
+  { text: "غیر فعال", value: "hidden" }
+];
+
+let work_status = [
+  { text: "مشغول به کار", value: "active" },
+  { text: "مرخصی", value: "inactive" }
+];
+
+let user_level = [
+  { text: "نوع یک", value: "type1" },
+  { text: "نوع دو", value: "type2" }
+];
+let bool_text = [
+  { text: "بله", value: true },
+  { text: "خیر", value: false }
+];
+
+let bool_en = [
+  { text: "بله", value: "yes" },
+  { text: "خیر", value: "no" }
+];
+
+let gender = [
+  { text: "مرد", value: "مرد" },
+  { text: "زن", value: "زن" }
+];
+let week_days = [
+  { text: "شنبه", value: "saturday" },
+  { text: "یکشنبه", value: "sunday" },
+  { text: "دوشنبه", value: "monday" },
+  { text: "سشنبه", value: "tuesday" },
+  { text: "چهارشنبه", value: "wednesday" },
+  { text: "پنج شنبه", value: "thursday" },
+  { text: "جمعه", value: "Friday" },
+  { text: "همه", value: "" }
+];
+
+let person_type = [
+  { text: "حقیقی", value: "real" },
+  { text: "حقوقی", value: "legal" },
+  { text: "هیچ کدام", value: "none" }
+];
+let supervisor_status_items = [
+  { text: "دارد", value: true },
+  { text: "ندارد", value: false }
+];
+
+let bimehso_aramin = "https://bimehsho.aramin.ir/";
+let aramin_domain = "panel.aramin.ir";
+let months = [
+  { text: "فروردین", value: "1" },
+  { text: "اردیبهشت", value: "2" },
+  { text: "خرداد", value: "3" },
+  { text: "تیر", value: "4" },
+  { text: "مرداد", value: "5" },
+  { text: "شهریور", value: "6" },
+  { text: "مهر", value: "7" },
+  { text: "آبان", value: "8" },
+  { text: "آذر", value: "9" },
+  { text: "دی", value: "10" },
+  { text: "بهمن", value: "11" },
+  { text: "اسفند", value: "12" }
+];
+let call_status = [
+  { text: "پاسخ داده شده", value: "ANSWERED" },
+  { text: "بی پاسخ", value: "NO ANSWER" },
+  //{text:'مشغول', value:'CONGESTION'},
+  { text: "مشغول", value: "BUSY" },
+  { text: "ناموفق", value: "FAILED" },
+  { text: "قطع شده از IVR", value: "s" }
+];
+let country_division = [
+  { text: "استان", value: "province" },
+  { text: "شهرستان", value: "township" },
+  { text: "بخش", value: "district" },
+  { text: "شهر", value: "city" },
+  { text: "دهستان", value: "rural_district" },
+  { text: "روستا", value: "village" }
+];
+
+let pik = [
+  { text: "الف", value: 1 },
+  { text: "ب", value: 2 },
+  { text: "ت", value: 3 },
+  { text: "ج", value: 4 },
+  { text: "د", value: 5 },
+  { text: "س", value: 6 },
+  { text: "ص", value: 7 },
+  { text: "ط", value: 8 },
+  { text: "ع", value: 9 },
+  { text: "ق", value: 10 },
+  { text: "ل", value: 11 },
+  { text: "م", value: 12 },
+  { text: "ن", value: 13 },
+  { text: "و", value: 14 },
+  { text: "ه", value: 15 },
+  { text: "ی", value: 16 },
+  { text: "ر", value: 17 },
+  { text: "ک", value: 18 },
+  { text: "ژ", value: 19 },
+  { text: "پ", value: 20 },
+  { text: "ظ", value: 21 },
+  { text: "ض", value: 23 },
+  { text: "ز", value: 23 },
+  { text: "ش", value: 24 },
+  { text: "گ", value: 25 },
+  { text: "ث", value: 26 },
+  { text: "D", value: 27 },
+  { text: "S", value: 28 },
+  { text: "ح", value: 29 },
+  { text: "ف", value: 30 }
+];
+
+let company_name = [
+  { text: "بيمه دانا", value: 1 },
+  { text: "بيمه ايران", value: 2 },
+  { text: "بيمه آسيا", value: 3 },
+  { text: "بيمه دي", value: 4 },
+  { text: "بيمه ميهن", value: 5 },
+  { text: "بيمه البرز", value: 6 },
+  { text: "بيمه معلم", value: 7 },
+  { text: "بيمه پارسيان", value: 8 },
+  { text: "بيمه كارآفرين", value: 9 },
+  { text: "بيمه سينا", value: 10 },
+  { text: "بيمه رازي", value: 11 },
+  { text: "بيمه توسعه", value: 12 },
+  { text: "بيمه ملت", value: 13 },
+  { text: "-", value: 14 },
+  { text: "بيمه سامان", value: 15 },
+  { text: "بيمه نوين", value: 16 },
+  { text: "بيمه پاسارگاد", value: 17 },
+  { text: "بيمه كوثر", value: 18 },
+  { text: "بيمه ما", value: 19 },
+  { text: "-", value: 20 },
+  { text: "بيمه آرمان", value: 21 },
+  { text: "دانا (شركت هاي ادغامي)", value: 22 },
+  { text: "بيمه حافظ", value: 23 },
+  { text: "بيمه اميد", value: 24 },
+  { text: "بيمه ايران معين", value: 25 },
+  { text: "بيمه متقابل كيش", value: 26 },
+  { text: "-", value: 27 },
+  { text: "بيمه اتكايي ايرانيان", value: 28 },
+  { text: "بيمه تعاون", value: 29 },
+  { text: "بيمه اتكايي امين", value: 30 },
+  { text: "بيمه آسماري", value: 31 },
+  { text: "بيمه متقابل اطمينان متحد قشم", value: 32 },
+  { text: "بيمه سرمد", value: 33 },
+  { text: "بیمه تجارت نو", value: 34 },
+  { text: "بیمه حکمت صبا", value: 52 }
+];
+
+let repeatation_cycle = [
+  { text: "هر ماه", value: "every_month" },
+  { text: "هر سه ماه", value: "every_three_month" },
+  { text: "هر شیش ماه", value: "every_six_month" },
+  { text: "هر سال", value: "every_year" },
+  { text: "بدون تکرار", value: "no_repeat" }
+];
+
+let menu_type = [
+  { text: "فعال", value: "active" },
+  { text: "غیرفعال", value: "hidden" }
+];

@@ -1,4 +1,4 @@
-# tantak_admin_panel
+# bimesho_panel
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/sifb71/tantak_admin_panel.git
+git remote add origin https://gitlab.com/sifb71/bimesho_panel.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.com/sifb71/tantak_admin_panel/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.com/sifb71/bimesho_panel/-/settings/integrations)
 
 ## Collaborate with your team
 

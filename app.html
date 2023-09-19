@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html {{ HTML_ATTRS }}>
+  <head {{ HEAD_ATTRS }}>
+    {{ HEAD }}
+    <style>
+      #landing-parent {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1003;
+        display: flex;
+        position: fixed;
+        overflow: hidden;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+      }
+      @keyframes loader-animation {
+        0% {
+          left: -100%;
+        }
+        49% {
+          left: 100%;
+        }
+        50% {
+          left: 100%;
+        }
+        100% {
+          left: -100%;
+        }
+      }
+      .loader-landing {
+        height: 5px;
+        width: 100%;
+        overflow: hidden;
+        margin-top: 30px;
+        border-radius: 10px;
+      }
+      .loader-landing .bar {
+        height: 5px;
+        width: 100%;
+        position: relative;
+        border-radius: 10px;
+        animation-duration: 3s;
+        background-color: #EC407A;
+        animation-name: loader-animation;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+      }
+    </style>
+  </head>
+  <body {{ BODY_ATTRS }}>
+    <div id="landing-parent">
+      <div>
+        <img src="" id="loader_logo" width="180px" />
+        <div class="loader-landing">
+          <div class="bar"></div>
+        </div>
+      </div>
+    </div>
+    {{ APP }}
+  </body>
+  <script>
+    document.getElementById("loader_logo").src = "/image/logo.png"
+  </script>
+</html>
