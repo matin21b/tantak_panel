@@ -35,13 +35,13 @@ let mnue_tree = [
         id: 3,
         name: "کاربران",
         access: "*",
-        route: "/user"
+        route: "/user/list"
       },
       {
         id: 4,
         name: "براساس نقش",
         access: "*",
-        route: "/user/list"
+        route: "/user"
       },
       {
         id: 5,
@@ -51,36 +51,36 @@ let mnue_tree = [
       }
     ]
   },
-  {
-    id: 6,
-    name: "تنظیمات",
-    children: [
-      {
-        id: 7,
-        name: "تقسیمات کشوری",
-        access: "*",
-        route: "/country-division"
-      },
-      {
-        id:8,
-        name:'تنظیمات',
-        access:'*',
-        route:'/setting/public'
-      },
-      {
-        id:9,
-        name:'فهرست خطاها',
-        access:'*',
-        route:'/monitoring/exception-log'
-      },
-      {
-        id:10,
-        name:'فهرست درخواست ها',
-        access:'*',
-        route:'/monitoring/request-log'
-      },
-    ]
-  }
+  // {
+  //   id: 6,
+  //   name: "تنظیمات",
+  //   children: [
+  //     {
+  //       id: 7,
+  //       name: "تقسیمات کشوری",
+  //       access: "*",
+  //       route: "/country-division"
+  //     },
+  //     {
+  //       id:8,
+  //       name:'تنظیمات',
+  //       access:'*',
+  //       route:'/setting/public'
+  //     },
+  //     {
+  //       id:9,
+  //       name:'فهرست خطاها',
+  //       access:'*',
+  //       route:'/monitoring/exception-log'
+  //     },
+  //     {
+  //       id:10,
+  //       name:'فهرست درخواست ها',
+  //       access:'*',
+  //       route:'/monitoring/request-log'
+  //     },
+  //   ]
+  // }
 ];
 
 let status = [

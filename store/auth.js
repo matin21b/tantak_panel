@@ -73,9 +73,9 @@ export const actions = {
               await dispatch('setAction', response.user)
               await commit('set_user', response.user)
               await dispatch('setRole', response.user)
-              await dispatch('setActions')
-              await dispatch('setMenuItem', response.user )
-              await dispatch('getDivisoin')
+              // await dispatch('setActions')
+              // await dispatch('setMenuItem', response.user )
+              // await dispatch('getDivisoin')
               if (response.Authorization) {
                 await commit('set_token', { token: response.Authorization, secondary_token, update: true })
               }
@@ -109,9 +109,9 @@ export const actions = {
     await dispatch('setAction', user)
     await dispatch('setRole', user)
     await commit('set_token', { token: Authorization })
-    await dispatch('setActions')
-    await dispatch('getDivisoin')
-    await dispatch('setMenuItem', user)
+    // await dispatch('setActions')
+    // await dispatch('getDivisoin')
+    // await dispatch('setMenuItem', user)
   },
   async logout({ dispatch }) {
     this.$reqApi('/auth/logout').catch((error) => { })

@@ -1,8 +1,6 @@
 let app_name = 'پنل ادمین'
 let app_name_bimch = 'پنل ادمین بیمچه'
-let app_name_bime_sho = 'پنل ادمین بیمچه'
-let logo_aramin = '/image/logo.png'
-let logo_hamrahetam = '/iamge/logo.png'
+let logo_bimche = '/image/logo.png'
 
 let time_interval = null
 
@@ -10,13 +8,12 @@ export const state = () => ({
   live_time: '',
   server_time: '',
   app_name: '',
-  logo: logo_aramin,
+  logo: logo_bimche,
   page_title: app_name,
   // file_url: 'http://localhost:8000/',
   // server_url: 'http://localhost:8000/api/v1',
-  file_url: 'https://bimesho-api.aramin.ir/',
-  server_url: 'https://bimesho-api.aramin.ir/api/v1',
-  process_maker_url: 'http://process.aramin.ir/api/1.0',
+  file_url: 'http://45.149.77.217:3000/',
+  server_url: 'http://45.149.77.217:3000/api/v1',
   chat_url: 'http://chat.aramin.ir',
 })
 
@@ -32,7 +29,7 @@ export const mutations = {
     state.page_title = data
   },
   set_logo: function (state, data) {
-      state.logo = logo_aramin
+      state.logo = logo_bimche
   },
   set_server_time: function (state, data) {
     state.server_time = data
