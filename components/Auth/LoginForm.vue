@@ -21,7 +21,7 @@
       background-color="#fff"
       v-model="form.password"
       prepend-inner-icon="lock"
-      cClass="ltr-item small-input"
+      cClass="ltr-item small-input success"
     />
     <div class="px-3 mt-6 mb-4">
       <amp-button
@@ -30,7 +30,7 @@
         text="ورود"
         icon="login"
         type="submit"
-        color="primary"
+        color="success"
         :loading="loading"
         :disabled="!valid || loading"
       />

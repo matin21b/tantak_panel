@@ -1154,6 +1154,6 @@ tfoot > tr > th {
   border-bottom: #c1c1c1 solid 1px !important;
 }
 .header_bg{
-  background-color: #fdad00da;
+  background-color: #fd5800;
 }
 </style>

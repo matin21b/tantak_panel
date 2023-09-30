@@ -68,7 +68,7 @@ export default {
   background-color: #000000d2;
 }
 .logo_bg {
-  background-image: radial-gradient(circle at 0 0, #ecb71879,#c60a0a46 100%);
-  border-radius: 0px 80px 0px 80px;
+  background-color:#0000006a ;
+  border-radius: 5px;
 }
 </style>

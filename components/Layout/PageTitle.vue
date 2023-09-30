@@ -11,6 +11,6 @@ export default {}
 </script>
 <style scoped>
 .page_titel{
-background-color: #fdad00;
+  background-image: radial-gradient(circle at 0 0, #ffa300 , #fd5800 100%);
 }
 </style>

@@ -6,7 +6,12 @@
           <v-row class="d-flex justify-space-between align-center">
             <v-col cols="12" md="4" :class="is_mobile ? 'log_mobile' : ''">
               <div :class="is_mobile ? '' : 'py-4'">
-                <img :src="$store.state.logo" width="auto" height="60" />
+                <img
+                  :src="$store.state.logo"
+                  width="auto"
+                  height="60"
+                  class="bg_image"
+                />
               </div>
             </v-col>
             <v-col
@@ -85,10 +90,14 @@ export default {
 
 <style scoped>
 .v-app-bar {
-  background-image: radial-gradient(circle at 0 0, #fd8f00e2, #ffc955c8 100%);
+  background-image: radial-gradient(circle at 0 0, #fd5800, #ffae00 100%);
 }
 .log_mobile {
   position: absolute;
   top: 3px;
+}
+.bg_image {
+  border-radius: 20px;
+  background-image: radial-gradient(circle at 0 0, #ff5900, #000000b5 100%);
 }
 </style>
