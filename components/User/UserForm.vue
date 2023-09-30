@@ -139,7 +139,7 @@ export default {
     path: { default: "/user" },
     showUrl: { default: "/user/show" },
     createUrl: { default: "/user/insert" },
-    updateUrl: { default: "/user/update" }
+    updateUrl: { default: "/user/update" },
   },
   data: () => ({
     valid: false,
@@ -166,13 +166,13 @@ export default {
       national_code: "",
       province_id: "",
       country_division_id: "",
-      status: "active"
-    }
+      status: "active",
+    },
   }),
   watch: {
     "form.province_id"() {
       this.loadCitis(this.form.province_id);
-    }
+    },
   },
   mounted() {
     if (Boolean(this.roleId)) {
@@ -181,11 +181,11 @@ export default {
     if (this.modelId) {
       this.loadData();
     }
-    this.loadState().then(res => {
-      res.filter(x => {
+    this.loadState().then((res) => {
+      res.filter((x) => {
         this.province.push({
           text: x.name,
-          value: x.id
+          value: x.id,
         });
       });
     });
@@ -201,7 +201,7 @@ export default {
       }
       form.username = this.$FarsiToEnglishNumber(form.username);
       this.$reqApi(url, form)
-        .then(response => {
+        .then((response) => {
           if (this.modelId) {
             this.$toast.success("اطلاعات ویرایش شد");
           } else {
@@ -209,14 +209,14 @@ export default {
           }
           this.redirectPage();
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
     loadData() {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
-        .then(async response => {
+        .then(async (response) => {
           this.form.id = this.modelId;
           this.form.job = response.model.job;
           this.form.email = response.model.email;
@@ -233,12 +233,12 @@ export default {
             this.form.country_division_id = response.model.country_division_id;
           }, 400);
           if (Array.isArray(response.model.roles)) {
-            this.form.role_id = response.model.roles.map(x => x.id);
+            this.form.role_id = response.model.roles.map((x) => x.id);
           }
 
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.redirectPage();
           this.loading = false;
         });
@@ -248,17 +248,17 @@ export default {
         let filters = {
           level: {
             op: "=",
-            value: "province"
-          }
+            value: "province",
+          },
         };
         this.$reqApi("/country-division", {
           filters: filters,
-          row_number: 3000000
+          row_number: 3000000,
         })
-          .then(res => {
+          .then((res) => {
             response(res.model.data);
           })
-          .catch(err => {
+          .catch((err) => {
             return err;
           });
       });
@@ -268,12 +268,12 @@ export default {
       if (id) {
         this.$reqApi("/country-division/get-cities", {
           id: id,
-          row_number: 300000
-        }).then(res => {
-          res.filter(x => {
+          row_number: 300000,
+        }).then((res) => {
+          res.filter((x) => {
             this.citis.push({
               text: x.name,
-              value: x.id
+              value: x.id,
             });
           });
         });
@@ -285,7 +285,7 @@ export default {
       } else {
         this.$router.push(this.path);
       }
-    }
-  }
+    },
+  },
 };
 </script>
