@@ -12,8 +12,8 @@ export const state = () => ({
   page_title: app_name,
   // file_url: 'http://localhost:8000/',
   // server_url: 'http://localhost:8000/api/v1',
-  file_url: 'http://45.149.77.217:3000/',
-  server_url: 'http://45.149.77.217:3000/api/v1',
+  file_url: 'http://test-api.tantak.ir/',
+  server_url: 'http://test-api.tantak.ir/api/v1',
   chat_url: 'http://chat.aramin.ir',
 })
 
