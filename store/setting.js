@@ -88,7 +88,7 @@ export const actions = {
                 .then(async (response) => {
                     let roles = response.model.data.map(x => ({ ...x, text: x.name, value: x.id }))
                     await commit('set_role', roles)
-                    
+
                     res(roles)
                 })
                 .catch((error) => { res() })
@@ -153,7 +153,6 @@ export const actions = {
         commit('set_type_plate', type)
     },
     setBranchCod({ commit }, data) {
-        console.log(data)
         try {
             return new Promise((res, rej) => {
                 this.$reqApi(`/branch`, { row_number: 2000 })
@@ -167,15 +166,12 @@ export const actions = {
                     let branch = res.map(x => ({ ...x, text: [x.branch_code + " - " + x.name], value: x.id }))
                     commit('set_branch', branch)
 
-                    console.log(branch)
                 })
         } catch (error) {
-            console.log(error)
         }
 
     },
     setgetRegion({ commit }, data) {
-        console.log(data)
         try {
             return new Promise((res, rej) => {
                 this.$reqApi(`/region`, { row_number: 2000 })
@@ -189,10 +185,8 @@ export const actions = {
                     let region = res.map(x => ({ ...x, text: x.fa_name, value: x.id }))
                     commit('set_region', region)
 
-                    console.log(region)
                 })
         } catch (error) {
-            console.log(error)
         }
 
     },

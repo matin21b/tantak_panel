@@ -166,14 +166,14 @@ export const actions = {
     try {
       await dispatch('setting/setBranchCod', {}, { root: true })
     } catch (error) {
-      console.log(error)
+     
     }
   }, 
   async getRegion({ state, dispatch }) {
     try {
       await dispatch('setting/setgetRegion', {}, { root: true })
     } catch (error) {
-      console.log(error)
+      
     }
   },
   async setActions({ dispatch }) {

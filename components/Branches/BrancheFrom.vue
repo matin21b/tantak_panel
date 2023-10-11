@@ -11,6 +11,7 @@
           text="انتخاب کاربر"
           v-model="user"
           url="user"
+          rules="require"
           :role-id="[$store.state.auth.role.admin_id]"
         />
       </v-col>
@@ -101,7 +102,6 @@
 import UserSelectForm from "@/components/User/UserSelectForm";
 import SelectLocationDialog from "@/components/Base/SelectLocationDialog.vue";
 import SelectLocation from "@/components/Base/SelectLocation.vue";
-import { from } from "jalali-moment";
 export default {
   components: {
     UserSelectForm,
@@ -179,7 +179,7 @@ export default {
         this.form.user_id = this.user[0].id;
       }
       let form = this.$copyForm(this.form);
-      console.log("user = ", form);
+    
       let url = this.modelId ? this.updateUrl : this.createUrl;
       this.$reqApi(url, form)
         .then((response) => {

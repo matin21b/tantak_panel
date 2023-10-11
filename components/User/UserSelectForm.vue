@@ -49,7 +49,7 @@ export default {
     roleId: { type: Array, require: true },
     multi: { type: Boolean, default: false },
     value: { require: true, default: () => [] },
-    rules: { require: false, default: "require" },
+    rules: { require: false, default: "" },
     text: { require: false, default: "انتخاب کاربر" },
     url: { require: false, default: "/user/searchByRole" },
     clear: { require: false, default: false },

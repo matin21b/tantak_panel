@@ -3,10 +3,14 @@
     <v-container fluid class="px-8">
       <v-row dense>
         <v-col cols="12" md="3">
-          <amp-input text="نام" v-model="form.first_name" />
+          <amp-input text="نام" v-model="form.first_name" rules="require" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input text="نام خانوادگی" v-model="form.last_name" />
+          <amp-input
+            text="نام خانوادگی"
+            v-model="form.last_name"
+            rules="require"
+          />
         </v-col>
         <v-col cols="12" md="3">
           <amp-input
@@ -25,28 +29,30 @@
             v-model="form.password"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="3" v-if="!Boolean(roleId)">
+          <amp-autocomplete
+            text="نقش"
+            chips
+            multiple
+            rules="require"
+            v-model="form.role_id"
+            :items="$store.state.setting.roles"
+          />
+        </v-col>
+        <!-- <v-col cols="12" md="3">
           <amp-select
             text=" کد شعبه "
             v-model="form.branch_id"
+            :disabled="cheke"
             :items="$store.state.setting.branch_code"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="3">
           <UserSelectForm
             text=" کاربر ناظر"
             v-model="parent_id"
             url="user"
             :role-id="[$store.state.auth.role.admin_id]"
-          />
-        </v-col>
-        <v-col cols="12" md="3" v-if="!Boolean(roleId)">
-          <amp-autocomplete
-            text="نقش"
-            chips
-            multiple
-            v-model="form.role_id"
-            :items="$store.state.setting.roles"
           />
         </v-col>
         <v-col cols="12" md="3">
@@ -87,13 +93,14 @@
             :items="province"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <!-- <v-col cols="12" md="3">
           <amp-select
             text="ناحیه"
             v-model="form.region_id"
             :items="$store.state.setting.region"
+            :disabled="cheke"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="3">
           <amp-select
             text="شهر"
@@ -185,7 +192,7 @@ export default {
     province: [],
     user: [],
     citis: [],
-    chek_role: false,
+    cheke: false,
     form: {
       sort: -1,
       username: "",
@@ -197,8 +204,7 @@ export default {
       description: "",
       first_name: "",
       person_type: "",
-      region_id: "",
-      branch_id: "",
+
       role_id: [],
       address: {
         postal_code: "",
@@ -209,13 +215,16 @@ export default {
       status: "active",
     },
   }),
-  computed: {
-    chek_rol() {},
-  },
   watch: {
     "form.province_id"() {
       this.loadCitis(this.form.province_id);
     },
+    // "form.role_id"(){
+    //   if(this.form.role_id.indexOf("5246f14d-1906-4e34-a412-8fb689d20f23") > -1){
+    //     this.cheke = true;
+    //   }
+
+    // }
   },
   mounted() {
     if (this.modelId) {
@@ -274,10 +283,10 @@ export default {
           this.form.first_name = response.model.first_name;
           this.form.description = response.model.description;
           this.form.avatar = response.model.avatar;
-          this.form.region_id = response.model.region_id;
+          // this.form.region_id = response.model.region_id;
           this.form.parent_id = response.model.parent_id;
           this.form.national_code = response.model.national_code;
-          this.form.branch_id = response.model.branch_id;
+          // this.form.branch_id = response.model.branch_id;
           if (response.model.parent) {
             this.parent_id = [response.model.parent];
           }
@@ -292,7 +301,6 @@ export default {
           this.loading = false;
         })
         .catch((error) => {
-          console.log(error);
           this.redirectPage();
           this.loading = false;
         });
