@@ -27,7 +27,7 @@ export default {
     headers: [],
     items: [],
     actions: [],
-    title: "درخواست فرم نمایندگی"
+    title: "درخواست نمایندگی"
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);

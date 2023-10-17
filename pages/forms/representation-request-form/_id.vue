@@ -10,7 +10,7 @@ import CepresentationRequestForm from "@/components/Forms/CepresentationRequestF
 export default {
   components: { CepresentationRequestForm },
   data: () => ({
-    title: "ویرایش فرم"
+    title: "ویرایش"
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);

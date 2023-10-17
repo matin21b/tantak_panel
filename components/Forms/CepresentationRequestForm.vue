@@ -109,7 +109,6 @@ export default {
     createUrl: "/shop/representation-request-form/insert",
     updateUrl: "/representation-request-form/update",
     showUrl: "/representation-request-form/show",
-    categories: [],
     province: "",
     citis: [],
     province_item: [],
@@ -173,7 +172,7 @@ export default {
           this.form.store_size = res.store_size;
           this.form.postal_address = res.postal_address;
           this.form.status = res.status;
-          this.setState(res.country_division_id);
+          this.filterProvince(response.model.country_division_id);
           this.loading = false;
         })
         .catch(error => {
@@ -211,8 +210,20 @@ export default {
           });
       });
     },
-    setState(contrydivisionid) {
-        
+    filterProvince(id) {
+      return new Promise((res, rej) => {
+        let filter = {
+          id: id
+        };
+        this.$reqApi("/country-division", { filters: filter }).then(res => {
+          if (res.model.data) {
+            this.province = res.model.data[0].cd2_id;
+            setTimeout(() => {
+              this.form.country_division_id = res.model.data[0].id;
+            }, 500);
+          }
+        });
+      });
     },
     loadCitis(id) {
       this.citis = [];

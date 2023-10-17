@@ -1,15 +1,15 @@
 <template>
   <div>
-    <CepresentationRequestForm />
+    <Complaint />
   </div>
 </template>
   
   <script>
-import CepresentationRequestForm from "@/components/Forms/CepresentationRequestForm.vue";
+import Complaint from "@/components/Forms/Complaint.vue";
 export default {
-  components: {  CepresentationRequestForm },
+  components: {  Complaint },
   data: () => ({
-    title: "ایجاد",
+    title: "ایجاد فرم",
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);

@@ -1,15 +1,15 @@
 <template>
   <div>
-    <CepresentationRequestForm />
+    <WholwsaleForm />
   </div>
 </template>
   
   <script>
-import CepresentationRequestForm from "@/components/Forms/CepresentationRequestForm.vue";
+import WholwsaleForm from "@/components/Product/WholwsaleForm.vue";
 export default {
-  components: {  CepresentationRequestForm },
+  components: {  WholwsaleForm },
   data: () => ({
-    title: "ایجاد",
+    title: "ایجاد فرم",
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
