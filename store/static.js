@@ -23,7 +23,8 @@ export const state = () => ({
   repeatation_cycle,
   setting_keys,
   status_contact_form,
-  ownership_type
+  ownership_type,
+  product_status
 });
 
 let mnue_tree = [
@@ -185,6 +186,13 @@ let setting_keys = [
 let status = [
   { text: "فعال", value: "active" },
   { text: "غیر فعال", value: "hidden" }
+];
+
+let product_status = [
+  { text: "فعال", value: "active" },
+  { text: "پیش نویس", value: "draft" },
+  { text: "غیرقابل دسترسی", value: "unavailable" },
+  { text: "پنهان", value: "hidden" }
 ];
 
 let work_status = [

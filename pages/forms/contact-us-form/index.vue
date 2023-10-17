@@ -73,7 +73,7 @@ export default {
         }
       },
       { text: "نام", value: "first_name" },
-      { text: "نام", value: "last_name" },
+      { text: "نام خانوادگی", value: "last_name" },
       {
         text: "شماره تماس",
         value: "phone_number"
