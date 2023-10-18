@@ -97,8 +97,8 @@
     </v-row>
   </v-form>
 </template>
-  
-  <script>
+
+<script>
 import UserSelectForm from "@/components/User/UserSelectForm";
 import SelectLocationDialog from "@/components/Base/SelectLocationDialog.vue";
 import SelectLocation from "@/components/Base/SelectLocation.vue";
@@ -106,16 +106,16 @@ export default {
   components: {
     UserSelectForm,
     SelectLocationDialog,
-    SelectLocation,
+    SelectLocation
   },
   props: {
     modelId: {
       require: false,
-      default: false,
+      default: false
     },
     updateUrl: { default: "/branch/update" },
     createUrl: { default: "/branch/insert" },
-    showUrl: { default: "/branch/show" },
+    showUrl: { default: "/branch/show" }
   },
   data() {
     return {
@@ -127,6 +127,7 @@ export default {
       citis: [],
       user: [],
       form: {
+        province_id: "",
         user_id: "",
         parent_id: "",
         region_id: "",
@@ -140,8 +141,8 @@ export default {
         is_main_branch: null,
         status: "",
         sort: 1,
-        id: "",
-      },
+        id: ""
+      }
     };
   },
   computed: {},
@@ -154,7 +155,7 @@ export default {
     },
     "form.province_id"() {
       this.loadCitis(this.form.province_id);
-    },
+    }
   },
   mounted() {
     if (Boolean(this.modelId)) {
@@ -163,11 +164,11 @@ export default {
     if (this.$route.query.id) {
       this.form.user_id = this.$route.query.id;
     }
-    this.loadState().then((res) => {
-      res.filter((x) => {
+    this.loadState().then(res => {
+      res.filter(x => {
         this.province.push({
           text: x.name,
-          value: x.id,
+          value: x.id
         });
       });
     });
@@ -179,10 +180,10 @@ export default {
         this.form.user_id = this.user[0].id;
       }
       let form = this.$copyForm(this.form);
-    
+
       let url = this.modelId ? this.updateUrl : this.createUrl;
       this.$reqApi(url, form)
-        .then((response) => {
+        .then(response => {
           if (this.modelId) {
             this.$toast.success("اطلاعات ویرایش شد");
           } else {
@@ -191,14 +192,14 @@ export default {
           this.loader = false;
           this.back();
         })
-        .catch((err) => {
+        .catch(err => {
           this.loader = false;
         });
     },
     loadData() {
       this.loader = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
-        .then((response) => {
+        .then(response => {
           this.form.id = this.modelId;
           this.form.user_id = response.model.user_id;
           this.user = [response.model.user];
@@ -212,12 +213,11 @@ export default {
           this.form.is_main_branch = response.model.is_main_branch;
           this.form.region_id = response.model.region_id;
           this.form.sort = response.model.sort;
-          this.form.country_division_id = response.model.country_division_id;
-        
-
+          this.filterProvince(response.model.country_division_id);
+          // this.form.country_division_id = response.model.country_division_id;
           this.loader = false;
         })
-        .catch((error) => {
+        .catch(error => {
           this.loader = false;
         });
     },
@@ -226,19 +226,34 @@ export default {
         let filters = {
           level: {
             op: "=",
-            value: "province",
-          },
+            value: "province"
+          }
         };
         this.$reqApi("/country-division", {
           filters: filters,
-          row_number: 3000000,
+          row_number: 3000000
         })
-          .then((res) => {
+          .then(res => {
             response(res.model.data);
           })
-          .catch((err) => {
+          .catch(err => {
             return err;
           });
+      });
+    },
+    filterProvince(id) {
+      return new Promise((res, rej) => {
+        let filter = {
+          id: id
+        };
+        this.$reqApi("/country-division", { filters: filter }).then(res => {
+          if (res.model.data) {
+            this.form.province_id = res.model.data[0].cd2_id;
+            setTimeout(() => {
+              this.form.country_division_id = res.model.data[0].id;
+            }, 500);
+          }
+        });
       });
     },
     loadCitis(id) {
@@ -246,20 +261,20 @@ export default {
       let filters = {
         parent_id: {
           op: "=",
-          value: id,
-        },
+          value: id
+        }
       };
       if (id) {
         let data = [];
         this.$reqApi("/country-division", {
           filters: filters,
-          row_number: 300000,
-        }).then((res) => {
+          row_number: 300000
+        }).then(res => {
           data = res.model.data;
-          data.filter((x) => {
+          data.filter(x => {
             this.citis.push({
               text: x.name,
-              value: x.id,
+              value: x.id
             });
           });
         });
@@ -267,8 +282,7 @@ export default {
     },
     back() {
       this.$router.back();
-    },
-  },
+    }
+  }
 };
 </script>
-  

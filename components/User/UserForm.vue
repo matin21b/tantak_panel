@@ -172,7 +172,7 @@
 import UserSelectForm from "~/components/User/UserSelectForm.vue";
 export default {
   components: {
-    UserSelectForm,
+    UserSelectForm
   },
   props: {
     roleId: { default: null },
@@ -180,7 +180,7 @@ export default {
     path: { default: "/user" },
     showUrl: { default: "/user/show" },
     createUrl: { default: "/user/insert" },
-    updateUrl: { default: "/user/update" },
+    updateUrl: { default: "/user/update" }
   },
   data: () => ({
     valid: false,
@@ -197,6 +197,7 @@ export default {
     form: {
       sort: -1,
       username: "",
+      province_id:'',
       parent_id: "",
       birth_date: "",
       avatar: "",
@@ -212,34 +213,38 @@ export default {
       address: {
         postal_code: "",
         country_division_id: "",
-        address: "",
+        address: ""
       },
       national_code: "",
-      status: "active",
-    },
+      status: "active"
+    }
   }),
   computed: {
     cheke_branch() {
       return (
-        this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) > -1 ||
-        this.form.role_id.indexOf(this.$store.state.auth.role. warehouseman_id) > -1
+        this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
+          -1 ||
+        this.form.role_id.indexOf(this.$store.state.auth.role.warehouseman_id) >
+          -1
       );
     },
 
     cheke_user() {
       return (
-        this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) > -1 ||
+        this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
+          -1 ||
         this.form.role_id.indexOf(this.$store.state.auth.role.writers_id) >
           -1 ||
-        this.form.role_id.indexOf(this.$store.state.auth.role. warehouseman_id) > -1 ||
+        this.form.role_id.indexOf(this.$store.state.auth.role.warehouseman_id) >
+          -1 ||
         this.form.role_id.indexOf(this.$store.state.auth.role.admin_id) > -1
       );
-    },
+    }
   },
   watch: {
     "form.province_id"() {
       this.loadCitis(this.form.province_id);
-    },
+    }
     // "form.role_id"() {
     //   let cashier_id = "38d3025b-ed61-4d0d-815f-31c008eb33fc"; //  صندوق دار
 
@@ -263,11 +268,11 @@ export default {
     if (this.modelId) {
       this.loadData();
     }
-    this.loadState().then((res) => {
-      res.filter((x) => {
+    this.loadState().then(res => {
+      res.filter(x => {
         this.province.push({
           text: x.name,
-          value: x.id,
+          value: x.id
         });
       });
     });
@@ -286,7 +291,7 @@ export default {
       }
       form.username = this.$FarsiToEnglishNumber(form.username);
       this.$reqApi(url, form)
-        .then((response) => {
+        .then(response => {
           if (this.modelId) {
             this.$toast.success("اطلاعات ویرایش شد");
           } else {
@@ -294,14 +299,14 @@ export default {
           }
           this.redirectPage();
         })
-        .catch((error) => {
+        .catch(error => {
           this.loading = false;
         });
     },
     loadData() {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
-        .then(async (response) => {
+        .then(async response => {
           this.form.user_id = response.model.user_id;
           this.form.role_id = response.model.role_id;
           this.form.id = this.modelId;
@@ -323,17 +328,19 @@ export default {
           if (response.model.parent) {
             this.parent_id = [response.model.parent];
           }
-          setTimeout(() => {
-            this.form.address.country_division_id =
-              response.model.country_division_id;
-          }, 400);
+
+          // setTimeout(() => {
+          //   this.form.address.country_division_id =
+          //     response.model.addresses[response.model.addresses.length -1].country_division_id;
+          // }, 400);
+          this.filterProvince(response.model.addresses[response.model.addresses.length -1].country_division_id)
           if (Array.isArray(response.model.roles)) {
-            this.form.role_id = response.model.roles.map((x) => x.id);
+            this.form.role_id = response.model.roles.map(x => x.id);
           }
 
           this.loading = false;
         })
-        .catch((error) => {
+        .catch(error => {
           this.redirectPage();
           this.loading = false;
         });
@@ -343,19 +350,34 @@ export default {
         let filters = {
           level: {
             op: "=",
-            value: "province",
-          },
+            value: "province"
+          }
         };
         this.$reqApi("/country-division", {
           filters: filters,
-          row_number: 3000000,
+          row_number: 3000000
         })
-          .then((res) => {
+          .then(res => {
             response(res.model.data);
           })
-          .catch((err) => {
+          .catch(err => {
             return err;
           });
+      });
+    },
+    filterProvince(id) {
+      return new Promise((res, rej) => {
+        let filter = {
+          id: id
+        };
+        this.$reqApi("/country-division", { filters: filter }).then(res => {
+          if (res.model.data) {
+            this.form.province_id = res.model.data[0].cd2_id;
+            setTimeout(() => {
+              this.form.address.country_division_id = res.model.data[0].id;
+            }, 500);
+          }
+        });
       });
     },
     loadCitis(id) {
@@ -363,20 +385,20 @@ export default {
       let filters = {
         parent_id: {
           op: "=",
-          value: id,
-        },
+          value: id
+        }
       };
       if (id) {
         let data = [];
         this.$reqApi("/country-division", {
           filters: filters,
-          row_number: 300000,
-        }).then((res) => {
+          row_number: 300000
+        }).then(res => {
           data = res.model.data;
-          data.filter((x) => {
+          data.filter(x => {
             this.citis.push({
               text: x.name,
-              value: x.id,
+              value: x.id
             });
           });
         });
@@ -388,7 +410,7 @@ export default {
       } else {
         this.$router.push(this.path);
       }
-    },
-  },
+    }
+  }
 };
 </script>

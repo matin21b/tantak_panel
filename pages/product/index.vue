@@ -66,24 +66,24 @@ export default {
       { title: ' ', value: 'main_picture_path', type: 'image', disableSort: 'true', filterable: false, size: 'small' },
       { text: 'نام محصول', value: 'name' },
       { text: 'ترتیب نمایش', value: 'sort', disableSort: 'true', filterable: false },
-      {
-        text: 'فروش تکی',
-        value: 'has_single_sell',
-        filterType: 'select',
-        items: this.$store.state.static.bool_num_enum,
-      },
-      {
-        text: 'فروش فله/عمده',
-        value: 'has_whole_sell',
-        filterType: 'select',
-        items: this.$store.state.static.bool_num_enum,
-      },
-      {
-        text: 'دمنوش ساز',
-        value: 'mixturable',
-        filterType: 'select',
-        items: this.$store.state.static.bool_num_enum,
-      },
+      // {
+      //   text: 'فروش تکی',
+      //   value: 'has_single_sell',
+      //   filterType: 'select',
+      //   items: this.$store.state.static.bool_num_enum,
+      // },
+      // {
+      //   text: 'فروش فله/عمده',
+      //   value: 'has_whole_sell',
+      //   filterType: 'select',
+      //   items: this.$store.state.static.bool_num_enum,
+      // },
+      // {
+      //   text: 'دمنوش ساز',
+      //   value: 'mixturable',
+      //   filterType: 'select',
+      //   items: this.$store.state.static.bool_num_enum,
+      // },
       { text: 'بازدید', value: 'visit_count', disableSort: 'true', filterable: false },
 
       {

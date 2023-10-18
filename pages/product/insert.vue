@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ProductForm from '@/components/Product/ProductForm'
+import ProductForm from '@/components/Product/ProductForm.vue'
 export default {
   components: { ProductForm },
   data: () => ({

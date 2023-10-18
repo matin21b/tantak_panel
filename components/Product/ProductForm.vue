@@ -53,24 +53,6 @@
                 <amp-select text="یکای فروش (فله/عمده)" rules="require" v-model="form.base_whole_sell_unit" :items="units" />
               </v-col>
 
-              <v-col cols="12" md="3" v-if="form.has_whole_sell == '1'">
-                <amp-select
-                  text="استفاده در ترکیب ساز"
-                  rules="require"
-                  v-model="form.mixturable"
-                  :items="this.$store.state.static.bool_number_enum"
-                />
-              </v-col>
-
-              <v-col cols="12" md="3" v-if="form.mixturable == '1'">
-                <amp-autocomplete
-                  multiple
-                  text="استفاده در"
-                  rules="require"
-                  v-model="form.mixture_ids"
-                  :items="this.$store.state.static.mixture_types"
-                />
-              </v-col>
               <v-col cols="12" md="3">
                 <amp-input text="ترتیب نمایش" v-model="form.sort" rules="number" />
               </v-col>
@@ -111,10 +93,10 @@
               <v-col cols="12" md="4" class="mt-10">
                 <v-row>
                   <v-col cols="12" md="12">
-                    <v-img max-width="300" max-height="300" :src="$getImage(form.main_picture_path, 'medium')" />
+                    <v-img max-width="300" max-height="300" :src="$getImage(form.main_image, 'medium')" />
                   </v-col>
                   <v-col cols="12" md="12">
-                    <AmpUploadFile v-model="form.main_picture_path" title="تصویر شاخص" />
+                    <AmpUploadFile v-model="form.main_image" title="تصویر شاخص" />
                   </v-col>
                   <v-col cols="12" md="12">
                     <amp-button
@@ -280,7 +262,7 @@ export default {
       has_single_sell: '1',
       has_whole_sell: '0',
       mixturable: '0',
-      main_picture_path: '/image/no_image.png',
+      main_image: '/image/no_image.png',
       base_whole_sell_unit: '',
       mixture_ids: [],
       single_sell_variation_combinations: [],
@@ -386,7 +368,7 @@ export default {
           for (let i = 0; i < response.keywords.length; i++) {
             this.form.keywords.push(response.keywords[i].value)
           }
-          this.form.main_picture_path = response.main_picture_path
+          this.form.main_image = response.main_image
           this.form.single_sell_variation_combinations = response.single_sell_variation_combinations
           this.form.whole_sell_variation_combinations = response.whole_sell_variation_combinations
 

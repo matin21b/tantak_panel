@@ -21,7 +21,10 @@ export const state = () => ({
   company_name,
   menu_type,
   repeatation_cycle,
-  setting_keys
+  setting_keys,
+  status_contact_form,
+  ownership_type,
+  product_status
 });
 
 let mnue_tree = [
@@ -67,36 +70,42 @@ let mnue_tree = [
     access: "*",
     route: "/branches"
   },
-  // {
-  //   id: 13,
-  //   name: "محصولات",
-  //   children: [
-  //     {
-  //       id: 14,
-  //       name: "فهرست محصولات",
-  //       access: "*",
-  //       route: "/product"
-  //     },
-  //     {
-  //       id: 15,
-  //       name: "دسته بندی محصولات",
-  //       access: "*",
-  //       route: "/product/category"
-  //     },
-  //     {
-  //       id: 16,
-  //       name: "به روزرسانی سریع",
-  //       access: "*",
-  //       route: "/product/update-price"
-  //     },
-  //     {
-  //       id: 17,
-  //       access: "*",
-  //       name: "قیمت عمده",
-  //       route: "/product/wholesell-price"
-  //     }
-  //   ]
-  // },
+  {
+    id: 13,
+    name: "محصولات",
+    children: [
+      //     {
+      //       id: 14,
+      //       name: "فهرست محصولات",
+      //       access: "*",
+      //       route: "/product"
+      //     },
+      //     {
+      //       id: 15,
+      //       name: "دسته بندی محصولات",
+      //       access: "*",
+      //       route: "/product/category"
+      //     },
+      //     {
+      //       id: 16,
+      //       name: "به روزرسانی سریع",
+      //       access: "*",
+      //       route: "/product/update-price"
+      //     },
+      //     {
+      //       id: 17,
+      //       access: "*",
+      //       name: "قیمت عمده",
+      //       route: "/product/wholesell-price"
+      //     },
+      // {
+      //   id: 30,
+      //   access: "*",
+      //   name: "فروش عمده",
+      //   route: "/product/wholesale-form"
+      // }
+    ]
+  },
   {
     id: 18,
     name: "تنظیمات",
@@ -118,7 +127,7 @@ let mnue_tree = [
         name: "تنظیمات عمومی",
         access: "*",
         route: "/setting/public/1"
-      },
+      }
       // {
       //   id: 22,
       //   name: "ویژگی های محصولات",
@@ -144,6 +153,30 @@ let mnue_tree = [
       //   route: "/setting/whole-sell"
       // }
     ]
+  },
+  {
+    id: 26,
+    name: "فرم های دریافتی",
+    children: [
+      {
+        id: 27,
+        name: "تماس با ما",
+        access: "*",
+        route: "/forms/contact-us-form"
+      },
+      {
+        id: 28,
+        name: "درخواست فرم نمایندگی",
+        access: "*",
+        route: "/forms/representation-request-form"
+      },
+      {
+        id:29,
+        name:'شکایات',
+        access:'*',
+        route:'/forms/complaint',
+      }
+    ]
   }
 ];
 
@@ -167,9 +200,26 @@ let status = [
   { text: "غیر فعال", value: "hidden" }
 ];
 
+let product_status = [
+  { text: "فعال", value: "active" },
+  { text: "پیش نویس", value: "draft" },
+  { text: "غیرقابل دسترسی", value: "unavailable" },
+  { text: "پنهان", value: "hidden" }
+];
+
 let work_status = [
   { text: "مشغول به کار", value: "active" },
   { text: "مرخصی", value: "inactive" }
+];
+
+let status_contact_form = [
+  { text: "انتظار", value: "pending" },
+  { text: "بررسی شده", value: "reviewed" }
+];
+
+let ownership_type = [
+  { text: "مالک", value: "owner" },
+  { text: "اجاره", value: "leasehold" }
 ];
 
 let user_level = [
