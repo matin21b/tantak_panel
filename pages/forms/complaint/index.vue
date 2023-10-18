@@ -36,9 +36,9 @@ import BaseTable from "@/components/DataTable/BaseTable";
 export default {
   components: { BaseTable },
   data: () => ({
-    createUrl: "/forms/complaint-form/insert",
+    createUrl: "/forms/complaint/insert",
     deleteUrl: "/complaint-form/delete",
-    updateUrl: "/forms/complaint-form",
+    updateUrl: "/forms/complaint",
     headers: [],
     items: [],
     btn_actions: [],

@@ -72,7 +72,7 @@ export default {
   data: () => ({
     valid: false,
     loading: false,
-    createUrl: "/complaint-form/insert",
+    createUrl: "/shop/complaint-form/insert",
     updateUrl: "/complaint-form/update",
     showUrl: "/complaint-form/show",
     categories: [],
