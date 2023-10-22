@@ -65,7 +65,7 @@ export default {
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
     this.filters = {
-      product_category_id: this.$route.params.variation_category_id,
+      category_id: this.$route.params.variation_category_id,
       price_dependant: {
         op: "=",
         value: true

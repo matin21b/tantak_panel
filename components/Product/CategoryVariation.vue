@@ -20,7 +20,7 @@
         </v-col>
         <v-col cols="12" md="3">
           <amp-autocomplete
-            :disabled='form.category_id.length < 0'
+            :disabled="form.category_id.length < 0"
             rules="require"
             text="محصولات"
             v-model="form.product_id"
@@ -37,7 +37,7 @@
           <amp-input text="ترتیب نمایش " v-model="form.sort" rules="number" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-upload-file v-model="form.images" :multiple="true" />
+          <amp-upload-file v-model="images" :multiple="true" />
         </v-col>
       </v-row>
 
@@ -83,6 +83,7 @@ export default {
     showUrl: "/product-variation/show",
     product_categories: [],
     products: [],
+    images: [],
     form: {
       id: "",
       sort: 1,
@@ -97,7 +98,6 @@ export default {
     allVariations: [],
     category_id: ""
   }),
-
   mounted() {
     if (this.modelId) {
       this.loadData();
@@ -107,16 +107,25 @@ export default {
     this.getAllVariations();
   },
   watch: {
-    'form.category_id'(){
-      if(this.form.category_id){
-        this.getProducts(this.form.category_id)
+    "form.category_id"() {
+      if (this.form.category_id) {
+        this.getProducts(this.form.category_id);
       }
     },
+    images() {
+      if (this.images) {
+        this.images.map(x => {
+          this.form.images.push({
+            alt: "image",
+            path: x
+          });
+        });
+      }
+    }
   },
   methods: {
     submit() {
       this.loading = true;
-      this.form["category_id"] = this.category_id;
       let form = this.$copyForm(this.form);
       if (!form.value || !form.variation_type_id) {
         this.$toast.error("Please check the input values.");
@@ -155,8 +164,9 @@ export default {
           this.form.barbarcode = response.barcode;
           this.form.sort = response.sort;
           this.form.value = response.value;
+          this.form.category_id = response.category_id
           this.form.variation_type_id = response.variation_type_id;
-          this.form.images = response.images;
+          this.images = response.images;
           this.loading = false;
         })
         .catch(error => {
@@ -192,8 +202,8 @@ export default {
     getProducts(id) {
       let form = {
         row_number: 2000,
-        filters:{
-          categories_id:id
+        filters: {
+          categories_id: id
         }
       };
 

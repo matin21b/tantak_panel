@@ -57,6 +57,7 @@
                 ref="variations"
                 :url="url"
                 :headers="headers"
+                :BTNactions="btn_actions"
                 v-model="selected_item"
                 :filters="filters"
                 :row-click="rowClick"
@@ -110,6 +111,18 @@ export default {
   }),
   beforeMount() {
     this.product_id = this.$route.params.id;
+    this.btn_actions = [
+      {
+        color: "success",
+        text: "",
+        fun: body => {
+          return body
+        },
+        show_fun:(body)=>{
+          if(body){return false}
+        }
+      }
+    ];
     this.headers = [
       {
         text: "زمان ثبت",
@@ -124,7 +137,7 @@ export default {
       },
       { text: "نام", value: "name", filterable: false },
       {
-        text: "لینگ",
+        text: "لینک",
         value: "slug",
         disableSort: "true",
         filterable: false
@@ -168,35 +181,47 @@ export default {
       }
     },
     id_selected_category() {
+      this.$emit("input", this.id_selected_category);
       if (this.id_selected_category.length > 0) {
-        console.log("if is working ..");
         this.url = "/product-variation";
         this.filters = {
-          product_category_id: {
+          category_id: {
             op: "=",
             value:
               this.id_selected_category[this.id_selected_category.length - 1]
           }
         };
+        console.log(this.id_selected_category)
         this.headers = [];
         this.headers = [
-          { text: "مقدار", value: "variation_type", filterable: false },
+          {
+            text: "مقدار",
+            value: "variation_type",
+            value: body => {
+              return body.variation_type.value;
+            },
+            filterable: false
+          },
           {
             text: "مقدار",
             value: "value",
             disableSort: "true",
             filterable: false
           },
-          { text: "code", value: "کد", disableSort: "true", filterable: false },
           {
-            text: "sort",
-            value: "ترتیب نمایش",
+            text: "بارکد",
+            value: "barcode",
+            disableSort: "true",
+            filterable: false
+          },
+          {
+            text: "ترتیب نمایش",
+            value: "sort",
             disableSort: "true",
             filterable: false
           }
         ];
       } else {
-        console.log("else is working ..");
         this.url = "/category";
         this.headers = [];
         this.headers = [
@@ -213,7 +238,7 @@ export default {
           },
           { text: "نام", value: "name", filterable: false },
           {
-            text: "لینگ",
+            text: "لینک",
             value: "slug",
             disableSort: "true",
             filterable: false

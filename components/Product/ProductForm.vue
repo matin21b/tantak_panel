@@ -65,7 +65,7 @@
                 />
               </v-col>
               <v-col cols="12" md="12">
-                <SelectCategory />
+                <SelectCategory v-model="form.category_ids"  /> 
               </v-col>
             </v-row>
             <v-row>
@@ -242,7 +242,7 @@
                     <v-icon class="font_30">scale</v-icon>
                   </v-tab>
                 </v-tabs>
-                <v-col cols="12" v-if="tab == 0 && form.has_single_sell == '1'">
+                <!-- <v-col cols="12" v-if="tab == 0 && form.has_single_sell == '1'">
                   <SingleProductForm
                     @reloadPage="reloadPage()"
                     :product="form"
@@ -258,7 +258,7 @@
                   >
                     فروش تکی برای این محصول غیر فعال است
                   </v-alert>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" v-if="tab == 1 && form.has_whole_sell == '1'">
                   <WholeProductForm
                     @reloadPage="reloadPage()"
@@ -384,21 +384,21 @@ export default {
         url = this.updateUrl;
         form["id"] = this.modelId;
 
-        if (form.status == "hidden") {
-          if (
-            this.form.single_sell_variation_combinations.length > 0 ||
-            form.whole_sell_variation_combinations.length > 0
-          ) {
-            form.status = "active";
-          }
-        }
+        // if (form.status == "hidden") {
+        //   if (
+        //     this.form.single_sell_variation_combinations.length > 0 ||
+        //     form.whole_sell_variation_combinations.length > 0
+        //   ) {
+        //     form.status = "active";
+        //   }
+        // }
 
-        if (
-          this.form.single_sell_variation_combinations.length == 0 &&
-          form.whole_sell_variation_combinations.length == 0
-        ) {
-          form.status = "hidden";
-        }
+        // if (
+        //   this.form.single_sell_variation_combinations.length == 0 &&
+        //   form.whole_sell_variation_combinations.length == 0
+        // ) {
+        //   form.status = "hidden";
+        // }
       }
       this.$reqApi(url, form)
         .then(response => {
