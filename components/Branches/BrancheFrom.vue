@@ -91,6 +91,7 @@
         :text="modelId ? 'ویرایش' : 'افزودن'"
         type="submit"
         icon="done"
+        :disabled="!valid || loading"   
         class="ma-1"
         :loading="loader"
       ></amp-button>
@@ -119,7 +120,7 @@ export default {
   },
   data() {
     return {
-      valid: true,
+      valid: false,
       loader: false,
       panel: [],
       location: [],

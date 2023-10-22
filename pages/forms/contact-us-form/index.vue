@@ -76,12 +76,12 @@ export default {
       {
         text: "بررسی شده",
         value: "reviewed",
-        outline: true
+        outline: false
       },
       {
         text: "در حال انتظار",
         value: "pending",
-        outline: false
+        outline: true
       }
     ],
     dialogShowItem: { show: false, item: null },
@@ -122,6 +122,11 @@ export default {
               .catch(err => {
                 return err;
               });
+          }
+        },
+        show_fun:body=>{
+          if(body.status == 'pending'){
+            return true
           }
         }
       }
@@ -173,9 +178,9 @@ export default {
     setFilters(data) {
       this.items_chip.forEach(element => {
         if (element.value == data) {
-          element.outline = true;
-        } else {
           element.outline = false;
+        } else {
+          element.outline = true;
         }
       });
       if (data) {

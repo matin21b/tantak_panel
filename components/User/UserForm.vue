@@ -70,16 +70,16 @@
             v-model="form.birth_date"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <!-- <v-col cols="12" md="3">
           <amp-input
             text="کد پستی"
             cClass="ltr-item"
             rules="postCode"
             v-model="form.address.postal_code"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="3">
-          <amp-select
+          <amp-autocomplete
             text="استان"
             v-model="form.province_id"
             :items="province"
@@ -87,35 +87,32 @@
         </v-col>
 
         <v-col cols="12" md="3">
-          <amp-select
+          <amp-autocomplete
             text="شهر"
             v-model="form.address.country_division_id"
             :items="citis"
             :disabled="citis.length > 0 ? false : true"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="3" v-if="cheke_branch" >
           <UserSelectForm
             text=" کاربر ناظر"
             v-model="parent_id"
             url="user"
             :role-id="[$store.state.auth.role.admin_id]"
-            v-if="cheke_user"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="3"  v-if="cheke_branch" >
           <amp-select
             text="ناحیه"
             v-model="form.region_id"
             :items="$store.state.setting.region"
-            v-if="cheke_branch"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="3" v-if="cheke_branch" >
           <amp-select
             text=" کد شعبه "
             v-model="form.branch_id"
-            v-if="cheke_branch"
             :items="$store.state.setting.branch_code"
           />
         </v-col>
@@ -125,13 +122,13 @@
         <v-col cols="12" md="12">
           <v-divider></v-divider>
         </v-col>
-        <v-col cols="12" md="4">
+        <!-- <v-col cols="12" md="4">
           <amp-textarea
             text="آدرس"
             v-model="form.address.address"
           ></amp-textarea>
-        </v-col>
-        <v-col cols="12" md="4">
+        </v-col> -->
+        <v-col cols="12" md="12">
           <amp-textarea
             text="توضیحات"
             v-model="form.description"
@@ -333,7 +330,7 @@ export default {
           //   this.form.address.country_division_id =
           //     response.model.addresses[response.model.addresses.length -1].country_division_id;
           // }, 400);
-          this.filterProvince(response.model.addresses[response.model.addresses.length -1].country_division_id)
+          this.filterProvince(response.model.addresses[0].country_division_id)
           if (Array.isArray(response.model.roles)) {
             this.form.role_id = response.model.roles.map(x => x.id);
           }
