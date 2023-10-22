@@ -11,7 +11,7 @@
         </v-col>
 
         <v-col cols="12" md="1">
-          <amp-input text="ترتیب" v-model="form.sort" class="ltr-item" />
+          <amp-input text="ترتیب" v-model="form.value.sort" class="ltr-item" />
         </v-col>
 
         <v-row>

@@ -24,7 +24,8 @@ export const state = () => ({
   setting_keys,
   status_contact_form,
   ownership_type,
-  product_status
+  product_status,
+  branch_status,
 });
 
 let mnue_tree = [
@@ -230,6 +231,13 @@ let bool_text = [
   { text: "بله", value: true },
   { text: "خیر", value: false }
 ];
+
+let branch_status=[
+  {text:'فعال', value:'active'},
+  {text:'غیر فعال', value:'inactive'},
+  {text:'پنهان', value:'hidden'},
+  {text:'معلق', value:'suspended'},
+]
 
 let bool_en = [
   { text: "بله", value: "yes" },

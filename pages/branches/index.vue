@@ -22,7 +22,7 @@ export default {
     headers: [],
     items: [],
     filters: {},
-    title: " شعبات",
+    title: " شعبات"
   }),
   beforeMount() {
     this.headers = [
@@ -30,70 +30,50 @@ export default {
         text: "زمان ثبت",
         filterType: "date",
         filterCol: "created_at",
-        value: (body) => {
+        value: body => {
           if (body.created_at) {
             return this.$toJalali(body.created_at);
           }
           return "";
-        },
+        }
       },
       {
         text: "کد شعبه",
-        value: "branch_code",
+        value: "branch_code"
       },
       {
         text: " نام شعبه",
-        value: "name",
+        value: "name"
       },
       {
-        text: "وضعیت  ",
-        value: (body) => {
-          if (body.status == "active") {
-            return "فعال";
-          }
-          if (body.status == "inactive") {
-            return "غیر فعال";
-          }
-          if (body.status == "hidden") {
-            return "پنهان";
-          }
-          if (body.status == "suspended") {
-            return "معلق";
-          }
-        },
+        text: "وضعیت",
+        value: "status",
+        filterType: "select",
+        items: this.$store.state.static.branch_status
       },
       {
-        text: "نوع فروش  ",
-        value: (body) => {
-          if (body.sell_type == "sell") {
-            return "فروش تکی";
-          }
-          if (body.sell_type == "wholesale") {
-            return " فروش  عمده";
-          }
-          if (body.sell_type == "both_sell") {
-            return "هر دو";
-          }
-          if (body.sell_type == "none") {
-            return "هیچکدام";
-          }
-        },
+        text: "وضعیت",
+        value: "sell_type",
+        filterType: "select",
+        items: this.$store.state.static.sell_type
       },
       {
         text: "نوع شعبه  ",
-        value: (body) => {
+        disableSort: "true",
+        filterable: false,
+        value: body => {
           if (body.is_main_branch == 0) {
             return "شعبه اصلی";
           } else {
             return "شعبه فرعی";
           }
-        },
+        }
       },
 
       {
         text: " آدرس",
-        value: "address",
-      },
+        value: "address"
+      }
     ];
     this.$store.dispatch("setPageTitle", this.title);
   },
@@ -105,18 +85,18 @@ export default {
         this.filters = {
           category_id: {
             op: "=",
-            value: value,
-          },
+            value: value
+          }
         };
       }
-      this.items.forEach((element) => {
+      this.items.forEach(element => {
         if (element.value == value) {
           element.outline = false;
         } else {
           element.outline = true;
         }
       });
-    },
-  },
+    }
+  }
 };
 </script>
