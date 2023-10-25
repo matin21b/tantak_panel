@@ -173,7 +173,7 @@ export default {
         })
         .catch(err => {
           return err;
-        });
+        }); 
     },
     setFilters(data) {
       this.items_chip.forEach(element => {

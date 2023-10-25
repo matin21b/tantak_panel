@@ -26,6 +26,8 @@ export const state = () => ({
   ownership_type,
   product_status,
   branch_status,
+  sell_status,
+  bool_number_enum
 });
 
 let mnue_tree = [
@@ -75,36 +77,24 @@ let mnue_tree = [
     id: 13,
     name: "محصولات",
     children: [
-      //     {
-      //       id: 14,
-      //       name: "فهرست محصولات",
-      //       access: "*",
-      //       route: "/product"
-      //     },
-      //     {
-      //       id: 15,
-      //       name: "دسته بندی محصولات",
-      //       access: "*",
-      //       route: "/product/category"
-      //     },
-      //     {
-      //       id: 16,
-      //       name: "به روزرسانی سریع",
-      //       access: "*",
-      //       route: "/product/update-price"
-      //     },
-      //     {
-      //       id: 17,
-      //       access: "*",
-      //       name: "قیمت عمده",
-      //       route: "/product/wholesell-price"
-      //     },
-      // {
-      //   id: 30,
-      //   access: "*",
-      //   name: "فروش عمده",
-      //   route: "/product/wholesale-form"
-      // }
+      {
+        id: 14,
+        name: "فهرست محصولات",
+        access: "*",
+        route: "/product"
+      },
+      {
+        id: 15,
+        name: "دسته بندی محصولات",
+        access: "*",
+        route: "/product/category"
+      },
+      {
+        id: 30,
+        access: "*",
+        name: "فرم های دریافتی فروش عمده",
+        route: "/product/wholesale-form"
+      }
     ]
   },
   {
@@ -128,31 +118,31 @@ let mnue_tree = [
         name: "تنظیمات عمومی",
         access: "*",
         route: "/setting/public/1"
+      },
+      {
+        id: 22,
+        name: "ویژگی های محصولات",
+        access: "*",
+        route: "/setting/variation-type"
+      },
+      {
+        id: 23,
+        name: "روش های ارسال",
+        access: "*",
+        route: "/setting/delivery-method"
+      },
+      {
+        id: 24,
+        name: "واحد ها",
+        access: "*",
+        route: "/setting/units"
+      },
+      {
+        id: 25,
+        name: "تنظیمات فروش عمده",
+        access: "*",
+        route: "/setting/whole-sell"
       }
-      // {
-      //   id: 22,
-      //   name: "ویژگی های محصولات",
-      //   access: "*",
-      //   route: "/setting/variation-type"
-      // },
-      // {
-      //   id: 23,
-      //   name: "روش های ارسال",
-      //   access: "*",
-      //   route: "/setting/delivery-method"
-      // },
-      // {
-      //   id: 24,
-      //   name: "واحد ها",
-      //   access: "*",
-      //   route: "/setting/units"
-      // },
-      // {
-      //   id: 25,
-      //   name: "تنظیمات فروش عمده",
-      //   access: "*",
-      //   route: "/setting/whole-sell"
-      // }
     ]
   },
   {
@@ -172,10 +162,10 @@ let mnue_tree = [
         route: "/forms/representation-request-form"
       },
       {
-        id:29,
-        name:'شکایات',
-        access:'*',
-        route:'/forms/complaint',
+        id: 29,
+        name: "شکایات",
+        access: "*",
+        route: "/forms/complaint"
       }
     ]
   }
@@ -202,12 +192,16 @@ let status = [
 ];
 
 let product_status = [
-  { text: "فعال", value: "active" },
+  { text: "انتشار آنلاین", value: "published_online" },
+  { text: "انتشار در محل", value: "published_inplace" },
+  { text: "انتشار آنلاین و در محل", value: "published_everywhere" },
   { text: "پیش نویس", value: "draft" },
-  { text: "غیرقابل دسترسی", value: "unavailable" },
-  { text: "پنهان", value: "hidden" }
 ];
 
+let sell_status =[
+  { text: "جزئی", value: 'single' },
+  { text: "فله", value: 'whole' },
+]
 let work_status = [
   { text: "مشغول به کار", value: "active" },
   { text: "مرخصی", value: "inactive" }
@@ -262,6 +256,12 @@ let week_days = [
   { text: "جمعه", value: "Friday" },
   { text: "همه", value: "" }
 ];
+
+let bool_number_enum = [
+  { text: "بله", value: '1' },
+  { text: "خیر", value: '0' }
+]
+
 
 let person_type = [
   { text: "حقیقی", value: "real" },

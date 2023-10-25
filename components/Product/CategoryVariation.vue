@@ -1,0 +1,245 @@
+<template>
+  <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
+    <v-container fluid class="px-8">
+      <v-row dense>
+        <v-col cols="12" md="3">
+          <amp-select
+            text="ویژگی"
+            :items="allVariations"
+            title="Property"
+            v-model="form.variation_type_id"
+          />
+        </v-col>
+        <!-- <v-col cols="12" md="3">
+          <amp-autocomplete
+            rules="require"
+            text="دسته بندی"
+            v-model="form.category_id"
+            :items="product_categories"
+          />
+        </v-col> -->
+        <v-col cols="12" md="3">
+          <amp-autocomplete
+            :disabled="form.category_id.length < 0"
+            rules="require"
+            text="محصولات"
+            v-model="form.product_id"
+            :items="products"
+          />
+        </v-col>
+        <v-col cols="12" md="3">
+          <amp-input text="مقدار" v-model="form.value" />
+        </v-col>
+        <v-col cols="3">
+          <amp-input text="بارکد" is-number v-model="form.barcode" rules="max_4" />
+        </v-col>
+        <v-col cols="3">
+          <amp-input text="ترتیب نمایش " v-model="form.sort" rules="number" />
+        </v-col>
+        <v-col cols="12" md="3">
+          <amp-upload-file v-model="images" :multiple="true" />
+        </v-col>
+      </v-row>
+
+      <v-row dense>
+        <v-col cols="12" md="12">
+          <v-divider />
+        </v-col>
+        <v-col cols="12" md="12" class="text-center">
+          <amp-button
+            large
+            icon="redo"
+            class="my-1"
+            color="error"
+            text="انصراف"
+            @click="redirectPage()"
+          />
+          <amp-button
+            large
+            icon="done"
+            class="my-1"
+            type="submit"
+            color="success"
+            :loading="loading"
+            :disabled="!valid || loading"
+            :text="modelId ? 'ویرایش' : 'ثبت'"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
+</template>
+
+<script>
+export default {
+  props: {
+    modelId: { default: null }
+  },
+  data: () => ({
+    valid: false,
+    loading: false,
+    createUrl: "/product-variation/insert",
+    updateUrl: "/product-variation/update",
+    showUrl: "/product-variation/show",
+    product_categories: [],
+    products: [],
+    images: [],
+    form: {
+      id: "",
+      sort: 1,
+      value: "",
+      variation_type_id: "",
+      product_id: "",
+      category_id: "",
+      barcode: "",
+      images: []
+    },
+
+    allVariations: [],
+    category_id: ""
+  }),
+  mounted() {
+    if (this.modelId) {
+      this.loadData();
+    }
+    this.form.category_id = this.$route.params.variation_category_id;
+    this.getCategories();
+    this.getAllVariations();
+  },
+  watch: {
+    "form.category_id"() {
+      if (this.form.category_id) {
+        this.getProducts(this.form.category_id);
+      }
+    },
+    images() {
+      if (this.images) {
+        this.images.map(x => {
+          this.form.images.push({
+            alt: "image",
+            path: x
+          });
+        });
+      }
+    }
+  },
+  methods: {
+    submit() {
+      this.loading = true;
+      let form = this.$copyForm(this.form);
+      if (!form.value || !form.variation_type_id) {
+        this.$toast.error("لطفا مقادیر ورودی را بررسی کنید");
+        this.loading = false;
+        return;
+      }
+      let url = this.createUrl;
+      if (this.modelId) {
+        url = this.updateUrl;
+        form["id"] = this.modelId;
+      }
+      this.$reqApi(url, form)
+        .then(response => {
+          if (!this.modelId) {
+            this.$toast.success(
+              "ویژگی مورد نظر با موفقیت اضافه شد"
+            );
+          } else {
+            this.$toast.success(
+              "ویژگی مورد نظر با موفقیت ویرایش شد"
+            );
+          }
+          this.redirectPage()
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+        });
+    },
+    loadData() {
+      this.loading = true;
+      this.$reqApi(this.showUrl, { id: this.modelId })
+        .then(response => {
+          response = response.model;
+          this.form["id"] = response.id;
+          this.form.barcode = response.barcode;
+          this.form.sort = response.sort;
+          this.form.value = response.value;
+          this.form.category_id = response.category_id
+          this.form.product_id = response.product_id
+          this.form.variation_type_id = response.variation_type_id;
+          this.images = response.images;
+          this.loading = false;
+        })
+        .catch(error => {
+          this.redirectPage();
+          this.loading = false;
+        });
+    },
+    redirectPage() {
+      if (window.history.length > 2) {
+        this.$router.back();
+      } else {
+        this.$router.push(this.path);
+      }
+    },
+    getCategories() {
+      let form = {
+        row_number: 2000
+      };
+
+      this.$reqApi("/category", form)
+        .then(response => {
+          this.product_categories = response.model.data.map(x => ({
+            value: x.id,
+            text: x.name
+          }));
+
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+        });
+    },
+    getProducts(id) {
+      let form = {
+        row_number: 2000,
+        filters: {
+          categories_id: id
+        }
+      };
+
+      this.$reqApi("/product", form)
+        .then(response => {
+          this.products = response.model.data.map(x => ({
+            value: x.id,
+            text: x.name
+          }));
+
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+        });
+    },
+    getAllVariations() {
+      this.loading = true;
+      let form = {
+        row_number: 1000,
+        filters: { key: "variation_type" }
+      };
+
+      this.$reqApi("/setting", form)
+        .then(response => {
+          this.allVariations = response.model.data.map(x => ({
+            value: x.id,
+            text: x.value
+          }));
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+        });
+    }
+  }
+};
+</script>

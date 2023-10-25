@@ -7,6 +7,7 @@ import AmpCard from '~/components/Base/AmpCard.vue'
 import AmpTime from '~/components/Base/AmpTime.vue'
 import AmpInput from '~/components/Base/AmpInput.vue'
 import AmpTitle from '~/components/Base/AmpTitle.vue'
+import AmpTags from '~/components/Base/AmpTags.vue'
 import AmpJdate from '~/components/Base/AmpJdate.vue'
 import AmpSelect from '~/components/Base/AmpSelect.vue'
 import AmpButton from '~/components/Base/AmpButton.vue'
@@ -20,6 +21,7 @@ import AmpAutocomplete from '~/components/Base/AmpAutocomplete.vue'
 import AmpRatingCircle from '~/components/Base/AmpRatingCircle.vue'
 import AmpNewDatePicker from "~/components/Base/AmpNewDatePicker.vue";
 import AmpEditor from '~/components/Base/AmpEditor.vue'
+import AmpJsonInput from '~/components/Base/AmpJsonInput.vue'
 import AmpInlineUpload from "~/components/Base/AmpInlineUpload.vue";
 
 Vue.component('persian-date-picker', VuePersianDatetimePicker)
@@ -27,6 +29,7 @@ Vue.component('persian-date-picker', VuePersianDatetimePicker)
 Vue.component('AmpHelp', AmpHelp)
 Vue.component('AmpCard', AmpCard)
 Vue.component('AmpTime', AmpTime)
+Vue.component('AmpTags', AmpTags)
 Vue.component('AmpTitle', AmpTitle)
 Vue.component('AmpInput', AmpInput)
 Vue.component('AmpJdate', AmpJdate)
@@ -37,6 +40,7 @@ Vue.component('AmpDelete', AmpDelete)
 Vue.component('AmpEditor', AmpEditor)
 Vue.component('AmpSection', AmpSection)
 Vue.component('AmpTextarea', AmpTextarea)
+Vue.component('AmpJsonInput', AmpJsonInput)
 Vue.component('AmpRadioGroup', AmpRadioGroup)
 Vue.component('AmpUploadFile', AmpUploadFile)
 Vue.component('AmpAutocomplete', AmpAutocomplete)

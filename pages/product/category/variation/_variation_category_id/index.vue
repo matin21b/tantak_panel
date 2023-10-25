@@ -2,14 +2,15 @@
   <div>
     <BaseTable
       ref="baseTable"
-      url="/category"
+      url="/product-variation"
       :headers="headers"
       v-model="selected_item"
+      :filters="filters"
       :extraBtn="extraBtn"
       :BTNactions="btn_actions"
-      autoDelete="/category/delete"
-      autoUpdate="/product/category"
-      createUrl="/product/category/insert"
+      autoDelete="/product-variation/delete"
+      :autoUpdate="`/product/category/variation/${$route.params.variation_category_id}`"
+      :createUrl="`/product/category/variation/${$route.params.variation_category_id}/insert`"
     >
     </BaseTable>
 
@@ -29,7 +30,7 @@
             class="mb-2"
             color="error"
             :loading="loading"
-            text="بله، حذف شود"
+            text="بله ، حذف شود"
             @click="removeRecords()"
             :disabled="time != 0 || loading"
           />
@@ -52,17 +53,24 @@ export default {
   data: () => ({
     headers: [],
     btn_actions: [],
-    title: "دسته بندی محصولات",
+    title: "ویژگی های دسته بندی محصولات",
     selected_item: [],
     removeDialog: false,
     loading: false,
     time: 3,
     timeInterval: null,
-    extraBtn: []
+    extraBtn: [],
+    filters: {}
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
-
+    this.filters = {
+      category_id: this.$route.params.variation_category_id,
+      price_dependant: {
+        op: "=",
+        value: true
+      }
+    };
     this.headers = [
       {
         text: "",
@@ -72,75 +80,40 @@ export default {
         filterable: false
       },
       {
-        text: "تاریخ ایجاد",
-        filterType: "date",
-        filterCol: "created_at",
-        parentClass: "ltr-item text-center",
-        value: body => this.$toJalali(body.created_at)
+        text: "نام",
+        value: body => {
+          if (body.variation_type) {
+            return body.variation_type.value;
+          } else {
+            return "-";
+          }
+        }
       },
       {
-        text: "نام دسته بندی",
-        value: "name",
+        text: "مقدار",
+        value: "value",
         disableSort: "true",
         filterable: false
-      },
-      {
-        text: "سطح",
-        value: "level"
       },
       {
         text: "بارکد",
         value: "barcode"
       },
       {
-        text: "والد",
-        value: "sort",
-        disableSort: "true",
-        filterable: false,
-        value: body => {
-          if (body.parent_cateogry) {
-            return body.parent_cateogry.title;
+        text:'ترتیب نمایش',
+        value: body=>{
+          if(body.variation_type){
+            return body.variation_type.sort
+          }else{
+            return '-'
           }
-          return "-";
-        }
-      },
-      {
-        text: "تعداد محصولات",
-        value: "products_count",
-        disableSort: "true",
-        filterable: false
-      },
-      {
-        text: "ترتیب نمایش",
-        value: "sort",
-        disableSort: "true",
-        filterable: false
-      }
-    ];
-
-    this.btn_actions = [
-      {
-        color: "primary",
-        text: "مشاهده محصولات",
-        fun: body => {
-          this.$router.push(
-            "/product/category/products/" + body.id + "?name=" + body.name
-          );
-        }
-      },
-      {
-        color: "success",
-        text: "ویژگی ها",
-        fun: body => {
-          this.$router.push("/product/category/variation/" + body.id);
         }
       }
     ];
-
     this.extraBtn = [
       {
         id: 1,
-        text: "حذف موارد",
+        text: "حذف گروهی",
         color: "error",
         icon: "delete",
         fun: body => {
@@ -167,14 +140,14 @@ export default {
     removeRecords() {
       this.loading = true;
       for (let i = 0; i < this.selected_item.length; i++) {
-        this.$reqApi("/category/delete", { id: this.selected_item[i] })
+        this.$reqApi("/product-variation/delete", { id: this.selected_item[i] })
           .then(async response => {
             if (i == this.selected_item.length - 1) {
               this.loading = false;
               this.$refs.baseTable.getDataFromApi();
               this.selected_item = [];
               this.closeDeleteAllDialog();
-              this.$toast.success("حذف موارد انجام شد");
+              this.$toast.success("موارد انتخابی حذف شدن");
             }
           })
           .catch(error => {

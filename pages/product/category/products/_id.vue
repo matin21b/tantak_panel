@@ -5,9 +5,8 @@
       :headers="headers"
       autoDelete="/product/delete"
       createUrl="/product/insert"
-      :rootBody="{ with_category: true }"
+      :rootBody="{ category_id_list : [categories_id] }"
       :BTNactions="btn_actions"
-      :filters="{ categories_id: [this.categories_id] }"
     >
     </BaseTable>
   </div>
@@ -30,30 +29,49 @@ export default {
       this.title = 'محصولات ' + name
     }
     this.headers = [
-      { title: ' ', value: 'main_picture_path', type: 'image', disableSort: 'true', filterable: false },
+      { title: ' ', value: 'main_image', type: 'image', disableSort: 'true', filterable: false },
       { text: 'نام محصول', value: 'name' },
+      { text:'واحد فروش عمده',value:"wholesale_unit"},
       { text: 'ترتیب نمایش', value: 'sort', disableSort: 'true', filterable: false },
+      // {
+      //   text: 'فروش تکی',
+      //   value: 'has_single_sell',
+      //   filterType: 'select',
+      //   items: this.$store.state.static.bool_num_enum,
+      // },
       {
-        text: 'فروش تکی',
-        value: 'has_single_sell',
-        filterType: 'select',
-        items: this.$store.state.static.bool_num_enum,
+        text:'قیمت پایه',
+        value:'base_price'
       },
       {
-        text: 'فروش فله/عمده',
-        value: 'has_whole_sell',
-        filterType: 'select',
-        items: this.$store.state.static.bool_num_enum,
+        text:'قیمت پایه عمده فروشی',
+        value:'base_wholesale_price'
+      },
+      // {
+      //   text: 'فروش فله/عمده',
+      //   value: 'has_whole_sell',
+      //   filterType: 'select',
+      //   items: this.$store.state.static.bool_num_enum,
+      // },
+      {
+        text: 'بارکد',
+        value: 'barcode',
       },
       {
-        text: 'دمنوش ساز',
-        value: 'mixturable',
-        filterType: 'select',
-        items: this.$store.state.static.bool_num_enum,
+        text:'ستاره',
+        value:'star'
+      },
+      {
+        text:'تعداد بازدید',
+        value:'view'
+      },
+      {
+        text:'لایک',
+        value:'like'
       },
       {
         text: 'وضعیت',
-        value: 'status',
+        value: 'publish_status',
         filterType: 'select',
         items: this.$store.state.static.product_status,
       },

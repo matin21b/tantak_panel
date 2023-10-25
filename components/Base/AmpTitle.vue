@@ -13,7 +13,7 @@
       test-tag="btn_rounded"
       class="pa-1 mr-1 my-1 success rounded-circle d-inline-block"
     ></div>
-    <span test-tag="title" class="font_xl secondarylabale--text">
+    <span test-tag="title" class="font_xl secondarylabale--text mx-2">
       {{ text }}
     </span>
   </div>

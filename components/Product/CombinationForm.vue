@@ -6,25 +6,24 @@
           <amp-title text="افزودن تنوع فروش جدید برای این محصول"></amp-title>
         </v-col>
         <v-col cols="2" v-for="(v, index) in variations" :key="v.id">
-          <amp-select v-if="index == 0" :text="v.text" :items="v.items" v-model="form.variation1" rules="require" />
-          <amp-select v-if="index == 1" :text="v.text" :items="v.items" v-model="form.variation2" rules="require" />
-          <amp-select v-if="index == 2" :text="v.text" :items="v.items" v-model="form.variation3" rules="require" />
+          <amp-select v-if="index == 0" :text="v.text.value" :items="v.items" v-model="form.variation_1_id" rules="require" />
+          <amp-select v-if="index == 1" :text="v.text.value" :items="v.items" v-model="form.variation_2_id" rules="require" />
+          <amp-select v-if="index == 2" :text="v.text.value" :items="v.items" v-model="form.variation_3_id" rules="require" />
         </v-col>
         <v-col cols="2">
           <amp-input is-price text="قیمت تومان" v-model="form.price" rules="require" />
         </v-col>
-
         <v-col cols="2">
-          <amp-input is-price text="قیمت با تخفیف" v-model="form.discounted_price" />
+          <amp-input is-price text="بارکد" v-model="form.barcode" :rules="sellType == 'single,max_4'? '':'require,max_4'" />
         </v-col>
-        <v-col cols="2" v-if="type == 'single_sell'">
-          <amp-input is-number text="وزن بسته بندی gr" v-model="form.weight" rules="require" />
+         <v-col cols="2">
+          <amp-input is-price text="تخفیف" v-model="form.discount" rules="percent" /> 
         </v-col>
-        <v-col cols="2" v-if="type != 'single_sell'">
-          <amp-input  is-number text="حداقل قابل سفارش" v-model="form.min" rules="require" />
+         <v-col cols="2">
+          <amp-input is-price text="حداقل" v-model="form.minimum" :rules="sellType == 'single'? '':'require'" />
         </v-col>
-        <v-col cols="2">
-          <amp-input  is-number :text="type == 'single_sell' ? 'موجودی' : 'حداکثر قابل سفارش'" v-model="form.max" rules="require" />
+         <v-col cols="2">
+          <amp-input is-price text="حداکثر" v-model="form.maximum" :rules="sellType == 'single'? '':'require'" />
         </v-col>
         <v-col cols="1">
           <amp-input  is-number text="ترتیب " v-model="form.sort" rules="number,require" />
@@ -43,6 +42,7 @@ export default {
   props: {
     product_id: { default: null },
     type: { default: 'single_sell' },
+    sellType:{default:'single'},
   },
   data: () => ({
     valid: false,
@@ -54,19 +54,21 @@ export default {
       sort: 1,
       price: '',
       weight: '',
-      variation1: '',
-      variation2: '',
-      variation3: '',
+      variation_1_id: '',
+      variation_2_id: '',
+      variation_3_id: '',
       min: '',
       max: '',
       type: '',
       product_id: '',
       is_default: 0,
+      sell_type:'single',
     },
   }),
 
   mounted() {
     this.loadData()
+    this.form.sell_type = this.sellType
   },
   methods: {
     loadData() {
@@ -80,7 +82,6 @@ export default {
             if (!this.variations_ids.includes(re[i].variation_type_id)) {
               let items = []
               this.variations_ids.push(re[i].variation_type_id)
-
               for (let j = 0; j < re.length; j++) {
                 if (re[j].variation_type_id == re[i].variation_type_id) {
                   items.push({
@@ -106,9 +107,8 @@ export default {
       let form = this.$copyForm(this.form)
 
       form['product_id'] = this.product_id
-      form['type'] = this.type
+      form['type'] = this.sellType
       this.loading = true
-
       if (!form['weight']) {
         form['weight'] = form['min']
       }
@@ -123,14 +123,16 @@ export default {
             sort: 1,
             price: '',
             weight: '',
-            variation1: '',
-            variation2: '',
-            variation3: '',
+            variation_1_id: '',
+            variation_2_id: '',
+            variation_3_id: '',
+            barcode:'',
+            discount:'',
+            minimum:'',
             min: '',
             max: '',
             type: '',
             product_id: '',
-            is_default: 0,
           }
         })
         .catch((error) => {
