@@ -6,17 +6,13 @@
           <amp-input text="نام" v-model="form.first_name" rules="require" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input
-            text="نام خانوادگی"
-            v-model="form.last_name"
-            rules="require"
-          />
+          <amp-input text="نام خانوادگی" v-model="form.last_name" rules="" />
         </v-col>
         <v-col cols="12" md="3">
           <amp-input
             class="ltr-item"
             text=" شماره همراه "
-            rules="require,phone"
+            rules="phone"
             v-model="form.username"
           />
         </v-col>
@@ -64,6 +60,14 @@
           />
         </v-col>
         <v-col cols="12" md="3">
+          <amp-input
+            text="پست الکترونیکی"
+            rules="email"
+            dir="ltr"
+            v-model="form.email"
+          />
+        </v-col>
+        <v-col cols="12" md="3">
           <amp-jdate
             text="تاریخ تولد"
             :is-number="true"
@@ -94,7 +98,7 @@
             :disabled="citis.length > 0 ? false : true"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="cheke_branch" >
+        <v-col cols="12" md="3" v-if="cheke_branch">
           <UserSelectForm
             text=" کاربر ناظر"
             v-model="parent_id"
@@ -102,14 +106,14 @@
             :role-id="[$store.state.auth.role.admin_id]"
           />
         </v-col>
-        <v-col cols="12" md="3"  v-if="cheke_branch" >
+        <v-col cols="12" md="3" v-if="cheke_branch">
           <amp-select
             text="ناحیه"
             v-model="form.region_id"
             :items="$store.state.setting.region"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="cheke_branch" >
+        <v-col cols="12" md="3" v-if="cheke_branch">
           <amp-select
             text=" کد شعبه "
             v-model="form.branch_id"
@@ -194,7 +198,7 @@ export default {
     form: {
       sort: -1,
       username: "",
-      province_id:'',
+      province_id: "",
       parent_id: "",
       birth_date: "",
       avatar: "",
@@ -205,7 +209,7 @@ export default {
       branch_id: "",
       first_name: "",
       person_type: "",
-
+      email: "",
       role_id: [],
       address: {
         postal_code: "",
@@ -218,12 +222,15 @@ export default {
   }),
   computed: {
     cheke_branch() {
-      return (
-        this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
-          -1 ||
-        this.form.role_id.indexOf(this.$store.state.auth.role.warehouseman_id) >
-          -1
-      );
+      if (this.form.role_id) {
+        return (
+          this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
+            -1 ||
+          this.form.role_id.indexOf(
+            this.$store.state.auth.role.warehouseman_id
+          ) > -1
+        );
+      }
     },
 
     cheke_user() {
@@ -316,6 +323,7 @@ export default {
           this.form.last_name = response.model.last_name;
           this.form.person_type = response.model.person_type;
           this.form.first_name = response.model.first_name;
+          this.form.email = response.model.email;
           this.form.description = response.model.description;
           this.form.avatar = response.model.avatar;
           this.form.region_id = response.model.region_id;
@@ -330,7 +338,11 @@ export default {
           //   this.form.address.country_division_id =
           //     response.model.addresses[response.model.addresses.length -1].country_division_id;
           // }, 400);
-          this.filterProvince(response.model.addresses[0].country_division_id)
+          if (response.model.addresses.length > 0) {
+            this.filterProvince(
+              response.model.addresses[0].country_division_id
+            );
+          }
           if (Array.isArray(response.model.roles)) {
             this.form.role_id = response.model.roles.map(x => x.id);
           }
@@ -338,6 +350,7 @@ export default {
           this.loading = false;
         })
         .catch(error => {
+          console.log(error);
           this.redirectPage();
           this.loading = false;
         });

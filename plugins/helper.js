@@ -29,6 +29,8 @@ export default ({ redirect, store, $toast }, inject) => {
     return {
       require: (v) => (typeof v != 'undefined' && v !== '' && v != null && v.toString().replace(/\s/g, '') != '') || 'کامل نشده',
       max_200: (v) => !v || v.length <= 200 || 'حداکثر 200 حرف',
+      max_4: (v) => !v || v.length <= 4 || 'حداکثر 200 حرف',
+      max_10: (v) => !v || v.length <= 10 || 'حداکثر 200 حرف',
       fa_chart: (v) => !v || /^[\u0600-\u06FF ]+$/.test(v) || 'فقط حروف فارسی',
       text_email : (v)=> !v || /^[a-z0-9.]+$/.test(v) || 'متن وارد شده صحیح نمی باشد',
       en_chart: (v) =>

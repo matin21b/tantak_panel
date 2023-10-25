@@ -2,17 +2,17 @@
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-container fluid class="px-8">
       <v-row dense>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-input text="عنوان روش ارسال" v-model="form.value.title" rules="require" />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-input is-price text="هزینه پایه به تومان" v-model="form.value.base" rules="require" />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-input is-price text="هزینه برای هر کیلوگرم اضافه به تومان" v-model="form.value.ratio" rules="require" />
         </v-col>
 
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-select
             help_text="با انتخاب این گزینه هزینه ارسال محاسبه می شود اما به سبد خرید کاربر اضافه نخواهد شد"
             text="پرداخت در محل"
@@ -22,10 +22,11 @@
           />
         </v-col>
 
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-input
             :help_text="help_text"
             is-number
+            is-price
             text="حداقل قیمت برای ارسال رایگان تومان"
             v-model="form.value.send_free_threshold"
             rules="require"

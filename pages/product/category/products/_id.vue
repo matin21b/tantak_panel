@@ -5,9 +5,8 @@
       :headers="headers"
       autoDelete="/product/delete"
       createUrl="/product/insert"
-      :rootBody="{ with_category: true }"
+      :rootBody="{ category_id_list : [categories_id] }"
       :BTNactions="btn_actions"
-      :filters="{ categories_id: [this.categories_id] }"
     >
     </BaseTable>
   </div>

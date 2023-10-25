@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="12" md="12" class="center-div" >
+    <v-col cols="12" md="12" class="center-div">
       <v-chip
         dark
         class="ma-2"
@@ -17,7 +17,8 @@
       <BaseTable
         url="/wholesale-form"
         :headers="headers"
-        :filters='filters'
+        :filters="filters"
+        ref='tableWholesale'
         :BTNactions="btn_actions"
         :autoDelete="deleteUrl"
         :autoUpdate="updateUrl"
@@ -36,10 +37,10 @@ export default {
     deleteUrl: "/wholesale-form/delete",
     updateUrl: "/product/wholesale-form",
     headers: [],
-    filters:{
-      status:{
-        op:'=',
-        value:'reviewed'
+    filters: {
+      status: {
+        op: "=",
+        value: "reviewed"
       }
     },
     items: [],
@@ -63,6 +64,31 @@ export default {
     this.$store.dispatch("setPageTitle", this.title);
   },
   mounted() {
+    this.btn_actions = [
+      {
+        color: "success",
+        icon: "check",
+        text: "",
+        fun: body => {
+          if (body.id) {
+            body.status = "reviewed";
+            this.$reqApi("/wholesale-form/update", body)
+              .then(res => {
+                this.$refs.tableWholesale.getDataFromApi();
+                return res;
+              })
+              .catch(err => {
+                return err;
+              });
+          }
+        },
+        show_fun: body => {
+          if (body.status == "pending") {
+            return true;
+          }
+        }
+      }
+    ];
     this.headers = [
       {
         text: "زمان ثبت",
@@ -90,6 +116,17 @@ export default {
     ];
   },
   methods: {
+    reviewContact(data) {
+      data.status = "reviewed";
+      this.$reqApi("/contact-us-form/update", data)
+        .then(res => {
+          this.dialogShowItem.show = false;
+          this.$refs.tableContactUs.getDataFromApi();
+        })
+        .catch(err => {
+          return err;
+        });
+    },
     setFilters(data) {
       this.items_chip.forEach(element => {
         if (element.value == data) {

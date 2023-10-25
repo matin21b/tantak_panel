@@ -26,7 +26,7 @@
           <amp-input text="ترتیب نمایش" v-model="form.sort" rules="number" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input text="بارکد" v-model="form.barcode" rules="number" />
+          <amp-input text="بارکد" v-model="form.barcode" rules="number,max_4" />
         </v-col>
       </v-row>
 
@@ -114,9 +114,9 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async response => {
-          response = response.data;
+          response = response.model;
           this.form["id"] = response.id;
-          this.form.title = response.name;
+          this.form.name = response.name;
           this.form.slug = response.slug;
           this.form.parent_id = response.parent_id;
           this.form.sort = response.sort;

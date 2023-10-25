@@ -27,6 +27,7 @@ export const state = () => ({
   product_status,
   branch_status,
   sell_status,
+  bool_number_enum
 });
 
 let mnue_tree = [
@@ -87,18 +88,6 @@ let mnue_tree = [
         name: "دسته بندی محصولات",
         access: "*",
         route: "/product/category"
-      },
-      {
-        id: 16,
-        name: "به روزرسانی سریع",
-        access: "*",
-        route: "/product/update-price"
-      },
-      {
-        id: 17,
-        access: "*",
-        name: "قیمت عمده",
-        route: "/product/wholesell-price"
       },
       {
         id: 30,
@@ -267,6 +256,12 @@ let week_days = [
   { text: "جمعه", value: "Friday" },
   { text: "همه", value: "" }
 ];
+
+let bool_number_enum = [
+  { text: "بله", value: '1' },
+  { text: "خیر", value: '0' }
+]
+
 
 let person_type = [
   { text: "حقیقی", value: "real" },

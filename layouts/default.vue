@@ -1,7 +1,11 @@
 <template>
   <v-app>
-    <AppBar v-model="drawer" />
-    <MenuDrawer v-model="drawer" v-if="!$vuetify.breakpoint.mdAndUp" />
+    <AppBar v-model="drawer" class="container_menu" />
+    <MenuDrawer
+      v-model="drawer"
+      v-if="!$vuetify.breakpoint.mdAndUp"
+      class="container_menu"
+    />
     <v-main v-if="show_body">
       <v-card class="ma-2 rounded-t-lg">
         <PageTitle />
@@ -68,11 +72,14 @@ export default {
 <style scoped>
 .fix_btn {
   position: fixed;
-  bottom: 10px;
+  bottom: 12px;
   z-index: 10000;
   /* left: 50%; */
   /* transform: translate(-50%, -50%); */
   width: 100%;
   /* max-width: 400px; */
+}
+.container_menu {
+  z-index: 12;
 }
 </style>

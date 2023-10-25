@@ -147,7 +147,7 @@ export default {
     },
     setProductItems() {
       let product = [];
-      this.$reqApi("/product")
+      this.$reqApi("/product", {row_number : 4000})
         .then(res => {
           res.model.data.map(x => {
             product.push({

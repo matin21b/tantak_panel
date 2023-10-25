@@ -10,14 +10,14 @@
             v-model="form.variation_type_id"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <!-- <v-col cols="12" md="3">
           <amp-autocomplete
             rules="require"
             text="دسته بندی"
             v-model="form.category_id"
             :items="product_categories"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="3">
           <amp-autocomplete
             :disabled="form.category_id.length < 0"
@@ -31,7 +31,7 @@
           <amp-input text="مقدار" v-model="form.value" />
         </v-col>
         <v-col cols="3">
-          <amp-input text="بارکد" v-model="form.barcode" rules="max_2" />
+          <amp-input text="بارکد" is-number v-model="form.barcode" rules="max_4" />
         </v-col>
         <v-col cols="3">
           <amp-input text="ترتیب نمایش " v-model="form.sort" rules="number" />
@@ -102,7 +102,7 @@ export default {
     if (this.modelId) {
       this.loadData();
     }
-    this.category_id = this.$route.params.variation_category_id;
+    this.form.category_id = this.$route.params.variation_category_id;
     this.getCategories();
     this.getAllVariations();
   },
@@ -128,7 +128,7 @@ export default {
       this.loading = true;
       let form = this.$copyForm(this.form);
       if (!form.value || !form.variation_type_id) {
-        this.$toast.error("Please check the input values.");
+        this.$toast.error("لطفا مقادیر ورودی را بررسی کنید");
         this.loading = false;
         return;
       }
@@ -141,14 +141,14 @@ export default {
         .then(response => {
           if (!this.modelId) {
             this.$toast.success(
-              "The desired feature has been successfully added."
+              "ویژگی مورد نظر با موفقیت اضافه شد"
             );
           } else {
             this.$toast.success(
-              "The property in question has been edited successfully."
+              "ویژگی مورد نظر با موفقیت ویرایش شد"
             );
           }
-          this.$router.push("/product/category/variation/" + this.category_id);
+          this.redirectPage()
           this.loading = false;
         })
         .catch(error => {
@@ -161,10 +161,11 @@ export default {
         .then(response => {
           response = response.model;
           this.form["id"] = response.id;
-          this.form.barbarcode = response.barcode;
+          this.form.barcode = response.barcode;
           this.form.sort = response.sort;
           this.form.value = response.value;
           this.form.category_id = response.category_id
+          this.form.product_id = response.product_id
           this.form.variation_type_id = response.variation_type_id;
           this.images = response.images;
           this.loading = false;
@@ -223,7 +224,7 @@ export default {
     getAllVariations() {
       this.loading = true;
       let form = {
-        row_number: 100,
+        row_number: 1000,
         filters: { key: "variation_type" }
       };
 

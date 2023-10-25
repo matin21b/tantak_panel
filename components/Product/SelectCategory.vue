@@ -14,17 +14,16 @@
                   class="d-flex flex-column"
                 >
                   <v-icon class="mx-3 warning--text">info</v-icon>
-                  <span> دسته بندی باید حداقل دو روت عمق داشته باشد </span>
+                  <span> دسته بندی های اصلی نمی توانند به عنوان دسته بندی یک محصول انتخاب شوند </span>
                   <span class="grey--text font_13">
                     <v-icon class="mx-3 warning--text">ads_click</v-icon>
-
-                    برای انتخاب و مشاهده ویژگی ها بر روی ایتم مورد نظر کلیک
-                    کنید</span
+                      برای مشاهده زیر مجموعه هر دسته بندی روی آن کلیک کنید
+                    </span
                   >
                 </v-card-title>
                 <v-card-text v-else>
                   <v-row>
-                    <v-col cols="12" md="11">
+                    <v-col cols="12" md="10">
                       <span
                         v-for="(i, index) in selected_category"
                         :key="index"
@@ -32,13 +31,22 @@
                         {{ i.text }} <v-icon>chevron_left</v-icon>
                       </span>
                     </v-col>
-                    <v-col cols="12" md="1">
+                    <v-col cols="12" md="2" class="d-flex justify-end">
+                      <v-btn
+                        small
+                        color="error"
+                        class="mx-3"
+                        @click="popIdSelected_category()"
+                      >
+                        <v-icon> undo </v-icon>
+                      </v-btn>
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
                             color="primary"
                             dark
                             v-bind="attrs"
+                            small
                             v-on="on"
                             @click="restoreCategory"
                           >
@@ -75,7 +83,8 @@ import BaseTable from "~/components/DataTable/BaseTable";
 export default {
   components: { BaseTable },
   props: {
-    productId: { default: null }
+    productId: { default: null },
+    loadCategory: { default: null }
   },
   data: () => ({
     headers: [],
@@ -92,9 +101,9 @@ export default {
     selected_category: [],
     id_selected_category: [],
     filters: {
-      parent_id:{
-        op:'=',
-        value : null
+      parent_id: {
+        op: "=",
+        value: null
       }
     },
     valid: false,
@@ -121,10 +130,12 @@ export default {
         color: "success",
         text: "",
         fun: body => {
-          return body
+          return body;
         },
-        show_fun:(body)=>{
-          if(body){return false}
+        show_fun: body => {
+          if (body) {
+            return false;
+          }
         }
       }
     ];
@@ -185,17 +196,34 @@ export default {
         this.product_id = this.productId;
       }
     },
+    loadCategory() {
+      if (this.loadCategory) {
+        this.loadCategory.map(x => {
+          this.selected_category.push({
+            text: x.name,
+            value: x.id
+          });
+          this.id_selected_category.push(x.id);
+        });
+      }
+    },
     id_selected_category() {
       this.$emit("input", this.id_selected_category);
       if (this.id_selected_category.length > 0) {
         this.filters = {
           parent_id: {
             op: "=",
-            value:this.id_selected_category[this.id_selected_category.length - 1]
+            value:
+              this.id_selected_category[this.id_selected_category.length - 1]
           }
         };
       } else {
-        this.filters = {};
+        this.filters = {
+          parent_id: {
+            op: "=",
+            value: null
+          }
+        };
       }
     }
   },
@@ -218,13 +246,9 @@ export default {
       this.$reqApi(url, form)
         .then(response => {
           if (!this.modelId) {
-            this.$toast.success(
-              "ویژگی مورد نظر با موفقیت اضافه شد."
-            );
+            this.$toast.success("ویژگی مورد نظر با موفقیت اضافه شد.");
           } else {
-            this.$toast.success(
-              "ویژگی مورد نظر با موفقیت ویرایش شد."
-            );
+            this.$toast.success("ویژگی مورد نظر با موفقیت ویرایش شد.");
           }
           this.$refs.variations.getDataFromApi();
           this.ClearData();
@@ -239,7 +263,6 @@ export default {
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(response => {
           response = response.model;
-          console.log(response);
         })
         .catch(error => {
           this.ClearData();
@@ -256,6 +279,10 @@ export default {
     restoreCategory() {
       this.selected_category = [];
       this.id_selected_category = [];
+    },
+    popIdSelected_category() {
+      this.id_selected_category.pop();
+      this.selected_category.pop();
     },
     ClearData() {},
     getAllVariations() {}

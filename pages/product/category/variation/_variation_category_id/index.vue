@@ -9,8 +9,8 @@
       :extraBtn="extraBtn"
       :BTNactions="btn_actions"
       autoDelete="/product-variation/delete"
-      :autoUpdate="`/product/category/variation/${filters.product_category_id}`"
-      :createUrl="`/product/category/variation/${filters.product_category_id}/insert`"
+      :autoUpdate="`/product/category/variation/${$route.params.variation_category_id}`"
+      :createUrl="`/product/category/variation/${$route.params.variation_category_id}/insert`"
     >
     </BaseTable>
 
@@ -79,15 +79,36 @@ export default {
         disableSort: true,
         filterable: false
       },
-      { text: "مقدار", value: "variation_type", filterable: false },
+      {
+        text: "نام",
+        value: body => {
+          if (body.variation_type) {
+            return body.variation_type.value;
+          } else {
+            return "-";
+          }
+        }
+      },
       {
         text: "مقدار",
         value: "value",
         disableSort: "true",
         filterable: false
       },
-      { text: "code", value: "کد", disableSort: "true", filterable: false },
-      { text: "sort", value: "ترتیب نمایش", disableSort: "true", filterable: false }
+      {
+        text: "بارکد",
+        value: "barcode"
+      },
+      {
+        text:'ترتیب نمایش',
+        value: body=>{
+          if(body.variation_type){
+            return body.variation_type.sort
+          }else{
+            return '-'
+          }
+        }
+      }
     ];
     this.extraBtn = [
       {
@@ -126,7 +147,7 @@ export default {
               this.$refs.baseTable.getDataFromApi();
               this.selected_item = [];
               this.closeDeleteAllDialog();
-              this.$toast.success("Items have been deleted");
+              this.$toast.success("موارد انتخابی حذف شدن");
             }
           })
           .catch(error => {

@@ -33,6 +33,7 @@ export default {
     { src: '~/plugins/other.js', ssr: false },
     { src: '~/plugins/vue-persian-datetime-picker', ssr: false },
     { src: '~/plugins/leaflet', ssr: false },
+    { src: '~/plugins/html_editor.js', ssr: false },
   ],
   buildModules: ['@nuxtjs/toast', '@nuxtjs/moment', '@nuxtjs/vuetify'],
   modules: [

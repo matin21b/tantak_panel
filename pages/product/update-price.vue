@@ -170,7 +170,6 @@ export default {
         color: "success",
         text: "به روزسانی",
         fun: body => {
-          console.log(body)
           this.showUpdateDialog(true, body);
         }
       },

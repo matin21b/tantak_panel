@@ -91,7 +91,7 @@
         :text="modelId ? 'ویرایش' : 'افزودن'"
         type="submit"
         icon="done"
-        :disabled="!valid || loading"   
+        :disabled="!valid || loader"   
         class="ma-1"
         :loading="loader"
       ></amp-button>
@@ -215,6 +215,8 @@ export default {
           this.form.region_id = response.model.region_id;
           this.form.sort = response.model.sort;
           this.filterProvince(response.model.country_division_id);
+          this.location.push(response.model.lat)
+          this.location.push(response.model.long)
           // this.form.country_division_id = response.model.country_division_id;
           this.loader = false;
         })
