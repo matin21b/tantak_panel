@@ -8,9 +8,6 @@
         <v-col cols="12" md="3">
           <amp-input is-price text="هزینه پایه به تومان" v-model="form.value.base" rules="require" />
         </v-col>
-        <v-col cols="12" md="3">
-          <amp-input is-price text="هزینه برای هر کیلوگرم اضافه به تومان" v-model="form.value.ratio" rules="require" />
-        </v-col>
 
         <v-col cols="12" md="3">
           <amp-select

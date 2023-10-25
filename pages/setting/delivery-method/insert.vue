@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import DeliveryForm from '@/components/Setting/DeliveryForm'
+import DeliveryForm from '@/components/Setting/DeliveryForm.vue'
 export default {
   components: { DeliveryForm },
   data: () => ({

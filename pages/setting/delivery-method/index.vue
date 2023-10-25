@@ -46,16 +46,6 @@ export default {
         filterable: false,
       },
       {
-        text: 'هزینه اضافه هر کیلو',
-        value: (body) => {
-          let val = JSON.parse(body.value)
-          return val.ratio
-        },
-        disableSort: 'true',
-        type: 'price',
-        filterable: false,
-      },
-      {
         text: 'پرداخت در محل',
         filterType: 'select',
         value: (body) => {
