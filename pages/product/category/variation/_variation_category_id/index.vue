@@ -81,6 +81,8 @@ export default {
       },
       {
         text: "نام",
+        disableSort: true,
+        filterable: false,
         value: body => {
           if (body.variation_type) {
             return body.variation_type.value;
@@ -93,19 +95,24 @@ export default {
         text: "مقدار",
         value: "value",
         disableSort: "true",
-        filterable: false
+        disableSort: true,
+        filterable: false,
       },
       {
         text: "بارکد",
+        disableSort: true,
+        filterable: false,
         value: "barcode"
       },
       {
-        text:'ترتیب نمایش',
-        value: body=>{
-          if(body.variation_type){
-            return body.variation_type.sort
-          }else{
-            return '-'
+        text: "ترتیب نمایش",
+        disableSort: true,
+        filterable: false,
+        value: body => {
+          if (body.variation_type) {
+            return body.variation_type.sort;
+          } else {
+            return "-";
           }
         }
       }
