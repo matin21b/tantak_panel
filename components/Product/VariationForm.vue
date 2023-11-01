@@ -7,18 +7,6 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-row>
-            <!-- <v-col cols="2">
-        <amp-button
-          @click="toggleshowAddVairiation()"
-          large
-          icon="add"
-          color="success"
-          class="my-1 mt-7"
-          :loading="loading"
-          :disabled="loading"
-          text="ویژگی جدید"
-        />
-      </v-col> -->
             <template v-if="showAddVairiation">
               <v-col cols="12" md="3">
                 <amp-select
@@ -258,6 +246,7 @@ export default {
   },
   methods: {
     loadData() {
+      console.log('load data vratistion form is call')
       this.loading = true;
       this.$reqApi("/product-variation", {
         filters: { product_id: this.product_id }
