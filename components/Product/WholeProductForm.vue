@@ -7,12 +7,14 @@
           sellType="wholesale"
           :product_id="product.id"
           @closeAddCombination="closeAddCombination()"
+          @reloadVaritoinsForm="reloadVriations()"
         />
       </v-col>
       <v-col cols="12" md="12">
         <VariationForm
           :product_id="product.id"
           @closeVariationForm="closeVariationForm()"
+          ref="wholeSealeForm"
         />
       </v-col>
     </v-row>
@@ -66,7 +68,7 @@
         <amp-input is-price v-model="sv.price"> </amp-input
       ></v-col>
       <v-col cols="12" md="2" class="text-center">
-        <span >{{ sv.barcode }}</span>
+        <span>{{ sv.barcode }}</span>
         <!-- <span >|{{ sv.barcode }} | </span>
         <span >{{ sv.barcode }}</span> -->
       </v-col>
@@ -181,11 +183,9 @@ export default {
   methods: {
     submit() {
       let form = this.$copyForm(this.form);
-
       form["has_single_sell"] = parseInt(form["has_single_sell"]);
       form["has_whole_sell"] = parseInt(form["has_whole_sell"]);
       form["mixturable"] = parseInt(form["mixturable"]);
-
       this.loading = true;
       let url = this.createUrl;
       if (this.modelId) {
@@ -228,6 +228,9 @@ export default {
         .catch(error => {
           this.loading = false;
         });
+    },
+    reloadVriations() {
+      this.$refs.wholeSealeForm.loadData();
     },
     deleteDialog(flag, index) {
       this.deleteDiaolog = flag;

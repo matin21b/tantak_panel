@@ -5,12 +5,14 @@
         <CombinationForm
           :product_id="product.id"
           @closeAddCombination="closeAddCombination()"
+          @reloadVaritoinsForm='reloadVriations()'
         />
       </v-col>
       <v-col cols="12" md="12">
         <VariationForm
           :product_id="product.id"
           @closeVariationForm="closeVariationForm()"
+          ref='variationsFormSingleSeal'
         />
       </v-col>
     </v-row>
@@ -170,6 +172,11 @@ export default {
   }),
 
   mounted() {},
+  watch: {
+    product(){
+      console.log(this.product)
+    }
+  },
   methods: {
     submit() {
       let form = this.$copyForm(this.form);
@@ -217,6 +224,9 @@ export default {
     deleteDialog(flag, index) {
       this.deleteDiaolog = flag;
       this.selected_item = index;
+    },
+    reloadVriations(){
+      this.$refs.variationsFormSingleSeal.loadData()
     },
     deleteItem() {
       this.loading = true;

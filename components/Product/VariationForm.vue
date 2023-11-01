@@ -7,18 +7,6 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-row>
-            <!-- <v-col cols="2">
-        <amp-button
-          @click="toggleshowAddVairiation()"
-          large
-          icon="add"
-          color="success"
-          class="my-1 mt-7"
-          :loading="loading"
-          :disabled="loading"
-          text="ویژگی جدید"
-        />
-      </v-col> -->
             <template v-if="showAddVairiation">
               <v-col cols="12" md="3">
                 <amp-select
@@ -80,7 +68,7 @@
                     <VariationGallery
                       @SeGallry="submitGallry"
                       :index="gallery_diaolog.item.index"
-                      :items='gallery_diaolog.item.items'
+                      :items="gallery_diaolog.item.items"
                     />
                   </div>
                   <div class="text-center mt-4">
@@ -171,7 +159,9 @@
             :width="$vuetify.breakpoint.mdAndUp ? 380 : 470"
           >
             <v-card class="pa-5">
-              <span class="mb-2 font_xxxl font_bold">ویژگی انتخابی حذف شود؟</span>
+              <span class="mb-2 font_xxxl font_bold"
+                >ویژگی انتخابی حذف شود؟</span
+              >
               <v-row class="pa-3">
                 <v-col cols="6">
                   <amp-button
@@ -234,7 +224,7 @@ export default {
   }),
 
   mounted() {
-    this.loadData();
+    this.loadData()
     this.getCategories();
     this.getAllVariations();
     this.getProducts();
@@ -254,13 +244,13 @@ export default {
           });
         });
       }
-    }
+    },
   },
   methods: {
     loadData() {
       this.loading = true;
       this.$reqApi("/product-variation", {
-        filters: { product_id: this.product_id }
+        filters: { product_id: this.$route.params.id }
       })
         .then(async response => {
           this.variations = [];
@@ -289,7 +279,7 @@ export default {
     update(index, images) {
       this.loading = true;
       let form = this.variations[index];
-      form.images = images
+      form.images = images;
       if (!form.value || !form.variation_type) {
         this.$toast.error("لطفا ورودی ها را کنترل کنید");
         this.loading = false;
@@ -423,8 +413,8 @@ export default {
       if (open) {
         this.gallery_diaolog.show = true;
         this.gallery_diaolog.item = {
-          index : index,
-          items : value.images
+          index: index,
+          items: value.images
         };
       } else {
         this.gallery_diaolog.show = false;
