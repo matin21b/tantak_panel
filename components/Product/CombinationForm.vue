@@ -112,7 +112,8 @@ export default {
     product_id: { default: null },
     type: { default: "single_sell" },
     sellType: { default: "single" },
-    categoryID: { default: "" }
+    categoryID: { default: "" },
+    dataItems:{default:''},
   },
   data: () => ({
     valid: false,
@@ -143,13 +144,6 @@ export default {
       sell_type: "single"
     }
   }),
-  watch: {
-    product_id() {
-      if (this.product_id) {
-        this.loadData();
-      }
-    }
-  },
   mounted() {
     this.loadVariationItems();
     this.form.sell_type = this.sellType;
@@ -227,9 +221,16 @@ export default {
     },
     loadVariationItems(value) {
       this.loading = true;
-      this.$reqApi("/product-variation")
+      let filters ={
+         category_id:{
+           op:'between',
+           value:this.dataItems
+         }
+      }
+      this.$reqApi("/product-variation",{filters:filters})
         .then(async response => {
           let re = response.model.data;
+          console.log(re)
           for (let i = 0; i < re.length; i++) {
             if (!this.variations_ids.includes(re[i].variation_type_id)) {
               let items = [];
