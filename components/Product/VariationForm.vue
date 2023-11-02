@@ -391,7 +391,7 @@ export default {
       let form = this.$copyForm(this.form);
       this.$reqApi("/product-variation/insert", form)
         .then(response => {
-          this.$toast.success("ویژگی مد نظر با موفقیت جذف شد");
+          this.$toast.success("ویژگی مد نظر با موفقیت حذف شد");
           this.loadData();
           this.deleteDiaolog = false;
           this.form = {
