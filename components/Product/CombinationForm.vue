@@ -230,13 +230,14 @@ export default {
         this.loading = true;
         let filters = {
           category_id: {
-            op: "between",
+            op: "in",
             value: this.dataItems,
           },
         };
         this.$reqApi("/product-variation", { filters: filters })
           .then(async (response) => {
             let re = response.model.data;
+            console.log(re)
             for (let i = 0; i < re.length; i++) {
               if (!this.variations_ids.includes(re[i].variation_type_id)) {
                 let items = [];
