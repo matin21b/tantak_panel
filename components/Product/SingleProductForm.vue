@@ -195,7 +195,9 @@ export default {
     }
   }),
 
-  mounted() {},
+  mounted() {
+    console.log(this.product)
+  },
   methods: {
     submit() {
       let form = this.$copyForm(this.form);
@@ -237,7 +239,7 @@ export default {
         this.loading = false;
         return;
       }
-
+      form.sort = 0
       this.$reqApi("/product-variation-combination/update", form)
         .then(response => {
           this.$toast.success("اطلاعات ویرایش شد");
