@@ -129,11 +129,13 @@
             <v-col cols="12" md="1" class="text-center"
               ><amp-input v-model="v.sort" rules="number" />
             </v-col>
-            <v-col cols="12" md="2" class="d-flex justify-center">
+            <v-col cols="12" md="2" class="d-flex justify-center" v-if="v.variation_type && v.variation_type.value == 'رنگ'" >
+              {{ test(v) }}
               <v-btn color="primary" @click="GalleryDialog(true, v, index)">
                 <v-icon>image</v-icon>
               </v-btn>
             </v-col>
+            <v-col cols="12" md="2" v-else ></v-col>
             <v-col cols="12" md="3" class="text-center">
               <amp-button
                 small
@@ -272,6 +274,9 @@ export default {
         .catch(error => {
           this.loading = false;
         });
+    },
+    test(v){
+      console.log(v)
     },
     close() {
       this.$emit("closeVariationForm");
