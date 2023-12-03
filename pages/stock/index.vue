@@ -60,7 +60,6 @@
                     autoDelete="/warehouse-stock/delete"
                     :BTNactions="stock_actoins"
                     :rootBody="rootBody"
-                    :emitData="dataEmit"
                   />
                 </v-col>
               </v-row>
