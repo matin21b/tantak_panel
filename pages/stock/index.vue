@@ -45,12 +45,8 @@
                       @reloadTable="reloadListVariation()"
                       @emptyUpdateDoalgo="emptyDialog()"
                     />
-                    <v-btn @click="updateAll" class="primary">
-                      به روز رسانی تمام ویژگی ها
-                      <v-icon class="mx-3"> add_circle </v-icon>
-                    </v-btn>
                     <v-btn class="primary" @click="setDialogStock()">
-                      موجود کردن تمام ترکیب ها
+                      به روز رسانی تمام ترکیب ها
                       <v-icon class="mx-3"> add_circle </v-icon>
                     </v-btn>
                   </v-card>
@@ -64,7 +60,7 @@
                     autoDelete="/warehouse-stock/delete"
                     :BTNactions="stock_actoins"
                     :rootBody="rootBody"
-                    :emitData="dataEmit"
+                    
                   />
                 </v-col>
               </v-row>

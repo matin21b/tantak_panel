@@ -4,7 +4,7 @@
       <v-card-title class="center-div">
         <span class="mb-2 font_xxxl font_bold">افزودن موجودی</span>
       </v-card-title>
-      <v-form v-model="valid" @submit.prevent="submit()">
+      <v-form v-model="valid" @submit.prevent="submit()" v-if="form.length > 0">
         <v-row class="pa-3">
           <v-col
             cols="12"
@@ -86,12 +86,9 @@ export default {
       form: [],
     };
   },
-  mounted() {},
   watch: {
     "updateeDiaolog.show"() {
       if (this.updateeDiaolog.item) {
-        this.loadData(this.updateeDiaolog.item);
-      } else {
         this.loadData(this.updateeDiaolog.item);
       }
     },
@@ -135,40 +132,30 @@ export default {
       this.updateeDiaolog.show = false;
       this.updateeDiaolog.item = null;
     },
-    loadData(data, model_id) {
-      if (data) {
-        let url = "/warehouse-stock/list-stock";
-        let form = {
-          row_number: 4000,
-          branch_id: data.branch_id,
-          product_id: data.product_id,
-        };
-        // if (model_id) {
-        //   url = "warehouse-stock/show-stock";
-        //   form = {
-        //     id: model_id,
-        //   };
-        // }
-
-        this.loading = true;
-        this.$reqApi(url, form)
-          .then((res) => {
-            res.model.data.map((x) => {
-              this.form.push({
-                varcomb_id: x.id,
-                branch_id: this.updateeDiaolog.item.branch_id,
-                stock: x.stock,
-                saved_stock: x.saved_stock,
-                title: `${x.variation1.value} , ${x.variation2.value} , ${x.variation3.value} | ${x.full_barcode}`,
-              });
+    loadData(data) {
+      let url = "/warehouse-stock/list-stock";
+      let form = {
+        row_number: 4000,
+        branch_id: data.branch_id,
+        product_id: data.product_id,
+      };
+      this.loading = true;
+      this.$reqApi(url, form)
+        .then((res) => {
+          res.model.data.map((x) => {
+            this.form.push({
+              varcomb_id: x.id,
+              branch_id: this.updateeDiaolog.item.branch_id,
+              stock: x.stock,
+              saved_stock: x.saved_stock,
             });
-            this.loading = false;
-          })
-          .catch((err) => {
-            this.loading = false;
-            return err;
           });
-      }
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.loading = false;
+          return err;
+        });
     },
   },
 };
