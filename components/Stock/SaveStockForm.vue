@@ -144,10 +144,11 @@ export default {
         .then((res) => {
           res.model.data.map((x) => {
             this.form.push({
-              varcomb_id: x.id,
+              varcomb_id: x.product_variation_combination.id,
               branch_id: this.updateeDiaolog.item.branch_id,
               stock: x.stock,
               saved_stock: x.saved_stock,
+              title:x.product_variation_combination.full_barcode
             });
           });
           this.loading = false;
