@@ -137,18 +137,18 @@ export default {
     },
     loadData(data, model_id) {
       if (data) {
-        let url = "/warehouse-stock/list-product-variation-combination";
+        let url = "/warehouse-stock/list-stock";
         let form = {
           row_number: 4000,
           branch_id: data.branch_id,
           product_id: data.product_id,
         };
-        if (model_id) {
-          url = "warehouse-stock/show-stock";
-          form = {
-            id: model_id,
-          };
-        }
+        // if (model_id) {
+        //   url = "warehouse-stock/show-stock";
+        //   form = {
+        //     id: model_id,
+        //   };
+        // }
 
         this.loading = true;
         this.$reqApi(url, form)
@@ -158,7 +158,7 @@ export default {
                 varcomb_id: x.id,
                 branch_id: this.updateeDiaolog.item.branch_id,
                 stock: x.stock,
-                saved_stock: x.stock,
+                saved_stock: x.saved_stock,
                 title: `${x.variation1.value} , ${x.variation2.value} , ${x.variation3.value} | ${x.full_barcode}`,
               });
             });
