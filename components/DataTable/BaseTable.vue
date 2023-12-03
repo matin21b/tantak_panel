@@ -5,8 +5,8 @@
       <amp-button icon="add" text="جدید" color="#ff9e00" v-if="createShowFun" @click="createFun()" />
 
       <amp-button v-for="btn in extraBtn" :key="btn.id" :color="btn.color" :icon="btn.icon" :text="btn.text" @click="btn.fun()" />
+      <amp-button v-if="emitData" :text="emitData" @click="emitDataTable" />
     </div>
-
     <v-data-table
       ref="myTable"
       class="b-success elevation-1"
@@ -70,7 +70,7 @@
               </div>
 
               <div v-else>
-                <TableItem :header="header" :body="data.item" />
+                <TableItem :header="header" :body="data.item" @refreshTable="getDataFromApi()" />
               </div>
             </div>
           </td>
@@ -261,6 +261,9 @@ export default {
       type: String,
       default: 'created_at',
     },
+    emitData:{
+      default:""
+    }
   },
   data: () => ({
     page: 1,
@@ -1069,6 +1072,9 @@ export default {
       this.call_dialog.show = true
       this.call_dialog.item = username
     },
+    emitDataTable(){
+      this.$emit('emitDataTable', this.desserts)
+    }
   },
 }
 </script>

@@ -3,20 +3,6 @@
     <v-col cols="12" md="8">
       <StockForm @setFilter="setTable($event)" />
     </v-col>
-    <v-col cols="12" md="4" class="center-div my-3" v-if="show_comb">
-      <v-card>
-        <SaveStockForm
-          :updateeDiaolog="save_dialog"
-          :model_id="model_id"
-          @reloadTable="reloadListVariation()"
-          @emptyUpdateDoalgo = 'emptyDialog()'
-        />
-        <v-btn class="primary" @click="setDialogStock()">
-          موجود کردن تمام ترکیب ها
-          <v-icon class="mx-3"> add_circle </v-icon>
-        </v-btn>
-      </v-card>
-    </v-col>
     <v-col cols="12" md="12" v-if="show_comb">
       <v-expand-transition>
         <v-card v-show="expand" class="elevation-0">
@@ -46,14 +32,35 @@
             </v-tab-item>
             <v-tab-item>
               <v-row>
+                <v-col
+                  cols="12"
+                  md="4"
+                  class="center-div my-3"
+                  v-if="show_comb"
+                >
+                  <v-card>
+                    <SaveStockForm
+                      :updateeDiaolog="save_dialog"
+                      :model_id="model_id"
+                      @reloadTable="reloadListVariation()"
+                      @emptyUpdateDoalgo="emptyDialog()"
+                    />
+                    <v-btn class="primary" @click="setDialogStock()">
+                      به روز رسانی تمام ترکیب ها
+                      <v-icon class="mx-3"> add_circle </v-icon>
+                    </v-btn>
+                  </v-card>
+                </v-col>
                 <v-col cols="12" md="12">
                   <BaseTable
                     url="/warehouse-stock/list-stock"
                     :headers="header_lis_stock"
                     ref="ListStock"
+                    @emitDataTable="emitDataTable"
                     autoDelete="/warehouse-stock/delete"
                     :BTNactions="stock_actoins"
                     :rootBody="rootBody"
+                    
                   />
                 </v-col>
               </v-row>
@@ -67,7 +74,7 @@
 <script>
 import StockForm from "~/components/Stock/StockForm.vue";
 import FastUpdateDialog from "@/components/WarehouseStock/FastUpdateDialog.vue";
-import BaseTable from "@/components/DataTable/BaseTable";
+import BaseTable from "@/components/DataTable/BaseTable.vue";
 import SaveStockForm from "~/components/Stock/SaveStockForm.vue";
 export default {
   components: { StockForm, BaseTable, FastUpdateDialog, SaveStockForm },
@@ -81,6 +88,7 @@ export default {
       actions: [],
       stock_actoins: [],
       model_id: null,
+      branch_id: "",
       dialog_items: {
         show: false,
         item: null,
@@ -93,11 +101,14 @@ export default {
         show: false,
         item: null,
       },
+      dataEmit: {},
       title: "موجودی انبار",
     };
   },
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
+    this.dataEmit = "به روز رسانی تمامی ترکیب ها";
+
     this.headers = [
       {
         text: "نام",
@@ -119,6 +130,31 @@ export default {
         ],
         value: "sell_type",
       },
+      // {
+      //   text_item: [
+      //     {
+      //       title: "موجودی",
+      //       rules: "require,number",
+      //       key: "stock",
+      //       index: 0,
+      //       value: "",
+      //     },
+      //     {
+      //       title: "موجودی ذخیره",
+      //       rules: "number",
+      //       key: "saved_stock",
+      //       index: 0,
+      //       value: "",
+      //     },
+      //   ],
+      //   btn_info: {
+      //     color: "success",
+      //     title: "ثبت",
+      //     url: "/warehouse-stock/insert",
+      //     root_body: this.branch_id
+      //   },
+      //   type: "input",
+      // },
     ];
     this.header_lis_stock = [
       {
@@ -157,6 +193,34 @@ export default {
         text: "موجودی ذخیره",
         value: "saved_stock",
       },
+      {
+        disableSort: true,
+        filterable: false,
+        text: "",
+        text_item: [
+          {
+            title: "موجودی",
+            rules: "require,number",
+            key: "stock",
+            index: 0,
+            value: "",
+          },
+          {
+            title: "موجودی ذخیره",
+            rules: "number",
+            key: "saved_stock",
+            index: 0,
+            value: "",
+          },
+        ],
+        btn_info: {
+          color: "success mt-2",
+          title: "به روز رسانی",
+          url: "/warehouse-stock/update",
+          root_body: this.rootBody,
+        },
+        type: "input",
+      },
     ];
     this.actions = [
       {
@@ -175,27 +239,12 @@ export default {
         },
       },
     ];
-    this.stock_actoins = [
-      {
-        color: "primary",
-        icon: "sync",
-        text: "بروز رسانی",
-        fun: (body) => {
-          if (body.id) {
-            this.dialog_items.show = true;
-            this.dialog_items.item = {
-              item: body,
-              branch_id: this.rootBody,
-            };
-            this.dialog_items.update = true;
-          }
-        },
-      },
-    ];
+    this.stock_actoins = [];
   },
   methods: {
     setTable(data) {
       this.rootBody = data;
+      this.branch_id = data;
       this.show_comb = true;
       setTimeout(() => {
         this.expand = true;
@@ -205,16 +254,26 @@ export default {
       this.save_dialog.show = true;
       this.save_dialog.item = this.rootBody;
     },
-    emptyDialog(){
-      this.dialog_items.show = false
-      this.dialog_items.item - null
+    emptyDialog() {
+      this.dialog_items.show = false;
+      this.dialog_items.item - null;
     },
     reloadListVariation() {
       if (this.$refs.ListVariation && this.$refs.ListStock) {
-        this.tab = 1
+        this.tab = 1;
         this.$refs.ListVariation.getDataFromApi();
         this.$refs.ListStock.getDataFromApi();
       }
+    },
+    updateAll(data) {
+      try {
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    emitDataTable(data) {
+      console.log(data);
     },
   },
 };
