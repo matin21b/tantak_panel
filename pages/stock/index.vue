@@ -169,6 +169,14 @@ export default {
         },
       },
       {
+        text: "نام شعبه",
+        filterable: false,
+        disableSort: false,
+        value: (body) => {
+          return body.branch.name;
+        },
+      },
+      {
         text: "آدرس شعبه",
         filterable: false,
         disableSort: false,
@@ -182,7 +190,11 @@ export default {
       },
       {
         text: "کد شعبه",
-        value: "branch_code",
+        filterable: false,
+        disableSort: false,
+        value: (body) => {
+          return body.branch.branch_code;
+        },
       },
       {
         text: "موجودی",
