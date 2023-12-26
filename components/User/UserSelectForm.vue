@@ -18,7 +18,7 @@
       v-model="user_dialog"
       transition="dialog-bottom-transition"
     >
-      <v-toolbar dark color="secondary">
+      <v-toolbar dark color="primary">
         <v-btn icon dark @click="closeDialog()">
           <v-icon>close</v-icon>
         </v-btn>

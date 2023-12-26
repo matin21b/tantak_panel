@@ -111,6 +111,18 @@ export default ({ redirect, store, $toast }, inject) => {
       return false
     }
   })
+  inject('checkRole',(role)=>{
+    let bool = false
+    if(store.state.auth.user && store.state.auth.panel_token){
+      store.state.auth.user.roles.map((x)=>{
+        if(x.id == role){
+          bool = true
+        }
+      })
+    }
+
+    return bool
+  })
   inject('stringToRegex', (str) => {
     const main = str.match(/\/(.+)\/.*/)[1]
     const options = str.match(/\/.+\/(.*)/)[1]

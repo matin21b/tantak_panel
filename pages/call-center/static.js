@@ -27,7 +27,7 @@ export const state = () => ({
   product_status,
   branch_status,
   sell_status,
-  bool_number_enum,
+  bool_number_enum
 });
 
 let mnue_tree = [
@@ -35,7 +35,7 @@ let mnue_tree = [
     id: 1,
     name: "کارتابل",
     access: "*",
-    route: "/panel",
+    route: "/panel"
   },
   {
     id: 2,
@@ -45,33 +45,33 @@ let mnue_tree = [
         id: 3,
         name: "کاربران",
         access: "user/index",
-        route: "/user/list",
+        route: "/user/list"
       },
       {
         id: 4,
         name: "براساس نقش",
         access: "user/index",
-        route: "/user",
+        route: "/user"
       },
       {
         id: 5,
         name: "نقش ها",
         access: "role/index",
-        route: "/role",
-      },
-    ],
+        route: "/role"
+      }
+    ]
   },
   {
     id: 6,
     name: "ناحیه ها",
     access: "region/index",
-    route: "/region",
+    route: "/region"
   },
   {
     id: 7,
     name: "شعبات",
     access: "branch/index",
-    route: "/branches",
+    route: "/branches"
   },
   {
     id: 13,
@@ -81,57 +81,57 @@ let mnue_tree = [
         id: 14,
         name: "فهرست محصولات",
         access: "product/insert",
-        route: "/product",
+        route: "/product"
       },
       {
         id: 15,
         name: "دسته بندی محصولات",
         access: "category/index",
-        route: "/product/category",
+        route: "/product/category"
       },
       {
-        id: 40,
-        name: "برند ها",
-        access: "brand/index",
-        route: "/product/brand",
+        id:40,
+        name:'برند ها',
+        access:'brand/index',
+        route:'/product/brand'
       },
       {
         id: 30,
         access: "wholesale_form/index",
         name: "فرم های دریافتی فروش عمده",
-        route: "/product/wholesale-form",
-      },
-    ],
+        route: "/product/wholesale-form"
+      }
+    ]
   },
   {
-    id: 31,
-    name: "موجودی انبار",
-    access: "product/index",
-    route: "/stock",
+    id:31,
+    name:'موجودی انبار',
+    access:"product/index",
+    route:'/stock'
   },
   {
-    id: 50,
-    name: "مرکز فروش تلفنی",
-    children: [
-      {
-        id: 51,
-        access: "*",
-        name: "ورود اکسل",
-        route: "/call-center/import",
-      },
-      {
-        id: 52,
-        access: "*",
-        name: "لیست کارکنان",
-        route: "/call-center/list",
-      },
-      {
-        id: 53,
-        access: "call_center/index",
-        name: "پیام های دریافتی",
-        route: "/call-center/message",
-      },
-    ],
+    id:50,
+    name:'مرکز فروش تلفنی',
+    children:[
+      // {
+      //   id:51,
+      //   access:'*',
+      //   name:'ورود اکسل',
+      //   route:'/call-center-operator/import'
+      // },
+      // {
+      //   id:52,
+      //   access:'*',
+      //   name:'لیست ورودی',
+      //   route:'/call-center-operator/list'
+      // },
+      // {
+      //   id:53,
+      //   access:'*',
+      //   name:'پیام های دریافتی',
+      //   route:'/call-center-operator/message'
+      // },
+    ]
   },
   {
     id: 18,
@@ -141,45 +141,45 @@ let mnue_tree = [
         id: 19,
         name: "اسلایدر",
         access: "setting/index",
-        route: "/setting/slider",
+        route: "/setting/slider"
       },
       {
         id: 20,
         name: "بنرها",
         access: "setting/index",
-        route: "/setting/main-banner",
+        route: "/setting/main-banner"
       },
       {
         id: 21,
         name: "تنظیمات عمومی",
         access: "setting/index",
-        route: "/setting/public/1",
+        route: "/setting/public/1"
       },
       {
         id: 22,
         name: "ویژگی های محصولات",
         access: "setting/index",
-        route: "/setting/variation-type",
+        route: "/setting/variation-type"
       },
       {
         id: 23,
         name: "روش های ارسال",
         access: "setting/index",
-        route: "/setting/delivery-method",
+        route: "/setting/delivery-method"
       },
       {
         id: 24,
         name: "واحد ها",
         access: "setting/index",
-        route: "/setting/units",
+        route: "/setting/units"
       },
       {
         id: 25,
         name: "تنظیمات فروش عمده",
         access: "setting/index",
-        route: "/setting/whole-sell",
-      },
-    ],
+        route: "/setting/whole-sell"
+      }
+    ]
   },
   {
     id: 26,
@@ -189,22 +189,22 @@ let mnue_tree = [
         id: 27,
         name: "تماس با ما",
         access: "contact_us_form/index",
-        route: "/forms/contact-us-form",
+        route: "/forms/contact-us-form"
       },
       {
         id: 28,
         name: "درخواست فرم نمایندگی",
         access: "representation_request_form/index",
-        route: "/forms/representation-request-form",
+        route: "/forms/representation-request-form"
       },
       {
         id: 29,
         name: "شکایات",
         access: "complaint_form/index",
-        route: "/forms/complaint",
-      },
-    ],
-  },
+        route: "/forms/complaint"
+      }
+    ]
+  }
 ];
 
 let setting_keys = [
@@ -220,11 +220,11 @@ let setting_keys = [
   { text: "آدرس پینترست", value: "pinterest", type: "single_text" },
   { text: "آدرس فیس بوک", value: "facebook", type: "single_text" },
   { text: "آدرس اینستاگرام ", value: "instagram", type: "single_text" },
-  { text: "اسلایدر اصلی", value: "main_slider", type: "image" },
+  { text: "اسلایدر اصلی", value: "main_slider", type: "image" }
 ];
 let status = [
   { text: "فعال", value: "active" },
-  { text: "غیر فعال", value: "hidden" },
+  { text: "غیر فعال", value: "hidden" }
 ];
 
 let product_status = [
@@ -234,53 +234,53 @@ let product_status = [
   { text: "پیش نویس", value: "draft" },
 ];
 
-let sell_status = [
-  { text: "جزئی", value: "single" },
-  { text: "فله", value: "whole" },
-];
+let sell_status =[
+  { text: "جزئی", value: 'single' },
+  { text: "فله", value: 'whole' },
+]
 let work_status = [
   { text: "مشغول به کار", value: "active" },
-  { text: "مرخصی", value: "inactive" },
+  { text: "مرخصی", value: "inactive" }
 ];
 
 let status_contact_form = [
   { text: "انتظار", value: "pending" },
-  { text: "بررسی شده", value: "reviewed" },
+  { text: "بررسی شده", value: "reviewed" }
 ];
 
 let ownership_type = [
   { text: "مالک", value: "owner" },
-  { text: "اجاره", value: "leasehold" },
+  { text: "اجاره", value: "leasehold" }
 ];
 
 let user_level = [
   { text: "نوع یک", value: "type1" },
-  { text: "نوع دو", value: "type2" },
+  { text: "نوع دو", value: "type2" }
 ];
 let bool_text = [
   { text: "بله", value: true },
-  { text: "خیر", value: false },
+  { text: "خیر", value: false }
 ];
 
-let branch_status = [
-  { text: "فعال", value: "active" },
-  { text: "غیر فعال", value: "inactive" },
-  { text: "پنهان", value: "hidden" },
-  { text: "معلق", value: "suspended" },
-];
+let branch_status=[
+  {text:'فعال', value:'active'},
+  {text:'غیر فعال', value:'inactive'},
+  {text:'پنهان', value:'hidden'},
+  {text:'معلق', value:'suspended'},
+]
 
 let bool_en = [
   { text: "بله", value: "yes" },
-  { text: "خیر", value: "no" },
+  { text: "خیر", value: "no" }
 ];
 
 let gender = [
   { text: "مرد", value: "مرد" },
-  { text: "زن", value: "زن" },
+  { text: "زن", value: "زن" }
 ];
 let is_main_branch = [
   { text: "شعبه اصلی", value: 0 },
-  { text: "شعبه فرعی", value: 1 },
+  { text: "شعبه فرعی", value: 1 }
 ];
 let week_days = [
   { text: "شنبه", value: "saturday" },
@@ -290,34 +290,35 @@ let week_days = [
   { text: "چهارشنبه", value: "wednesday" },
   { text: "پنج شنبه", value: "thursday" },
   { text: "جمعه", value: "Friday" },
-  { text: "همه", value: "" },
+  { text: "همه", value: "" }
 ];
 
 let bool_number_enum = [
-  { text: "بله", value: "1" },
-  { text: "خیر", value: "0" },
-];
+  { text: "بله", value: '1' },
+  { text: "خیر", value: '0' }
+]
+
 
 let person_type = [
   { text: "حقیقی", value: "real" },
   { text: "حقوقی", value: "legal" },
-  { text: "هیچ کدام", value: "none" },
+  { text: "هیچ کدام", value: "none" }
 ];
 let status_baranch = [
   { text: "فعال", value: "active" },
   { text: "غیر فعال", value: "inactive" },
   { text: "پنهان ", value: "hidden" },
-  { text: "معلق ", value: "suspended" },
+  { text: "معلق ", value: "suspended" }
 ];
 let sell_type = [
   { text: "فروش تکی", value: "sell" },
   { text: " فروش  عمده", value: "wholesale" },
   { text: "هردو ", value: "both_sell" },
-  { text: "هیچکدام ", value: "none" },
+  { text: "هیچکدام ", value: "none" }
 ];
 let supervisor_status_items = [
   { text: "دارد", value: true },
-  { text: "ندارد", value: false },
+  { text: "ندارد", value: false }
 ];
 
 let bimehso_aramin = "https://bimehsho.aramin.ir/";
@@ -334,7 +335,7 @@ let months = [
   { text: "آذر", value: "9" },
   { text: "دی", value: "10" },
   { text: "بهمن", value: "11" },
-  { text: "اسفند", value: "12" },
+  { text: "اسفند", value: "12" }
 ];
 let call_status = [
   { text: "پاسخ داده شده", value: "ANSWERED" },
@@ -342,7 +343,7 @@ let call_status = [
   //{text:'مشغول', value:'CONGESTION'},
   { text: "مشغول", value: "BUSY" },
   { text: "ناموفق", value: "FAILED" },
-  { text: "قطع شده از IVR", value: "s" },
+  { text: "قطع شده از IVR", value: "s" }
 ];
 let country_division = [
   { text: "استان", value: "province" },
@@ -350,7 +351,7 @@ let country_division = [
   { text: "بخش", value: "district" },
   { text: "شهر", value: "city" },
   { text: "دهستان", value: "rural_district" },
-  { text: "روستا", value: "village" },
+  { text: "روستا", value: "village" }
 ];
 
 let pik = [
@@ -383,7 +384,7 @@ let pik = [
   { text: "D", value: 27 },
   { text: "S", value: 28 },
   { text: "ح", value: 29 },
-  { text: "ف", value: 30 },
+  { text: "ف", value: 30 }
 ];
 
 let company_name = [
@@ -421,7 +422,7 @@ let company_name = [
   { text: "بيمه متقابل اطمينان متحد قشم", value: 32 },
   { text: "بيمه سرمد", value: 33 },
   { text: "بیمه تجارت نو", value: 34 },
-  { text: "بیمه حکمت صبا", value: 52 },
+  { text: "بیمه حکمت صبا", value: 52 }
 ];
 
 let repeatation_cycle = [
@@ -429,10 +430,10 @@ let repeatation_cycle = [
   { text: "هر سه ماه", value: "every_three_month" },
   { text: "هر شیش ماه", value: "every_six_month" },
   { text: "هر سال", value: "every_year" },
-  { text: "بدون تکرار", value: "no_repeat" },
+  { text: "بدون تکرار", value: "no_repeat" }
 ];
 
 let menu_type = [
   { text: "فعال", value: "active" },
-  { text: "غیرفعال", value: "hidden" },
+  { text: "غیرفعال", value: "hidden" }
 ];

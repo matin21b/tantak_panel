@@ -41,8 +41,8 @@ export default {
     if (this.$checkAccess("region/index")) {
       this.$store.dispatch("setting/setgetRegion");
     }
-    if(this.$checkAccess('action/index')){
-      this.$store.dispatch('setting/getActionServer')
+    if (this.$checkRole(this.$store.state.auth.role.admin_id)) {
+      this.$store.dispatch("setting/getActionServer");
     }
   },
   head() {

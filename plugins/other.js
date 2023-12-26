@@ -23,9 +23,11 @@ import AmpNewDatePicker from "~/components/Base/AmpNewDatePicker.vue";
 import AmpEditor from '~/components/Base/AmpEditor.vue'
 import AmpJsonInput from '~/components/Base/AmpJsonInput.vue'
 import AmpInlineUpload from "~/components/Base/AmpInlineUpload.vue";
+import BaseTable from '~/components/DataTable/BaseTable'
 
 Vue.component('persian-date-picker', VuePersianDatetimePicker)
 
+Vue.component('BaseTable',BaseTable)
 Vue.component('AmpHelp', AmpHelp)
 Vue.component('AmpCard', AmpCard)
 Vue.component('AmpTime', AmpTime)
