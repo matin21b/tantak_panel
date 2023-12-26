@@ -104,7 +104,7 @@ export default {
     if (this.modelId) {
       this.loadData()
     }
-    this.$store.dispatch('setting/getActionServer')
+    this.$store.dispatch('setting/getActions')
   },
   methods: {
     submit() {

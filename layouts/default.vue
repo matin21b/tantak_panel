@@ -27,23 +27,29 @@ export default {
     drawer: false,
     show_body: false,
   }),
-  beforeMount() {
+  mounted() {
     this.checkAuth();
-    if (this.$checkAccess("brand/index")) {
-      this.$store.dispatch("setting/setBrand");
-    }
-    if (this.$checkAccess("country_division/index")) {
-      this.$store.dispatch("setting/setCountryDivision");
-    }
-    if (this.$checkAccess("branch/index")) {
-      this.$store.dispatch("setting/setBranchCod");
-    }
-    if (this.$checkAccess("region/index")) {
-      this.$store.dispatch("setting/setgetRegion");
-    }
-    if (this.$checkRole(this.$store.state.auth.role.admin_id)) {
-      this.$store.dispatch("setting/getActionServer");
-    }
+  },
+  watch: {
+    "$store.state.auth.action"() {
+      if (this.$store.state.auth.action.length > 0) {
+        if (this.$checkAccess("brand/delete")) {
+          this.$store.dispatch("setting/setBrand");
+        }
+        if (this.$checkAccess("country_division/index")) {
+          this.$store.dispatch("setting/setCountryDivision");
+        }
+        if (this.$checkAccess("branch/index")) {
+          this.$store.dispatch("setting/setBranchCod");
+        }
+        if (this.$checkAccess("region/index")) {
+          this.$store.dispatch("setting/setgetRegion");
+        }
+        if (this.$checkRole("action/index")) {
+          this.$store.dispatch('setting/getActions')
+        }
+      }
+    },
   },
   head() {
     this.checkDomain();

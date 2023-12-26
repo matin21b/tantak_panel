@@ -53,11 +53,11 @@ export default {
   props: {
     modelId: {
       require: false,
-      default: false
+      default: false,
     },
     updateUrl: { default: "role/update" },
     createUrl: { default: "role/insert" },
-    showUrl: { default: "role/show" }
+    showUrl: { default: "role/show" },
   },
   data() {
     return {
@@ -68,16 +68,17 @@ export default {
         name: "",
         action_id: [],
         sort: "1",
-        id: ""
-      }
+        id: "",
+      },
     };
   },
   computed: {
     action() {
-      let items = this.$store.state.setting.actions.filter((x) => x.parent == null)
-        .map(item => {
+      let items = this.$store.state.setting.actions
+        .filter((x) => x.parent == null)
+        .map((item) => {
           let childs = this.$store.state.setting.actions.filter(
-            x => x.parent == item.id
+            (x) => x.parent == item.id
           );
           childs = [item, ...childs];
           return { ...item, childs };
@@ -87,7 +88,10 @@ export default {
         this.panel = items.map((x, i) => i);
       }
       return items;
-    }
+    },
+  },
+  beforeMount() {
+    this.$store.dispatch("setting/getActions");
   },
   mounted() {
     if (Boolean(this.modelId)) {
@@ -100,35 +104,35 @@ export default {
       let form = { ...this.form };
       let url = this.modelId ? this.updateUrl : this.createUrl;
       this.$reqApi(url, form)
-        .then(response => {
+        .then((response) => {
           this.loader = false;
           this.back();
         })
-        .catch(err => {
+        .catch((err) => {
           this.loader = false;
         });
     },
     loadData() {
       this.loader = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
-        .then(response => {
+        .then((response) => {
           this.form.id = this.modelId;
           this.form.name = response.model.name;
-          this.setActions(response.model.actions)
+          this.setActions(response.model.actions);
           this.loader = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loader = false;
         });
     },
-    setActions(data){
-      data.forEach(element => {
-        this.form.action_id.push(element.id)
+    setActions(data) {
+      data.forEach((element) => {
+        this.form.action_id.push(element.id);
       });
     },
     back() {
       this.$router.back();
-    }
-  }
+    },
+  },
 };
 </script>
