@@ -94,7 +94,7 @@ export default {
       },
       items: [
         { text: "لیست ترکیب های محصول", key: "variation", icon: "list_alt" },
-        { text: "موجودی های ثبت شده", key: "stock", icon: "fact_check" },
+        // { text: "موجودی های ثبت شده", key: "stock", icon: "fact_check" },
       ],
       save_dialog: {
         show: false,
@@ -119,7 +119,7 @@ export default {
       },
       { text: "بار کد", value: "barcode" },
       { text: "بارکد کامل", value: "full_barcode" },
-      { text: "موجودی", value: "stock" },
+      { text: "موجودی آنلاین", value: "stock" },
       {
         text: "نوع فروش",
         filterType: "select",

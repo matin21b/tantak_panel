@@ -32,13 +32,13 @@
             icon="send"
           />
         </v-col>
-        <v-col cols="12" md="6" v-if="is_admin" class="mt-2">
+        <!-- <v-col cols="12" md="6" v-if="is_admin" class="mt-2">
           <UserCreate
             :url="insert_superviser"
             title="ایجاد سوپروایزر"
             icon="account_circle"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="5" v-if="is_superviser">
           <v-row class="pa-5">
             <v-col cols="12" md="3" class="ma-2">
@@ -75,13 +75,13 @@
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="12" md="6" v-if="is_superviser" class="mt-2">
+        <!-- <v-col cols="12" md="6" v-if="is_superviser" class="mt-2">
           <UserCreate
             :url="insert_operator"
             title="ایجاد اپراتور"
             icon="account_circle"
           />
-        </v-col>
+        </v-col> -->
       </v-row>
     </v-col>
     <v-col cols="12" md="12" v-if="url && !is_super_admin">
@@ -158,19 +158,14 @@ export default {
         this.$toast.error("اپراتور فروش انتخاب نشده است");
         return;
       }
-
-      console.log(this.selected_item);
-      console.log(event);
       let form = {
         operator_id: event,
         message_id: this.selected_item,
       };
       this.$refs("/call-center/distribute-operator-manual", form)
         .then((res) => {
-          console.log(res);
         })
         .catch((err) => {
-          console.log(err);
           return err;
         });
     },

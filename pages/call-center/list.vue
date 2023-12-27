@@ -26,12 +26,34 @@
       </v-tabs-items>
     </v-col>
     <v-col cols="12" md="12" v-if="url && !is_super_admin">
-      <BaseTable :headers="headers" :url="url" />
+      <v-col cols="12" md="12" class="center-div" >
+        <v-col cols="12" md="6" v-if="is_admin" class="mt-2">
+          <UserCreate
+            :url="insert_superviser"
+            title="ایجاد سوپروایزر"
+            icon="account_circle"
+          />
+        </v-col>
+        <v-col cols="12" md="6" v-if="is_superviser" class="mt-2">
+          <UserCreate
+            :url="insert_operator"
+            title="ایجاد اپراتور"
+            icon="account_circle"
+          />
+        </v-col>
+      </v-col>
+      <v-col cols="12" md="12">
+        <BaseTable :headers="headers" :url="url" />
+      </v-col>
     </v-col>
   </v-row>
 </template>
 <script>
+import UserCreate from "@/components/CallCenter/UserCreate.vue";
 export default {
+  components: {
+    UserCreate,
+  },
   data() {
     return {
       title: "لیست کارکنان",
@@ -43,6 +65,10 @@ export default {
       admin_url: "call-center/admin-list",
       superviser_url: "call-center/superviser-list",
       operator_url: "call-center/operator-list",
+      is_superviser: false,
+      is_admin: false,
+      insert_operator: "/call-center/insert-operator",
+      insert_superviser: "/call-center/insert-superviser",
     };
   },
   beforeMount() {
@@ -96,6 +122,13 @@ export default {
         },
       },
     ];
+    if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
+      this.is_superviser = true;
+    } else if (
+      this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
+    ) {
+      this.is_admin = true;
+    }
     this.$store.dispatch("setPageTitle", this.title);
     if (this.$checkRole(this.$store.state.auth.role.admin_id)) {
       this.is_super_admin = true;
