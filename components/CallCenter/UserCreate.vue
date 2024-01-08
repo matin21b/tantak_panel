@@ -96,7 +96,7 @@ export default {
   props: {
     title: {
       type: String,
-    },
+    }, 
     icon: {
       type: String,
     },

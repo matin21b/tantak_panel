@@ -113,24 +113,24 @@ let mnue_tree = [
     id: 50,
     name: "مرکز فروش تلفنی",
     children: [
-      // {
-      //   id: 51,
-      //   access: "call_center/index",
-      //   name: "ورود اکسل",
-      //   route: "/call-center/import",
-      // },
+      {
+        id: 51,
+        access: "call_center/index",
+        name: "ورود اکسل",
+        route: "/call-center/import",
+      },
       {
         id: 52,
         access: "call_center/index",
         name: "لیست کارکنان",
         route: "/call-center/list",
       },
-      // {
-      //   id: 53,
-      //   access: "*",
-      //   name: "پیام های دریافتی",
-      //   route: "/call-center/message",
-      // },
+      {
+        id: 53,
+        access: "*",
+        name: "پیام های دریافتی",
+        route: "/call-center/message",
+      },
     ],
   },
   {

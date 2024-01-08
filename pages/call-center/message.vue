@@ -1,26 +1,65 @@
 <template>
   <v-row>
     <v-col cols="12" md="12" v-if="is_super_admin">
-      <v-tabs v-model="tab" class="ma-3 center-div" color="white">
-        <v-tab v-for="(item, index) in items_tab" :key="item" color="white">
-          <v-chip
-            dark
-            color="primary"
-            class="white--text"
-            :outlined="tab != index"
-          >
-            {{ item }}
-          </v-chip>
-        </v-tab>
-      </v-tabs>
-      <v-tabs-items v-model="tab">
-        <v-tab-item class=""
-          ><BaseTable :headers="headers" :url="superviser_url"
-        /></v-tab-item>
-        <v-tab-item class=""
-          ><BaseTable :headers="headers" :url="operator_url"
-        /></v-tab-item>
-      </v-tabs-items>
+      <v-col cols="12" md="6" v-if="$store.state.auth.role.is_admin">
+        <v-card class="elevation-10 pa-5">
+          لطفا سرپرست و اپراتور مد نظر را انتخاب کنید
+          <v-card-text class="d-flex justify-space-around align-center pa-3">
+            <v-card width="400" class="elevation-0">
+              <UserSelectForm
+                text="انتخاب سرپرست"
+                v-model="selected_superviser_id"
+                :url="superviser_list"
+                rules="require"
+                :role-id="[$store.state.auth.role.superviser_id]"
+              />
+            </v-card>
+            <v-card width="400" class="elevation-0">
+              <UserSelectForm
+                text="انتخاب اپراتور"
+                v-model="selected_operator_id"
+                :url="operator_list"
+                rules="require"
+                :role-id="[$store.state.auth.role.oprator_id]"
+              />
+            </v-card>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-card :disabled="checkSelectedUserForSuperAdmin" class="elevation-0">
+        <v-tabs v-model="tab" class="ma-3 center-div" color="white">
+          <v-tab v-for="(item, index) in items_tab" :key="item" color="white">
+            <v-chip
+              dark
+              color="primary"
+              class="white--text"
+              :outlined="tab != index"
+            >
+              {{ item }}
+            </v-chip>
+          </v-tab>
+        </v-tabs>
+        <v-tabs-items v-model="tab">
+          <v-tab-item class="">
+            <v-card v-if="selected_superviser_id.length > 0">
+              <BaseTable
+                :headers="headers"
+                :url="superviser_url"
+                :rootBody="{ superviser_id: selected_superviser_id }"
+              />
+            </v-card>
+          </v-tab-item>
+          <v-tab-item class="">
+            <v-card v-if="selected_operator_id.length > 0">
+              <BaseTable
+                :headers="headers"
+                :rootBody="{ operator_id: selected_operator_id }"
+                :url="operator_url"
+              />
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
     </v-col>
     <v-col cols="12" md="12">
       <v-row class="d-flx justify-center">
@@ -93,8 +132,14 @@
 import DistributeOperator from "@/components/CallCenter/DistributeSuperviser.vue";
 import DialogUserSelect from "~/components/CallCenter/DialogUserSelect.vue";
 import UserCreate from "~/components/CallCenter/UserCreate.vue";
+import UserSelectForm from "@/components/User/UserSelectForm";
 export default {
-  components: { DistributeOperator, DialogUserSelect, UserCreate },
+  components: {
+    DistributeOperator,
+    DialogUserSelect,
+    UserCreate,
+    UserSelectForm,
+  },
   data() {
     return {
       title: "پیام های دریافتی",
@@ -114,7 +159,10 @@ export default {
       superviser_distribute: "/call-center/distribute-superviser",
       operator_distribute: "/call-center/distribute-operator ",
       operator_distribute_manul: "/call-center/distribute-operator-manual ",
-      operator_distrubute_by_sell_percent:"/call-center/distribute-by-sell-percent ",
+      operator_distrubute_by_sell_percent:
+        "/call-center/distribute-by-sell-percent ",
+      selected_operator_id: "",
+      selected_superviser_id: "",
       superviser_list: "/call-center/superviser-list",
       operator_list: "/call-center/operator-list ",
       insert_operator: "/call-center/insert-operator",
@@ -145,6 +193,18 @@ export default {
       this.is_admin = true;
     }
   },
+  computed: {
+    checkSelectedUserForSuperAdmin() {
+      if (
+        this.selected_operator_id.length > 0 &&
+        this.selected_superviser_id.length > 0
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
   methods: {
     manualDistribute() {
       if (this.selected_item) {
@@ -163,8 +223,7 @@ export default {
         message_id: this.selected_item,
       };
       this.$refs("/call-center/distribute-operator-manual", form)
-        .then((res) => {
-        })
+        .then((res) => {})
         .catch((err) => {
           return err;
         });
