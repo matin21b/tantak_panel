@@ -73,6 +73,12 @@ let mnue_tree = [
     name: "شعبات",
     access: "branch/index",
     route: "/branches",
+  }, 
+  {
+    id: 200,
+    name: "فروش تجمیعی",
+    access: "*",
+    route: "/collective-sell",
   },
   {
     id: 13,
