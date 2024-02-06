@@ -1,5 +1,12 @@
 <template>
   <v-row>
+    <ListOprators
+      v-if="dialog_oprator_list.show"
+      :operator_url="operator_url"
+      :dialog_oprator_list="dialog_oprator_list"
+      :show_list="show_list"
+      :name_superviser="name_superviser"
+    />
     <v-col cols="12" md="12" v-if="is_super_admin">
       <v-tabs v-model="tab" class="ma-3 center-div" color="white">
         <v-tab v-for="(item, index) in items_tab" :key="item" color="white">
@@ -18,15 +25,15 @@
           ><BaseTable :headers="headers" :url="admin_url"
         /></v-tab-item>
         <v-tab-item class=""
-          ><BaseTable :headers="headers" :url="superviser_url"
-        /></v-tab-item>
-        <v-tab-item class=""
-          ><BaseTable :headers="headers" :url="operator_url"
+          ><BaseTable
+            :headers="headers"
+            :url="superviser_url"
+            :BTNactions="btn_actions"
         /></v-tab-item>
       </v-tabs-items>
     </v-col>
     <v-col cols="12" md="12" v-if="url && !is_super_admin">
-      <v-col cols="12" md="12" class="center-div" >
+      <v-col cols="12" md="12" class="center-div">
         <v-col cols="12" md="6" v-if="is_admin" class="mt-2">
           <UserCreate
             :url="insert_superviser"
@@ -52,17 +59,23 @@
 </template>
 <script>
 import UserCreate from "@/components/CallCenter/UserCreate.vue";
+import ListOprators from "@/components/CallCenter/ListOprators.vue";
 export default {
   components: {
+    ListOprators,
     UserCreate,
   },
   data() {
     return {
       title: "لیست کارکنان",
       url: "",
+      show_list: "",
+      name_superviser: "",
       is_super_admin: false,
+      dialog_oprator_list: { items: null, show: false },
       headers: [],
-      items_tab: ["مدیر مرکز تماس", "سرپرست مرکز تماس", "اپراتور مرکز تماس"],
+      btn_actions: [],
+      items_tab: ["مدیر مرکز تماس", " مرکز تماس"],
       tab: null,
       admin_url: "call-center/admin-list",
       superviser_url: "call-center/superviser-list",
@@ -74,56 +87,68 @@ export default {
     };
   },
   beforeMount() {
-    this.headers = [
+    (this.btn_actions = [
       {
-        text: "تصویر",
-        value: "avatar",
-        type: "image",
-        disableSort: "true",
-        filterable: false,
-      },
-      { text: "نام", value: "first_name" },
-      { text: "نام خانوادگی", value: "last_name" },
-      { text: "نام کاربری", filterCol: "username", value: "username" },
-      { text: "کد ملی", filterCol: "national_code", value: "national_code" },
-      {
-        filterable: false,
-        disableSort: true,
-        filterType: "date",
-        filterCol: "birth_date",
-        text: "تاریخ تولد",
-        value: (body) => {
-          if (body.birth_date) {
-            return this.$toJalali(
-              body.birth_date,
-              "YYYY-MM-DD",
-              "jYYYY/jMM/jDD"
-            );
-          }
-          return "";
+        color: "green",
+        icon: "group",
+        text: "لیست اپراتور ها",
+        fun: (body) => {
+          this.dialog_oprator_list.show = true;
+          this.show_list = body.id;
+          this.name_superviser = body.first_name + " " + body.last_name;
         },
       },
-      {
-        text: "توضیحات",
-        filterCol: "description",
-        type: "tooltip",
-        function: (body) => {
-          if (body.description) {
-            return body.description;
-          }
+    ]),
+      (this.headers = [
+        {
+          text: "تصویر",
+          value: "avatar",
+          type: "image",
+          disableSort: "true",
+          filterable: false,
         },
-        value: (body) => {
-          if (typeof body.description == "string") {
-            if (body.description.length < 25) {
+        { text: "نام", value: "first_name" },
+        { text: "نام خانوادگی", value: "last_name" },
+        { text: "نام کاربری", filterCol: "username", value: "username" },
+        { text: "کد ملی", filterCol: "national_code", value: "national_code" },
+        {
+          filterable: false,
+          disableSort: true,
+          filterType: "date",
+          filterCol: "birth_date",
+          text: "تاریخ تولد",
+          value: (body) => {
+            if (body.birth_date) {
+              return this.$toJalali(
+                body.birth_date,
+                "YYYY-MM-DD",
+                "jYYYY/jMM/jDD"
+              );
+            }
+            return "";
+          },
+        },
+        {
+          text: "توضیحات",
+          filterCol: "description",
+          type: "tooltip",
+          function: (body) => {
+            if (body.description) {
               return body.description;
             }
-            return body.description.slice(0, 25) + "...";
-          } else {
-            return "-";
-          }
+          },
+          value: (body) => {
+            if (typeof body.description == "string") {
+              if (body.description.length < 25) {
+                return body.description;
+              }
+              return body.description.slice(0, 25) + "...";
+            } else {
+              return "-";
+            }
+          },
         },
-      },
-    ];
+      ]);
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
       this.is_superviser = true;
     } else if (
@@ -146,9 +171,9 @@ export default {
     }
   },
   methods: {
-    reloadList(){
-      this.$refs.UserlIstref.getDataFromApi()
-    }
+    reloadList() {
+      this.$refs.UserlIstref.getDataFromApi();
+    },
   },
 };
 </script>
