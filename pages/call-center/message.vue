@@ -39,12 +39,7 @@
       <v-card :disabled="checkSelectedUserForSuperAdmin" class="elevation-0">
         <v-tabs v-model="tab" class="ma-3 center-div" color="white">
           <v-tab v-for="(item, index) in items_tab" :key="item" color="white">
-            <v-chip
-              dark
-              color="primary"
-              class="white--text"
-              :outlined="tab != index"
-            >
+            <v-chip dark color="primary" class="white--text" :outlined="tab != index">
               {{ item }}
             </v-chip>
           </v-tab>
@@ -157,12 +152,7 @@
                 @selectUser="setPrcentDistrubute"
                 @close="dialog_serperviser = false"
               />
-              <v-btn
-                v-if="is_superviser"
-                dark
-                class="blue"
-                @click="BySellPercent"
-              >
+              <v-btn v-if="is_superviser" dark class="blue" @click="BySellPercent">
                 <span> تخصیص بر اساس سابقه فروش</span>
 
                 <v-icon class="mx-2">storefront</v-icon>
@@ -172,8 +162,8 @@
         </v-col>
       </v-row>
       <v-col cols="12">
-      <v-divider></v-divider>
-    </v-col>
+        <v-divider></v-divider>
+      </v-col>
     </v-col>
 
     <v-row cols="12" class="center-div" v-if="is_superviser">
@@ -220,8 +210,13 @@
     <ChangeStatus
       v-if="dialog_change_status.show"
       :dialog_change_status="dialog_change_status"
-      :message_id="message_id"
+      :messageInfo="message_info"
       @relod="reload"
+    />
+    <DialogFile
+      v-if="dialog_file.show"
+      :opratorId="oprator_id"
+      :DialogFile="dialog_file"
     />
   </v-row>
 </template>
@@ -262,11 +257,12 @@ export default {
       url: "",
       autoDelete: "",
       autoUpdate: "",
-      message_id: "",
+      message_info: {},
       createUrl: "",
       tab: null,
       dialog_user_manual: false,
       dialog_change_status: { show: false, items: null },
+      dialog_file: { show: false, items: null },
       filters: {},
       dialog_serperviser: false,
       is_super_admin: false,
@@ -284,8 +280,7 @@ export default {
       superviser_distribute: "/call-center/distribute-superviser",
       operator_distribute: "/call-center/distribute-operator ",
       operator_distribute_manul: "/call-center/distribute-operator-manual ",
-      operator_distrubute_by_sell_percent:
-        "/call-center/distribute-by-sell-percent ",
+      operator_distrubute_by_sell_percent: "/call-center/distribute-by-sell-percent ",
       selected_operator_id: "",
       selected_superviser_id: "",
       users_list: "",
@@ -477,9 +472,7 @@ export default {
       this.url = this.operator_url;
     } else if (this.$checkRole(this.$store.state.auth.role.admin_id)) {
       this.is_super_admin = true;
-    } else if (
-      this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
-    ) {
+    } else if (this.$checkRole(this.$store.state.auth.role.admin_call_center_id)) {
       this.url = this.addmin_calcenter;
       this.is_admin = true;
     }
@@ -490,7 +483,7 @@ export default {
         text: "برسی ",
         fun: (body) => {
           this.dialog_change_status.show = true;
-          this.message_id = body.id;
+          this.message_info = body;
         },
         show_fun: (body) => {
           if (this.$checkRole(this.$store.state.auth.role.oprator_id)) {

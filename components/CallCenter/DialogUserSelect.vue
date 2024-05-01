@@ -90,14 +90,12 @@ export default {
       }
     },
     refresh() {
-      console.log("matin");
       this.$emit("reload");
     },
     close() {
       this.$emit("close");
     },
     clearVModel() {
-      console.log("methods");
       this.$emit("clearVModel");
     },
   },

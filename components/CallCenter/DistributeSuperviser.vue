@@ -101,7 +101,6 @@ export default {
         .then((res) => {
           this.$toast.success("عملیات با موفقیت انجام شد");
           this.clearVModel();
-          console.log("submit");
           this.loading = false;
         })
         .catch((err) => {

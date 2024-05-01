@@ -107,7 +107,6 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
-          console.log("===>", response.model);
           this.form.branch_id = response.model.branch_id;
           this.form.priority = response.model.priority;
           this.loading = false;

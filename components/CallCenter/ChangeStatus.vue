@@ -4,9 +4,9 @@
       persistent
       v-model="dialog_change_status.show"
       :model-id="dialog_change_status.items"
-      width="500"
+      width="700"
     >
-      <v-card class="pa-2">
+      <v-card class="pa-2  lighten-3">
         <v-card-title>
           <span style="font-size: 21px">برسی درخواست</span>
           <v-spacer></v-spacer>
@@ -30,6 +30,12 @@
                   rules="require"
                 />
               </v-col>
+              <v-col cols="12" md="12">
+                    <amp-textarea
+                      text=" توضیحات یا نظر درباره مشتری "
+                      v-model="comment"
+                    ></amp-textarea>
+                    </v-col>
             </v-row>
             <v-row class="ma-1 d-flex justify-center">
               <amp-button
@@ -55,7 +61,7 @@ export default {
       require: false,
       default: false,
     },
-    message_id: {
+    messageInfo: {
       require: false,
       default: false,
     },
@@ -63,6 +69,7 @@ export default {
 
   data: () => ({
     valid: true,
+    comment:"",
     loading: false,
     form: {
       message_id: "",
@@ -72,7 +79,7 @@ export default {
   methods: {
     submit() {
       this.loading = true;
-      this.form.message_id = this.message_id;
+      this.form.message_id = this.messageInfo.id;
       let form = { ...this.form };
       let url = "/call-center/change-status";
       this.$reqApi(url, form)

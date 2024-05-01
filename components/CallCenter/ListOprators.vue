@@ -4,14 +4,14 @@
       persistent
       v-model="dialog_oprator_list.show"
       :model-id="dialog_oprator_list.items"
-      width="800"
+      fullscreen
     >
       <v-card class="pa-2">
         <v-card-title>
-          <span class="d-flex flex-column" style="font-size: 21px"
+          <span class="d-flex flex-column" style="font-size: 27px"
             >لیست اپراتور
 
-            <span class="primary--text" style="font-size: 11px">
+            <span class="primary--text" style="font-size: 15px">
               <v-icon size="10" color="primary"> star </v-icon>
               مرکز تماس : {{ name_superviser }}
             </span>
@@ -27,14 +27,21 @@
             :headers="headers"
             :url="operator_url"
             :rootBody="rootBody"
+            :BTNactions="btn_actions"
+          />
+          <DialogFile
+            v-if="dialog_file.show"
+            :opratorId="oprator_id"
+            :DialogFile="dialog_file"
           />
         </v-card-text>
       </v-card>
     </v-dialog>
   </div>
 </template>
-  
-  <script>
+
+<script>
+import DialogFile from "@/components/CallCenter/DialogFile.vue";
 export default {
   props: {
     dialog_oprator_list: {
@@ -58,9 +65,17 @@ export default {
       default: false,
     },
   },
-
+  components: {
+    DialogFile,
+  },
   data: () => ({
     headers: [],
+    btn_actions: [],
+    dialog_file: {
+      show: false,
+      items: null,
+    },
+    oprator_id: "",
     rootBody: { role_id: [] },
   }),
   beforeMount() {
@@ -74,6 +89,17 @@ export default {
       { text: "نام خانوادگی", value: "last_name" },
       { text: "نام کاربری", filterCol: "username", value: "username" },
     ];
+    this.btn_actions = [
+      {
+        text: "مشاهده پیام  ها ",
+        icon:"contact_mail",
+        color: "info",
+        fun: (body) => {
+          this.dialog_file.show = true;
+          this.oprator_id = body.id;
+        },
+      },
+    ];
   },
   methods: {
     closeDialog() {
@@ -86,6 +112,5 @@ export default {
   },
 };
 </script>
-  
-  <style>
-</style>
+
+<style></style>

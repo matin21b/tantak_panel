@@ -10,12 +10,7 @@
     <v-col cols="12" md="12" v-if="is_super_admin">
       <v-tabs v-model="tab" class="ma-3 center-div" color="white">
         <v-tab v-for="(item, index) in items_tab" :key="item" color="white">
-          <v-chip
-            dark
-            color="primary"
-            class="white--text"
-            :outlined="tab != index"
-          >
+          <v-chip dark color="primary" class="white--text" :outlined="tab != index">
             {{ item }}
           </v-chip>
         </v-tab>
@@ -24,12 +19,13 @@
         <v-tab-item class=""
           ><BaseTable :headers="headers" :url="admin_url"
         /></v-tab-item>
-        <v-tab-item class=""
-          ><BaseTable
-            :headers="headers"
+        <v-tab-item class="">
+          <BaseTable
+            :headers="headers_superviser"
             :url="superviser_url"
             :BTNactions="btn_actions"
-        /></v-tab-item>
+          />
+        </v-tab-item>
       </v-tabs-items>
     </v-col>
     <v-col cols="12" md="12" v-if="url && !is_super_admin">
@@ -52,7 +48,17 @@
         </v-col>
       </v-col>
       <v-col cols="12" md="12">
-        <BaseTable :headers="headers" :url="url" ref="UserlIstref" />
+        <BaseTable
+          :headers="headers"
+          :BTNactions="btn_actions_super"
+          :url="url"
+          ref="UserlIstref"
+        />
+        <DialogFile
+            v-if="dialog_file.show"
+            :opratorId="oprator_id"
+            :DialogFile="dialog_file"
+          />
       </v-col>
     </v-col>
   </v-row>
@@ -60,10 +66,12 @@
 <script>
 import UserCreate from "@/components/CallCenter/UserCreate.vue";
 import ListOprators from "@/components/CallCenter/ListOprators.vue";
+import DialogFile from "@/components/CallCenter/DialogFile.vue";
 export default {
   components: {
     ListOprators,
     UserCreate,
+    DialogFile,
   },
   data() {
     return {
@@ -71,9 +79,13 @@ export default {
       url: "",
       show_list: "",
       name_superviser: "",
+      oprator_id: "",
       is_super_admin: false,
       dialog_oprator_list: { items: null, show: false },
+      dialog_file: { items: null, show: false },
       headers: [],
+      headers_superviser: [],
+      btn_actions_super: [],
       btn_actions: [],
       items_tab: ["مدیر مرکز تماس", " مرکز تماس"],
       tab: null,
@@ -99,6 +111,17 @@ export default {
         },
       },
     ]),
+      (this.btn_actions_super = [
+        {
+        text: "مشاهده پیام  ها ",
+        icon:"contact_mail",
+        color: "info",
+        fun: (body) => {
+          this.dialog_file.show = true;
+          this.oprator_id = body.id;
+        },
+      },
+      ]),
       (this.headers = [
         {
           text: "تصویر",
@@ -119,11 +142,7 @@ export default {
           text: "تاریخ تولد",
           value: (body) => {
             if (body.birth_date) {
-              return this.$toJalali(
-                body.birth_date,
-                "YYYY-MM-DD",
-                "jYYYY/jMM/jDD"
-              );
+              return this.$toJalali(body.birth_date, "YYYY-MM-DD", "jYYYY/jMM/jDD");
             }
             return "";
           },
@@ -149,11 +168,47 @@ export default {
           },
         },
       ]);
+    this.headers_superviser = [
+      {
+        text: "تصویر",
+        value: "avatar",
+        type: "image",
+        disableSort: "true",
+        filterable: false,
+      },
+      { text: "نام", value: "first_name" },
+      { text: "نام خانوادگی", value: "last_name" },
+      { text: "نام کاربری", filterCol: "username", value: "username" },
+      { text: "کد ملی", filterCol: "national_code", value: "national_code" },
+
+      {
+        text: "نام مدیر",
+        value: (body) => {
+          if (body.parent) {
+            if (body.parent.first_name) {
+              return body.parent.first_name;
+            } else {
+              return body.parent.username;
+            }
+          }
+        },
+      },
+      {
+        text: "نام خانوادگی",
+        value: (body) => {
+          if (body.parent) {
+            if (body.parent.last_name) {
+              return body.parent.last_name;
+            } else {
+              return "--";
+            }
+          }
+        },
+      },
+    ];
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
       this.is_superviser = true;
-    } else if (
-      this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
-    ) {
+    } else if (this.$checkRole(this.$store.state.auth.role.admin_call_center_id)) {
       this.is_admin = true;
     }
     this.$store.dispatch("setPageTitle", this.title);
@@ -164,9 +219,7 @@ export default {
       this.url = this.operator_url;
     } else if (this.$checkRole(this.$store.state.auth.role.oprator_id)) {
       this.url = this.operator_url;
-    } else if (
-      this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
-    ) {
+    } else if (this.$checkRole(this.$store.state.auth.role.admin_call_center_id)) {
       this.url = this.superviser_url;
     }
   },
