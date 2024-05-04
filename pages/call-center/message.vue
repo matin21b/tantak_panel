@@ -211,7 +211,14 @@
       v-if="dialog_change_status.show"
       :dialog_change_status="dialog_change_status"
       :messageInfo="message_info"
+      :userInfo="user_info"
       @relod="reload"
+    />
+    <Customer
+      v-if="dialog_customer.show"
+      :DialogCustomer="dialog_customer"
+      :customer="customer"
+  
     />
     <DialogFile
       v-if="dialog_file.show"
@@ -224,6 +231,7 @@
 import DistributeOperator from "@/components/CallCenter/DistributeSuperviser.vue";
 import DialogUserSelect from "~/components/CallCenter/DialogUserSelect.vue";
 import ChangeStatus from "~/components/CallCenter/ChangeStatus.vue";
+import Customer from "~/components/CallCenter/Customer.vue";
 import UserCreate from "~/components/CallCenter/UserCreate.vue";
 import UserSelectForm from "@/components/User/UserSelectForm.vue";
 export default {
@@ -233,6 +241,7 @@ export default {
     UserCreate,
     UserSelectForm,
     ChangeStatus,
+    Customer,
   },
   data() {
     return {
@@ -258,10 +267,13 @@ export default {
       autoDelete: "",
       autoUpdate: "",
       message_info: {},
+      customer: {},
+      user_info: {},
       createUrl: "",
       tab: null,
       dialog_user_manual: false,
       dialog_change_status: { show: false, items: null },
+      dialog_customer: { show: false, items: null },
       dialog_file: { show: false, items: null },
       filters: {},
       dialog_serperviser: false,
@@ -484,6 +496,7 @@ export default {
         fun: (body) => {
           this.dialog_change_status.show = true;
           this.message_info = body;
+          this.user_info = body.user;
         },
         show_fun: (body) => {
           if (this.$checkRole(this.$store.state.auth.role.oprator_id)) {
@@ -492,6 +505,22 @@ export default {
             return false;
           }
         },
+      },
+      {
+        icon: "assignment_ind",
+        color: "info",
+        text: "اطلاعات مشتری",
+        fun: (body) => {
+          this.dialog_customer.show = true;
+          this.customer = body.user;
+        },
+        // show_fun: (body) => {
+        //   if (this.$checkRole(this.$store.state.auth.role.oprator_id)) {
+        //     return true;
+        //   } else {
+        //     return false;
+        //   }
+        // },
       },
     ];
   },

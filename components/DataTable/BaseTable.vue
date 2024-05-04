@@ -87,7 +87,6 @@
                 dark
                 rounded
                 raised
-                outlined
                 elevation="2"
                 x-small
                 depressed
