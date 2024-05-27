@@ -324,6 +324,7 @@ export default {
       this.$reqApi("basketitem/insert", form)
         .then((response) => {
           this.$toast.success("سبد خرید با موفقیت ثبت سبد");
+         this.$emit("basket_costumer_id" , response)
           this.loading = false;
         })
         .catch((error) => {
