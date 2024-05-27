@@ -110,7 +110,7 @@ let mnue_tree = [
         access: "wholesale_form/index",
         name: "فرم های دریافتی فروش عمده",
         route: "/product/wholesale-form",
-      },    
+      },
 
     ],
   },
@@ -165,12 +165,18 @@ let mnue_tree = [
     name: "تنظیمات",
     children: [
       {
+        id: 10065,
+        name: "بازه های زمانی",
+        access: "delivery_times/index",
+        route: "/setting/delivery-time",
+      },
+       {
         id: 19,
         name: "اسلایدر",
         access: "setting/index",
         route: "/setting/slider",
       },
-       {
+      {
         id: 1009,
         name: "فرم نظر سنجی",
         access: "comment_questions/index",
@@ -263,7 +269,7 @@ let type_send = [
 
 let status = [
   { text: "فعال", value: "active" },
-  { text: "غیر فعال", value: "hidden" },
+  { text: "غیر فعال", value: "in_active" },
 ];
 let status_message = [
   { text: "ثبت اولیه", value: "init" },

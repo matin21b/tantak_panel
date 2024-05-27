@@ -15,7 +15,7 @@
               <v-icon color="white" size="26"> cancel </v-icon>
             </v-btn>
           </v-card-title>
-          <v-stepper   value="1">
+          <v-stepper value="1">
             <v-row class="justify-center mt-4">
               <v-stepper-step complete editable edit-icon="content_paste_search" step="1">
                 <span class="font_16"> سوابق خرید </span>
@@ -35,6 +35,10 @@
                   در صورت مغایرت اطلاعات ,اطلاعات را تکمیل کنید
                 </small></v-stepper-step
               >
+              <v-stepper-step complete editable edit-icon="account_circle" step="4">
+                <span class="font_16"> سفارشات </span>
+                <small class="pt-2"> لیست سفارشات باز مشتری </small></v-stepper-step
+              >
             </v-row>
             <v-row class="justify-center">
               <v-col cols="9">
@@ -45,7 +49,6 @@
 
             <v-stepper-items>
               <v-stepper-content step="1">
-     
                 <v-col cols="12">
                   <BaseTable
                     url="basket/list-user"
@@ -64,26 +67,29 @@
                 </v-col>
               </v-stepper-content>
               <v-stepper-content step="3">
-              <v-row class="d-flex justify-center ">
-                <v-col md="9" cols="12" clss="center-div">
-                  <v-row class="d-flex justify-center ">
-                  <v-col md="4" cols="12">
-                    <amp-input text="نام مشتری" v-model="form.first_name" />
-                  </v-col>
-                  <v-col md="4" cols="12">
-                    <amp-input v-model="form.last_name" text=" نام خانوادگی" />
-                  </v-col>
-                  <v-col md="4" cols="12">
-                    <amp-input v-model="form.email" text="آدرس الکترونیکی" rules="email" />
-                  </v-col>
-                  <v-col md="12" cols="12">
-                    <amp-textarea text="آدرس" v-model="form.address"></amp-textarea>
+                <v-row class="d-flex justify-center">
+                  <v-col md="9" cols="12" clss="center-div">
+                    <v-row class="d-flex justify-center">
+                      <v-col md="4" cols="12">
+                        <amp-input text="نام مشتری" v-model="form.first_name" />
+                      </v-col>
+                      <v-col md="4" cols="12">
+                        <amp-input v-model="form.last_name" text=" نام خانوادگی" />
+                      </v-col>
+                      <v-col md="4" cols="12">
+                        <amp-input
+                          v-model="form.email"
+                          text="آدرس الکترونیکی"
+                          rules="email"
+                        />
+                      </v-col>
+                      <v-col md="12" cols="12">
+                        <amp-textarea text="آدرس" v-model="form.address"></amp-textarea>
+                      </v-col>
+                    </v-row>
                   </v-col>
                 </v-row>
-                  </v-col>
-              </v-row>
-      
-      
+
                 <v-row class="d-flex justify-center mb-4">
                   <amp-button
                     text="تایید"
@@ -95,18 +101,26 @@
                   ></amp-button>
                 </v-row>
               </v-stepper-content>
+              <v-stepper-content step="4">
+                <BaseTable
+                  url="basket/list-personnel"
+                  :rootBody="{ user_id: customer.id }"
+                  :headers="headers_basket"
+                  :filters="filters"
+                />
+
+          
+              </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
         </v-card>
-
-
-
       </v-card>
     </v-dialog>
   </div>
 </template>
 
 <script>
+
 export default {
   props: {
     DialogCustomer: {
@@ -122,9 +136,10 @@ export default {
   data: () => ({
     valid: true,
     headers: [],
+    headers_basket: [],
     comment: "",
     username: "",
-
+filters:{},
     steps: 1,
     loading: false,
     form: {
@@ -135,6 +150,12 @@ export default {
     },
   }),
   beforeMount() {
+    this.filters = {
+      status:{
+        op:"=" , 
+        value:'open'
+      }
+    }
     this.headers = [
       {
         text: "زمان ثبت",
@@ -167,9 +188,12 @@ export default {
         text: "وضعیت خرید",
         value: "status",
         filterType: "select",
-        items: [{
-          text:"پرداخت شده" , value:"payed"
-        }],
+        items: [
+          {
+            text: "پرداخت شده",
+            value: "payed",
+          },
+        ],
       },
     ];
     this.header_comments = [
@@ -212,12 +236,12 @@ export default {
         text: "توضیحات",
         filterCol: "comment",
         type: "tooltip",
-        function: body => {
+        function: (body) => {
           if (body.comment) {
             return body.comment;
           }
         },
-        value: body => {
+        value: (body) => {
           if (typeof body.comment == "string") {
             if (body.comment.length < 25) {
               return body.comment;
@@ -226,8 +250,89 @@ export default {
           } else {
             return "-";
           }
+        },
+      },
+    ];
+    this.headers_basket = [
+      {
+        text: "زمان ثبت",
+        filterType: "date",
+        filterCol: "created_at",
+        value: (body) => {
+          if (body.created_at) {
+            return this.$toJalali(body.created_at);
+          }
+          return "";
+        },
+      },
+      {
+        text: "قیمت (ریال)",
+        type: "price",
+        value: "price",
+      },
+      {
+        text: "تخفیف (ریال)",
+        type: "price",
+        value: "products_discount",
+      },
+      {
+        text: "شماره فاکتور",
+
+        value: "factor_number",
+      },
+      {
+        text: "توضیحات",
+        filterCol: "description",
+        type: "tooltip",
+        function: body => {
+          if (body.description) {
+            return body.description;
+          }
+        },
+        value: body => {
+          if (typeof body.description == "string") {
+            if (body.description.length < 25) {
+              return body.description;
+            }
+            return body.description.slice(0, 25) + "...";
+          } else {
+            return "-";
+          }
         }
       }
+      // {
+      //   text: "شماره همراه مشتری",
+      //   value: (body) => {
+      //     if (body.user) {
+      //       if (body.user.username) {
+      //         let start = body.user.username.slice(0, 3);
+      //         let end = body.user.username.slice(-4);
+      //         let phone_number = end + "****" + start;
+      //         return phone_number;
+      //       }
+      //     }
+      //   },
+      // },
+      // {
+      //   text: "توضیحات",
+      //   filterCol: "comment",
+      //   type: "tooltip",
+      //   function: (body) => {
+      //     if (body.comment) {
+      //       return body.comment;
+      //     }
+      //   },
+      //   value: (body) => {
+      //     if (typeof body.comment == "string") {
+      //       if (body.comment.length < 25) {
+      //         return body.comment;
+      //       }
+      //       return body.comment.slice(0, 25) + "...";
+      //     } else {
+      //       return "-";
+      //     }
+      //   },
+      // },
     ];
 
     if (this.customer.username) {

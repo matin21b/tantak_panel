@@ -12,8 +12,11 @@
               <v-stepper-step :complete="e1 > 2" step="2"> سبد خرید </v-stepper-step>
 
               <v-divider></v-divider>
+              <v-stepper-step :complete="e1 > 2" step="3">تکمیل اطلاعات</v-stepper-step>
 
-              <v-stepper-step :complete="e1 > 3" step="3"> مشاهده فاکتور </v-stepper-step>
+              <v-divider></v-divider>
+
+              <v-stepper-step :complete="e1 > 3" step="4"> مشاهده فاکتور </v-stepper-step>
             </v-stepper-header>
           </v-col>
         </v-row>
@@ -108,6 +111,7 @@
             <Basket
               ref="have_item"
               @next_step="goToStep($event)"
+              @basket_costumer_id="basket_costumer_id = $event"
               @backStep="backStep()"
               :UserId="user_id"
               @list="showBtn($event)"
@@ -131,7 +135,7 @@
                 class="ma-1"
                 text="ثبت سبد خرید "
                 :loading="loading_factor"
-                :disabled="loading ||save"
+                :disabled="loading || save"
               />
               <amp-button
                 v-if="next_btn"
@@ -148,6 +152,15 @@
           </v-stepper-content>
 
           <v-stepper-content step="3">
+        
+            <v-row v-if="e1 == 3" class="d-flex justify-center">
+              <v-col cols="12" md="10">
+                <CompleteInfo :basket_costumer_id="basket_costumer_id" @nextStep="e1 = 4" @backStep="e1 = 2"  :basket_id="basket_id"  :user_id="user_id" />
+              </v-col>
+       
+            </v-row>
+          </v-stepper-content>
+          <v-stepper-content step="4">
             <v-row
               v-if="factor_list.user && !loading_factor"
               class="d-flex justify-center my-10"
@@ -230,7 +243,7 @@
               <amp-button
                 icon="arrow_circle_right"
                 height="40"
-                @click="e1 = 2"
+                @click="e1 = 3"
                 class="ma-1"
                 color="red darken-3"
                 text="برگشت "
@@ -256,8 +269,9 @@
 <script>
 import UserSelectForm from "@/components/User/UserSelectForm";
 import Basket from "@/components/Product/Basket.vue";
+import CompleteInfo from "@/components/Product/CompleteInfo.vue";
 export default {
-  components: { UserSelectForm, Basket },
+  components: { UserSelectForm, Basket, CompleteInfo },
   data: () => ({
     e1: 1,
     attrs: {
@@ -285,6 +299,7 @@ export default {
     list_basket: {},
     factor_list: {},
     main_image: "",
+    basket_costumer_id: "",
     first_name: "",
     last_name: "",
     username: "",
@@ -292,6 +307,7 @@ export default {
     receipt_img: "",
     kind_set: "",
     product_varcomb_id: "",
+    basket_id: "",
     length_item: "",
     title: "ثبت فروش",
     basket_form: {
@@ -313,11 +329,17 @@ export default {
     user_id() {
       this.$refs.have_item.cleareBasket();
     },
+    e1(){
+      if (this.e1 == 3) {
+        this.loadFactor();
+      }
+   
+    },
     save() {
       if (Boolean(this.save)) {
         this.$refs.have_item.saveBasket();
         this.next_btn = true;
-        this.loadFactor();
+     
       }
     },
   },
@@ -402,7 +424,6 @@ export default {
         .catch((error) => {
           this.loading_factor = false;
         });
- 
     },
     backStep() {
       this.e1 = 1;
