@@ -212,7 +212,6 @@ export default {
     last_name: "",
     username: "",
 
-    receipt_img: "",
     product_varcomb_id: "",
     length_item: "",
   
