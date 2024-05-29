@@ -52,6 +52,24 @@
             <v-stepper-items>
               <v-stepper-content step="1">
                 <v-window v-model="step_basket">
+                  <v-row class="d-flex justify-center">
+                    <v-col cols="6" class="center-div">
+                  <v-row class="d-flex justify-center  mt-3 py-3 grey lighten-3">
+                
+                <span class="font_16">
+                شما فقط سبد خرید های با
+                <span class="font_17 primary--text">
+                  وضعیت باز
+                </span>
+          
+                 را میتوانید بروزرسانی کنید
+                
+                </span>
+                </v-row>
+                </v-col>
+                  </v-row>
+    
+
                   <v-window-item :value="1">
                     <v-col cols="12">
                       <BaseTable
@@ -64,7 +82,7 @@
                   </v-window-item>
 
                   <v-window-item :value="2">
-                    <v-col cols="12">
+                    <v-col cols="12" class="mt-5">
                       <!-- <BaseTable
                         url="basket-item"
                         :rootBody="{ basket_id: product_id }"
@@ -99,11 +117,16 @@
                         <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                           <small>تصویر</small>
                         </v-col>
-                        <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                        <v-col
+                          v-if="show_update_btn"
+                          class="ma-0 pa-0 text-center"
+                          md="1"
+                          cols="4"
+                        >
                           <small> حذف </small>
                         </v-col>
                       </v-row>
-        
+
                       <div v-if="list_basket && list_basket.items">
                         <v-col
                           cols="12"
@@ -124,11 +147,17 @@
                             <v-spacer> </v-spacer>
                             <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                               <v-row class="d-flex justify-center mt-1">
-                                <v-btn @click="addNumber(item, true)" x-small text>
+                                <v-btn
+                                  v-if="show_update_btn"
+                                  @click="addNumber(item, true)"
+                                  x-small
+                                  text
+                                >
                                   <v-icon small> add </v-icon>
                                 </v-btn>
                                 <small> {{ item.number }}</small>
                                 <v-btn
+                                  v-if="show_update_btn"
                                   :disabled="item.number == 1"
                                   @click="addNumber(item, false)"
                                   x-small
@@ -170,7 +199,12 @@
                               </v-card>
                             </v-col>
 
-                            <v-col class="ma-0 pa-0 text-center pr-3" md="1" cols="4">
+                            <v-col
+                              v-if="show_update_btn"
+                              class="ma-0 pa-0 text-center pr-3"
+                              md="1"
+                              cols="4"
+                            >
                               <v-btn
                                 @click="deleFromCard(index, item)"
                                 x-small
@@ -193,26 +227,26 @@
                           @click="step_basket--"
                           color="red darken-1 "
                           class="ma-1"
-                          text="           برگشت"
+                          :text="disabl_update ? 'برگشت' : 'انصراف'"
                         />
                       </v-col>
-                      <v-col cols="2">
+                      <v-col cols="2" v-if="show_update_btn">
                         <amp-button
                           block
-                          :disabled="loading"
+                          :disabled="loading || disabl_update"
                           :loading="loading"
                           height="40"
                           @click="updateBasket"
                           color="info darken-1 "
                           class="ma-1"
-                          text="ویرایش"
+                          text="بروزرسانی"
                         />
                       </v-col>
                     </v-row>
                   </v-window-item>
                 </v-window>
               </v-stepper-content>
-              <v-stepper-content step="2" >
+              <v-stepper-content step="2">
                 <v-window v-model="step">
                   <v-window-item :value="1">
                     <v-col cols="12">
@@ -256,7 +290,7 @@
                 </v-window>
               </v-stepper-content>
               <v-stepper-content step="3">
-                <v-row  class="d-flex justify-center">
+                <v-row class="d-flex justify-center">
                   <v-col md="9" cols="12" clss="center-div">
                     <v-row class="d-flex justify-center">
                       <v-col md="4" cols="12">
@@ -290,7 +324,7 @@
                   ></amp-button>
                 </v-row>
               </v-stepper-content>
-              <v-stepper-content step="4" >
+              <v-stepper-content step="4">
                 <BaseTable
                   url="basket/list-personnel"
                   :rootBody="root_body"
@@ -334,6 +368,7 @@ export default {
     product_id: "",
     basket_id: "",
     overlay: false,
+    disabl_update: true,
     filters: {},
     steps: 1,
     e1: 1,
@@ -341,6 +376,7 @@ export default {
     step: 1,
     step_basket: 1,
     loading: false,
+    show_update_btn: false,
     form: {
       first_name: "",
       last_name: "",
@@ -369,7 +405,13 @@ export default {
         fun: (body) => {
           this.step_basket++;
           this.product_id = body.id;
+
           this.loadListBAskets(body.id);
+          if (body.status == "open") {
+            this.show_update_btn = true;
+          }else{
+            this.show_update_btn = false;
+          }
         },
       },
     ];
@@ -459,10 +501,9 @@ export default {
       },
 
       {
-        text: "وضعیت خرید",
+        text: "وضعیت  سبد خرید",
         value: "status",
         filterType: "select",
-        // ','','','','',''
         items: [
           {
             text: "پرداخت شده",
@@ -653,6 +694,11 @@ export default {
       this.phoneNumber(this.customer.username);
     }
   },
+  watch: {
+    step_basket() {
+      this.disabl_update = true;
+    },
+  },
   mounted() {
     this.loadProfile();
   },
@@ -749,6 +795,7 @@ export default {
       product.splice(key, 1);
       this.$toast.success(`${item.name} از لیست خرید  حذف شد`);
       this.loading = false;
+      this.disabl_update = false;
     },
     addNumber(item, add) {
       this.loading = true;
@@ -757,7 +804,7 @@ export default {
       } else {
         item.number--;
       }
-      this.$emit("chek_save");
+      this.disabl_update = false;
       this.loading = false;
     },
     loadListBAskets(id) {
@@ -775,7 +822,7 @@ export default {
 
               full_barcode: x.full_barcode,
               discount: x.discount,
-              id: x.id,
+              id: x.product_varcomb_id,
               name: x.product.name,
               main_image: x.product.main_image,
             });
