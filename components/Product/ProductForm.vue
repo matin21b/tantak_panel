@@ -478,7 +478,6 @@ export default {
           }
         });
       }
-      console.log("form --> ", form);
       form["has_single_sell"] = parseInt(form["has_single_sell"]);
       form["has_whole_sell"] = parseInt(form["has_whole_sell"]);
       form["mixturable"] = parseInt(form["mixturable"]);
