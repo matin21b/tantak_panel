@@ -103,7 +103,6 @@ export default {
   watch: {},
 
   mounted() {
-    console.log("this.$route.query.id -- > ", this.$route.query.id);
     this.loadForwallet();
     if (this.$route.query.id) {
       this.showUser(this.$route.query.id);
