@@ -9,7 +9,9 @@
       <v-card>
         <v-card color="primary">
           <v-card-title>
-            <span style="font-size: 21px" class="white--text"> اطلاعات مشتری</span>
+            <span style="font-size: 21px" class="white--text">
+              اطلاعات مشتری</span
+            >
             <v-spacer></v-spacer>
             <v-btn icon @click="closeDialog">
               <v-icon color="white" size="26"> cancel </v-icon>
@@ -18,7 +20,12 @@
 
           <v-stepper v-model="step_index">
             <v-row class="justify-center mt-4">
-              <v-stepper-step complete editable edit-icon="content_paste_search" step="1">
+              <v-stepper-step
+                complete
+                editable
+                edit-icon="content_paste_search"
+                step="1"
+              >
                 <span class="font_16"> سوابق خرید </span>
                 <small class="pt-2">
                   خریدهای ثبت شده برای
@@ -30,15 +37,27 @@
                 <small class="pt-2">نظرات ثبت شده برای مشتری</small>
               </v-stepper-step>
 
-              <v-stepper-step complete editable edit-icon="account_circle" step="3">
+              <v-stepper-step
+                complete
+                editable
+                edit-icon="account_circle"
+                step="3"
+              >
                 <span class="font_16"> تکمیل پروفایل </span>
                 <small class="pt-2">
                   در صورت مغایرت اطلاعات ,اطلاعات را تکمیل کنید
                 </small></v-stepper-step
               >
-              <v-stepper-step complete editable edit-icon="account_circle" step="4">
+              <v-stepper-step
+                complete
+                editable
+                edit-icon="account_circle"
+                step="4"
+              >
                 <span class="font_16"> سفارشات </span>
-                <small class="pt-2"> لیست سفارشات باز مشتری </small></v-stepper-step
+                <small class="pt-2">
+                  لیست سفارشات باز مشتری
+                </small></v-stepper-step
               >
             </v-row>
 
@@ -54,7 +73,9 @@
                 <v-window v-model="step_basket">
                   <v-row class="d-flex justify-center">
                     <v-col cols="4" class="center-div">
-                      <v-row class="d-flex justify-center mt-3 py-3 grey lighten-3">
+                      <v-row
+                        class="d-flex justify-center mt-3 py-3 grey lighten-3"
+                      >
                         <span class="font_13">
                           شما فقط سبد خرید های با
                           <span class="font_14 primary--text"> وضعیت باز </span>
@@ -78,14 +99,17 @@
 
                   <v-window-item :value="2">
                     <AddProduct
-                    @add="addBasket($event)"
-                    v-if="dialog_add_product.show"
-                    :DialogAdd="dialog_add_product"
-                  />
+                      @add="addBasket($event)"
+                      v-if="dialog_add_product.show"
+                      :DialogAdd="dialog_add_product"
+                    />
 
                     <v-col cols="12" class="mt-5">
-      
-                      <v-col cols="12" class="text-start" v-if="show_update_btn">
+                      <v-col
+                        cols="12"
+                        class="text-start"
+                        v-if="show_update_btn"
+                      >
                         <amp-button
                           icon="add_circle"
                           height="40"
@@ -94,7 +118,7 @@
                           text="افزودن محصول"
                         />
                       </v-col>
-                      <v-row class="orange lighten-3 py-2 my-2  mt-5">
+                      <v-row class="orange lighten-3 py-2 my-2 mt-5">
                         <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                           <small> نام محصول</small>
                         </v-col>
@@ -141,17 +165,29 @@
                           :key="index"
                         >
                           <v-row>
-                            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
                               <small> {{ item.name }}</small>
                             </v-col>
 
                             <v-spacer />
-                            <v-col class="ma-0 pa-0 text-center" md="3" cols="4">
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="3"
+                              cols="4"
+                            >
                               <small> {{ item.information }}</small>
                             </v-col>
 
                             <v-spacer> </v-spacer>
-                            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
                               <v-row class="d-flex justify-center mt-1">
                                 <v-btn
                                   v-if="show_update_btn"
@@ -175,22 +211,40 @@
                             </v-col>
 
                             <v-spacer />
-                            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
                               <small> {{ item.full_barcode }}</small>
                             </v-col>
 
                             <v-spacer />
-                            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
                               <small> {{ $price(item.price) }}</small>
                             </v-col>
 
                             <v-spacer />
-                            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
-                              <small> {{ $price(item.price * item.number) }}</small>
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small>
+                                {{ $price(item.price * item.number) }}</small
+                              >
                             </v-col>
 
                             <v-spacer />
-                            <v-col class="ma-0 pa-0 text-center pr-13" md="1" cols="4">
+                            <v-col
+                              class="ma-0 pa-0 text-center pr-13"
+                              md="1"
+                              cols="4"
+                            >
                               <v-card
                                 elevation="0"
                                 max-width="50"
@@ -265,7 +319,11 @@
                     </v-col>
                   </v-window-item>
                   <v-window-item :value="2">
-                    <v-col cols="12" v-for="(item, index) in question_form" :key="index">
+                    <v-col
+                      cols="12"
+                      v-for="(item, index) in question_form"
+                      :key="index"
+                    >
                       <v-row>
                         <v-col cols="6" class="mr-2">
                           <h1 class="black--text font_13">
@@ -303,7 +361,10 @@
                         <amp-input text="نام مشتری" v-model="form.first_name" />
                       </v-col>
                       <v-col md="4" cols="12">
-                        <amp-input v-model="form.last_name" text=" نام خانوادگی" />
+                        <amp-input
+                          v-model="form.last_name"
+                          text=" نام خانوادگی"
+                        />
                       </v-col>
                       <v-col md="4" cols="12">
                         <amp-input
@@ -313,7 +374,10 @@
                         />
                       </v-col>
                       <v-col md="12" cols="12">
-                        <amp-textarea text="آدرس" v-model="form.address"></amp-textarea>
+                        <amp-textarea
+                          text="آدرس"
+                          v-model="form.address"
+                        ></amp-textarea>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -336,21 +400,76 @@
                   :rootBody="root_body"
                   :headers="headers_basket"
                   :filters="filters"
+                  ref="listPersonal"
                 />
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
         </v-card>
       </v-card>
+      <v-overlay v-if="payment_list.show">
+        <v-card class="primary lighten-3">
+          <v-card-title>
+            <v-btn icon color="error" @click="payment_list.show = false"
+              ><v-icon>close</v-icon></v-btn
+            >
+          </v-card-title>
+          <Payment
+            v-if="payment_list.show"
+            :model-id="payment_list.item"
+            :userChangeStatus="true"
+          />
+        </v-card>
+      </v-overlay>
+      <v-overlay v-if="change_step">
+        <v-card min-width="600" class="px-6 primary lighten-1">
+          <v-card-title>
+            <span>ارجاع به واحد مالی</span>
+          </v-card-title>
+          <v-card-text>
+            <amp-select
+              text="تغییر وضعیت"
+              v-model="form_change_step.step"
+              :items="step_items"
+            ></amp-select>
+            <amp-select
+              text="مدیر مالی"
+              :items="firacl_memebers"
+              v-model="form_change_step.fiscal_manager_id"
+            />
+            <amp-textarea
+              text="پیام"
+              v-model="form_change_step.message"
+            ></amp-textarea>
+          </v-card-text>
+          <v-card-actions class="center-div">
+            <amp-button
+              text="تایید"
+              color="success"
+              @click="changeStep"
+              :disabled="!valid"
+              :loading="loading_for_chagne_status"
+            />
+            <amp-button
+              text="انصراف"
+              color="error"
+              @click="change_step = false"
+            />
+          </v-card-actions>
+        </v-card>
+      </v-overlay>
     </v-dialog>
   </div>
 </template>
 
 <script>
 import AddProduct from "@/components/Product/AddProduct.vue";
+import Payment from "@/components/User/Payment.vue";
+
 export default {
-  components:{
-    AddProduct
+  components: {
+    AddProduct,
+    Payment,
   },
   props: {
     DialogCustomer: {
@@ -366,8 +485,16 @@ export default {
   data: () => ({
     valid: true,
     headers: [],
+    loading_for_chagne_status: false,
+    form_change_step: {
+      id: "",
+      step: "",
+      message: "",
+      fiscal_manager_id: "",
+    },
     headers_basket: [],
     item_basket: [],
+    change_step: false,
     btn_actions: [],
     question_form: [],
     baskets: [],
@@ -375,6 +502,11 @@ export default {
     list_basket: { items: [] },
     comment: "",
     username: "",
+    payment_list: {
+      show: false,
+      item: null,
+    },
+
     product_id: "",
     dialog_add_product: { show: false, items: null },
     basket_id: "",
@@ -383,20 +515,77 @@ export default {
     filters: {},
     steps: 1,
     e1: 1,
+
     step_index: 1,
     step: 1,
     step_basket: 1,
     loading: false,
+    fical_messanger: [],
     show_update_btn: false,
+    step_status: [
+      {
+        text: "ارجاع به واحد مالی",
+        value: "refer_fiscal_manager",
+      },
+      {
+        text: "تایید واحد مالی",
+        value: "accept_fiscal_manager",
+      },
+      {
+        text: "عدم تایید واحد مالی",
+        value: "reject_fiscal_manager",
+      },
+    ],
+    step_items: [],
+    admin: [
+      {
+        text: "ارجاع به واحد مالی",
+        value: "refer_fiscal_manager",
+      },
+    ],
+    oper: [
+      {
+        text: "ارجاع به واحد مالی",
+        value: "refer_fiscal_manager",
+      },
+    ],
+    firac: [
+      {
+        text: "تایید واحد مالی",
+        value: "accept_fiscal_manager",
+      },
+      {
+        text: "عدم تایید واحد مالی",
+        value: "reject_fiscal_manager",
+      },
+    ],
     form: {
       first_name: "",
       last_name: "",
       email: "",
       address: "",
     },
+    cahgned_step: "",
+    firacl_memebers: [],
   }),
   beforeMount() {
     this.root_body = { user_id: this.customer.id };
+    let admin = this.$store.state.auth.role.admin_id;
+    let opr = this.$store.state.auth.role.oprator_id;
+    let fac = this.$store.state.auth.role.fac_call_id;
+    let roles = this.$store.state.auth.user.roles;
+    roles.forEach((element) => {
+      if (element.id == admin) {
+        this.step_items = this.admin;
+      }
+      if (element.id == opr) {
+        this.step_items = this.oper;
+      }
+      if (element.id == fac) {
+        this.step_items = this.firac;
+      }
+    });
+
     this.btn_actions = [
       {
         text: "پاسخ های داده شده",
@@ -409,6 +598,40 @@ export default {
       },
     ];
     this.item_basket = [
+      {
+        color: "success",
+        icon: "list",
+        text: "لیست پرداختی ها",
+        fun: (body) => {
+          if (body.id) {
+            this.payment_list.show = true;
+            this.payment_list.item = body.user.id;
+          }
+        },
+      },
+      {
+        color: "primary",
+        icon: "change_circle",
+        text: "ارجاع به واحد مالی",
+        fun: (body) => {
+          if (body.id) {
+            this.change_step = true;
+            this.cahgned_step = body.step;
+            this.form_change_step.id = body.id;
+          }
+        },
+        show_fun: (body) => {
+          if (body.status == "waiting" || body.status == "payed") {
+            if (body.step == "init" || body.step == "reject_fiscal_manager") {
+              return true;
+            } else {
+              return false;
+            }
+          } else {
+            return false;
+          }
+        },
+      },
       {
         text: "موجودی سبد خرید",
         icon: "shopping_basket",
@@ -510,7 +733,6 @@ export default {
           }
         },
       },
-
       {
         text: "وضعیت  سبد خرید",
         value: "status",
@@ -542,6 +764,12 @@ export default {
             value: "mixture",
           },
         ],
+      },
+      {
+        text: "مرحله",
+        filterType: "select",
+        value: "step",
+        items: this.step_status,
       },
 
       {
@@ -709,9 +937,25 @@ export default {
     step_basket() {
       this.disabl_update = true;
     },
+    "payment_list.show"() {
+      if (this.payment_list.show == false) {
+        this.payment_list.item = null;
+      }
+    },
+    change_step() {
+      if (this.change_step == false) {
+        this.cahgned_step = "";
+        this.form_change_step = {
+          id: "",
+          step: "",
+          message: "",
+        };
+      }
+    },
   },
   mounted() {
     this.loadProfile();
+    this.loadFiscal();
   },
   methods: {
     profileCustomer() {
@@ -749,6 +993,23 @@ export default {
     relod() {
       this.$emit("relod");
     },
+    loadFiscal() {
+      this.$reqApi("/user/fiscal-manager", { row_number: 300 })
+        .then((res) => {
+          let user = [];
+          let data = res.model.data;
+          data.map((x) => {
+            user.push({
+              text: `${x.first_name} ${x.last_name} | ${x.username}`,
+              value: x.id,
+            });
+          });
+          this.firacl_memebers = user;
+        })
+        .catch((err) => {
+          return err;
+        });
+    },
     phoneNumber(username) {
       let start = username.slice(0, 3);
       let end = username.slice(-4);
@@ -758,6 +1019,21 @@ export default {
         ? this.customer.first_name + " " + this.customer.last_name
         : phone_number;
       this.username = name;
+    },
+    changeStep() {
+      this.loading_for_chagne_status = true;
+      this.$reqApi("/basket/referral", this.form_change_step)
+        .then((res) => {
+          this.$toast.success("عملیات انجام شد");
+          this.change_step = false;
+          this.$refs.listPersonal.getDataFromApi();
+          this.loading_for_chagne_status = false;
+        })
+        .catch((err) => {
+          this.loading_for_chagne_status = false;
+
+          return err;
+        });
     },
     loadQusestions(answers) {
       // --------------------------
@@ -932,7 +1208,7 @@ export default {
         });
         this.$toast.success("محصول به سبد خرید اضافه شد");
       }
-     this.disabl_update = false
+      this.disabl_update = false;
       this.loading = false;
     },
   },

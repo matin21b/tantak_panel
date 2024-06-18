@@ -60,11 +60,11 @@
           v-if="dialog_customer.show"
           :DialogCustomer="dialog_customer"
           :customer="customer"
-        />
+        /> 
         <BasketDialog
           v-if="dialog_basket.show"
           :BasketDialog="dialog_basket"
-          :user_basket="user_basket"
+          :user_basket="user_basket" 
         />
         <ChangeStatus
           v-if="dialog_change_status.show"
@@ -91,8 +91,17 @@ import History from "~/components/NewCallCenter/History.vue";
 import Refer from "~/components/NewCallCenter/Refer.vue";
 import MessageLog from "~/components/NewCallCenter/MessageLog.vue";
 import BasketDialog from "@/components/NewCallCenter/BasketDialog.vue";
+
 export default {
-  components: { BaseTable, History, ChangeStatus, Customer, Refer, MessageLog, BasketDialog },
+  components: {
+    BaseTable,
+    History,
+    ChangeStatus,
+    Customer,
+    Refer,
+    MessageLog,
+    BasketDialog,
+  },
   data: () => ({
     headers: [],
     panel: 1,
@@ -199,7 +208,7 @@ export default {
           }
         },
         value: (body) => {
-          if (typeof body.message == "string") {
+          if (typeof body.message == "string") { 
             if (body.message.length < 25) {
               return body.message;
             }
@@ -294,7 +303,9 @@ export default {
               if (Boolean(event)) {
                 if (
                   (this.$checkRole(this.$store.state.auth.role.admin_id) ||
-                    this.$checkRole(this.$store.state.auth.role.admin_call_center_id)) &&
+                    this.$checkRole(
+                      this.$store.state.auth.role.admin_call_center_id
+                    )) &&
                   (body.step == "init" || body.step == "supervisor_to_manager")
                 ) {
                   show = true;
@@ -335,7 +346,9 @@ export default {
               if (body.user) {
                 if (
                   this.$checkRole(this.$store.state.auth.role.admin_id) ||
-                  this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
+                  this.$checkRole(
+                    this.$store.state.auth.role.admin_call_center_id
+                  )
                 ) {
                   return body.user.username;
                 } else {
@@ -408,7 +421,9 @@ export default {
               if (body.user) {
                 if (
                   this.$checkRole(this.$store.state.auth.role.admin_id) ||
-                  this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
+                  this.$checkRole(
+                    this.$store.state.auth.role.admin_call_center_id
+                  )
                 ) {
                   return body.user.username;
                 } else {
