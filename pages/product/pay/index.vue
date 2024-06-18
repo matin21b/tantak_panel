@@ -1,21 +1,64 @@
 <template>
   <div>
-    <BaseTable url="/payment" :headers="headers"> </BaseTable>
+    <v-window v-model="step">
+      <v-window-item :value="1">
+        <BaseTable
+          ref="RefreshPayments"
+          url="/payment"
+          :BTNactions="btn_actions"
+          :headers="headers"
+        >
+        </BaseTable>
+      </v-window-item>
+
+      <v-window-item :value="2">
+        <Confirmation
+          :payId="pay_id"
+          :userInfo="user_info"
+          @back="step--"
+          @refresh="refresh"
+        />
+      </v-window-item>
+    </v-window>
   </div>
 </template>
 
 <script>
+
 import BaseTable from "~/components/DataTable/BaseTable";
+import Confirmation from "~/components/Product/Confirmation.vue";
 export default {
-  components: { BaseTable },
+  components: { BaseTable, Confirmation },
   data: () => ({
     headers: [],
     btn_actions: [],
-
+    user_info: {},
+    step: 1,
+    pay_id: "",
     title: "لیست پرداخت ها ",
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
+    this.btn_actions = [
+      {
+        color: "info",
+        text: "پرداخت",
+        icon: "check_circle",
+        fun: (body) => {
+          this.step++;
+          this.pay_id = body.id;
+          this.user_info = body.user;
+          this.user_info["price"] = body.price;
+        },
+        show_fun: (body) => {
+          if (body.status == "wait" && body.kind_set == "cardToCard ") {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+    ];
     this.headers = [
       {
         text: "زمان ثبت",
@@ -120,6 +163,11 @@ export default {
         },
       },
     ];
+  },
+  methods: {
+    refresh() {
+      this.$refs.RefreshPayments.getDataFromApi();
+    },
   },
 };
 </script>

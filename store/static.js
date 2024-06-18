@@ -101,7 +101,13 @@ let mnue_tree = [
         name: "دسته بندی محصولات",
         access: "category/index",
         route: "/product/category",
-      },
+      }, 
+      //      {
+      //   id: 112545,
+      //   name: "پکیج ها",
+      //   access: "packages/index",
+      //   route: "/product/packages",
+      // },
       {
         id: 40,
         name: "برند ها",
