@@ -31,6 +31,7 @@
                         <th class="text-center">تاریخ پرداخت</th>
                         <th class="text-center">وضعیت</th>
                         <th class="text-center">توضیحات</th>
+                        <th class="text-center">عکس رسید</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -43,6 +44,11 @@
                         <td>{{ setKind(item.kind_set) }}</td>
                         <td>{{ setStatus(item.status) }}</td>
                         <td>{{ item.text }}</td>
+                        <td class="d-flex justify-center align-center">
+                          <v-btn @click="openFIle(item.receipt_img)" color="primary" >
+                            <v-icon>image</v-icon>
+                          </v-btn>
+                        </td>
                       </tr>
                     </tbody>
                   </template>
@@ -307,7 +313,7 @@ export default {
         text: "تاریخچه کیف پول",
         icon: "account_balance_wallet",
         color: "success darken-2",
-        fun: (body) => { 
+        fun: (body) => {
           if (body.wallet_transactions.length > 0) {
             this.wallet_transactoin.show = true;
             this.wallet_transactoin.item = body.wallet_transactions;
@@ -457,6 +463,9 @@ export default {
         }
       });
       return text;
+    },
+    openFIle(img) {
+      window.open(`${this.$store.state.file_url}/${img}`);
     },
     setStatus(value) {
       let text = "-";
