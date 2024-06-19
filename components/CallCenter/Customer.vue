@@ -602,6 +602,10 @@ export default {
         text: "عدم تایید واحد مالی",
         value: "reject_fiscal_manager",
       },
+      {
+        text:'ثبت اولیه',
+        value:'init'
+      }
     ],
     step_items: [],
     admin: [
@@ -672,7 +676,7 @@ export default {
         fun: (body) => {
           if (body.id) {
             this.payment_list.show = true;
-            this.payment_list.item = body.user.id;
+            this.payment_list.item = body.id;
           }
         },
       },
@@ -686,6 +690,13 @@ export default {
             this.wallet_transactoin.item = body.wallet_transactions;
           }
         },
+        show_fun:(body)=>{
+          if(body.wallet_transactions.length>0){
+            return true
+          }else{
+            return false
+          }
+        }
       },
       {
         color: "primary",

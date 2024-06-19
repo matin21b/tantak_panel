@@ -31,6 +31,7 @@
                         <th class="text-center">تاریخ پرداخت</th>
                         <th class="text-center">وضعیت</th>
                         <th class="text-center">توضیحات</th>
+                        <th class="text-center">شماره تراکنش</th>
                         <th class="text-center">عکس رسید</th>
                       </tr>
                     </thead>
@@ -44,7 +45,8 @@
                         <td>{{ setKind(item.kind_set) }}</td>
                         <td>{{ setStatus(item.status) }}</td>
                         <td>{{ item.text }}</td>
-                        <td class="d-flex justify-center align-center">
+                        <td>{{ item.transaction_number }}</td>
+                        <td class="d-flex justify-center align-center" v-if="item.receipt_img" >
                           <v-btn @click="openFIle(item.receipt_img)" color="primary" >
                             <v-icon>image</v-icon>
                           </v-btn>
@@ -101,8 +103,8 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-overlay v-if="change">
-      <v-card min-width="600" class="px-6 primary lighten-1">
+    <v-dialog v-model="change"  max-width="500">
+      <v-card class="px-6 ">
         <v-card-title>
           <span>ارجاع به واحد مالی</span>
         </v-card-title>
@@ -128,7 +130,7 @@
           <amp-button text="انصراف" color="error" @click="change = false" />
         </v-card-actions>
       </v-card>
-    </v-overlay>
+    </v-dialog>
     <v-dialog v-model="show_history">
       <v-card>
         <v-card-title class="d-flex justify-space-between align-center">
