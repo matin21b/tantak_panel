@@ -126,6 +126,23 @@ export default {
             }
           },
         },
+        {
+          color: "primary",
+          icon: "image",
+          text: "فایل",
+          fun: (body) => {
+            if (body.receipt_img) {
+              window.open(`${this.$store.state.file_url}/${body.receipt_img}`);
+            }
+          },
+          show_fun: (body) => {
+            if (Boolean(body.receipt_img)) {
+              return true;
+            } else {
+              return false;
+            }
+          },
+        },
       ];
     }
     this.headers = [
@@ -168,6 +185,10 @@ export default {
           { text: "   کارت خوان", value: "pos" },
           { text: " پرداخت درب منزل", value: "post" },
         ],
+      },
+      {
+        text: "شماره تراکنش بانکی",
+        value: "transaction_number",
       },
 
       { text: "مقدار پرداختی (ریال)", type: "price", value: "price" },

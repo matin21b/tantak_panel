@@ -407,7 +407,7 @@
           </v-stepper>
         </v-card>
       </v-card>
-      <v-overlay v-if="payment_list.show">
+      <v-dialog v-model="payment_list.show">
         <v-card class="primary lighten-3">
           <v-card-title>
             <v-btn icon color="error" @click="payment_list.show = false"
@@ -415,12 +415,12 @@
             >
           </v-card-title>
           <Payment
-            v-if="payment_list.show"
+            v-if="payment_list.show" 
             :model-id="payment_list.item"
             :userChangeStatus="true"
           />
         </v-card>
-      </v-overlay>
+      </v-dialog>
       <v-overlay v-if="change_step">
         <v-card min-width="600" class="px-6 primary lighten-1">
           <v-card-title>
@@ -458,6 +458,23 @@
           </v-card-actions>
         </v-card>
       </v-overlay>
+    </v-dialog>
+    <v-dialog v-model="show_history">
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span> تاریخچه ارجاعات </span>
+          <v-btn icon color="error" @click="show_history = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text>
+          <BaseTable
+            url="basket/referral-history"
+            :rootBody="root_body_history"
+            :headers="header_history"
+          />
+        </v-card-text>
+      </v-card>
     </v-dialog>
   </div>
 </template>
@@ -522,6 +539,10 @@ export default {
     loading: false,
     fical_messanger: [],
     show_update_btn: false,
+    show_history: false,
+    header_history: [],
+    root_body_history: {},
+    history_basket_id: "",
     step_status: [
       {
         text: "ارجاع به واحد مالی",
@@ -606,6 +627,18 @@ export default {
           if (body.id) {
             this.payment_list.show = true;
             this.payment_list.item = body.user.id;
+          }
+        },
+      },
+      {
+        color: "primary",
+        icon: "list",
+        text: "تاریخچه ارجاعات",
+        fun: (body) => {
+          if (body.id) {
+            this.history_basket_id = body.id;
+            this.show_history = true;
+            this.root_body_history = { basket_id: body.id };
           }
         },
       },
@@ -786,6 +819,49 @@ export default {
         text: "شماره فاکتور",
 
         value: "factor_number",
+      },
+    ];
+    this.header_history = [
+      {
+        text: "زمان ثبت",
+        filterType: "date",
+        filterCol: "created_at",
+        value: (body) => {
+          if (body.created_at) {
+            return this.$toJalali(body.created_at);
+          }
+          return "";
+        },
+      },
+      {
+        text: "پیام",
+        value: "message",
+      },
+      {
+        text: "نوع ارجاع",
+        value: "text",
+      },
+      {
+        text: "ارجاع دهنده",
+        disableSort: "true",
+        filterable: false,
+        value: (body) => {
+          if (body.sender) {
+            return `<span class='success--text mx-2'>${body.sender.first_name} ${body.sender.last_name} | ${body.sender.username}</span>`;
+          }
+        },
+      },
+      {
+        text: "گیرنده",
+        disableSort: "true",
+        filterable: false,
+        value: (body) => {
+          if (body.geter) {
+            return `<span class='info--text mx-2'>${body.geter.first_name} ${body.geter.last_name} | ${body.geter.username}</span>`;
+          } else {
+            return "ندارد";
+          }
+        },
       },
     ];
     this.header_comments = [
