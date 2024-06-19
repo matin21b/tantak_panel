@@ -20,6 +20,7 @@ export const state = () => ({
     admin_call_center_id: "495c61df-0a45-4d3d-9153-8fc614c65361",
     superviser_id: "9154bce8-a24c-4841-8d00-77bedf0ae90e",
     oprator_id: "b531a124-cc96-405b-aaab-3b5cc9526de2",
+    fac_call_id:'920976fd-423f-413a-8dba-eead45af9dea',
   },
 });
 

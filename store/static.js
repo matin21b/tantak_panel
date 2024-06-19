@@ -130,6 +130,12 @@ let mnue_tree = [
     ],
   },
   {
+    id:565,
+    name:"سبد های خرید",
+    access:'basket/list_referrals',
+    route:'basket/referral-list',
+  },
+  {
     id: 31,
     name: "موجودی انبار",
     access: "product/index",
