@@ -43,13 +43,17 @@ export default {
       {
         text: "تصویر",
         filtrabel: false,
-        disabled:true,
+        disabled: true,
         type: "image",
         value: "logo",
       },
       {
         text: "عنوان پکیج",
         value: "name",
+      },
+      {
+        text: " وزن محصول (گرم)",
+        value: "weight",
       },
       {
         text: "قیمت پکیج (ریال)",
@@ -62,7 +66,42 @@ export default {
         filterType: "select",
         items: this.$store.state.static.branch_status,
       },
-
+      {
+        text: "فروش تلفنی",
+        type: "boolean",
+        filterable: false,
+        value: (body) => {
+          if (body.sale_phone) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "فروش حضوری",
+        type: "boolean",
+        filterable: false,
+        value: (body) => {
+          if (body.sale_person) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "فروش آنلاین",
+        type: "boolean",
+        filterable: false,
+        value: (body) => {
+          if (body.sale_online) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
 
       {
         filterable: false,
@@ -84,18 +123,7 @@ export default {
         },
       },
     ];
-    // this.btn_actions = [
-    //   {
-    //     color: "primary",
-    //     icon: "inventory",
-    //     text: "موجودی",
-    //     fun: (body) => {
-    //       if (body.id) {
-    //         this.$router.push(`/branches/stock/${body.id}`)
-    //       }
-    //     },
-    //   },
-    // ];
+
     this.$store.dispatch("setPageTitle", this.title);
   },
   methods: {
