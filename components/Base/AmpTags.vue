@@ -78,6 +78,7 @@ export default {
 <style>
 .tags-combo i {
   display: none !important;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 </style>
 

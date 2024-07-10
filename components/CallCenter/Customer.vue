@@ -92,7 +92,14 @@
                         url="basket/list-personnel"
                         :rootBody="root_body"
                         :headers="headers"
+                        ref="itemsBasketList"
                         :BTNactions="item_basket"
+                        :rowColor="rowColor"
+                      />
+                      <CoordinatorDialog
+                        :coordinatorDialog="coordinator_dialog"
+                        :bsaketId="basket_id"
+                        @relod="refresh"
                       />
                     </v-col>
                   </v-window-item>
@@ -524,11 +531,13 @@
 <script>
 import AddProduct from "@/components/Product/AddProduct.vue";
 import Payment from "@/components/User/Payment.vue";
+import CoordinatorDialog from "@/components/CallCenter/CoordinatorDialog.vue";
 
 export default {
   components: {
     AddProduct,
     Payment,
+    CoordinatorDialog,
   },
   props: {
     DialogCustomer: {
@@ -588,6 +597,10 @@ export default {
     show_history: false,
     header_history: [],
     root_body_history: {},
+    coordinator_dialog: {
+      itesm: null,
+      show: false,
+    },
     history_basket_id: "",
     step_status: [
       {
@@ -603,9 +616,13 @@ export default {
         value: "reject_fiscal_manager",
       },
       {
-        text:'ثبت اولیه',
-        value:'init'
-      }
+        text: "ارجاع به هماهنگ کننده",
+        value: "refer_coordinator",
+      },
+      {
+        text: "ثبت اولیه",
+        value: "init",
+      },
     ],
     step_items: [],
     admin: [
@@ -690,13 +707,13 @@ export default {
             this.wallet_transactoin.item = body.wallet_transactions;
           }
         },
-        show_fun:(body)=>{
-          if(body.wallet_transactions.length>0){
-            return true
-          }else{
-            return false
+        show_fun: (body) => {
+          if (body.wallet_transactions.length > 0) {
+            return true;
+          } else {
+            return false;
           }
-        }
+        },
       },
       {
         color: "primary",
@@ -728,6 +745,24 @@ export default {
             } else {
               return false;
             }
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        color: "orange darken-4",
+        icon: "change_circle",
+        text: "ارجاع به  هماهنگ کننده",
+        fun: (body) => {
+          if (body.step) {
+            this.coordinator_dialog.show = true;
+            this.basket_id = body.id;
+          }
+        },
+        show_fun: (body) => {
+          if (body.step == "accept_fiscal_manager") {
+            return true;
           } else {
             return false;
           }
@@ -1102,6 +1137,14 @@ export default {
     this.loadFiscal();
   },
   methods: {
+    refresh() {
+      this.$refs.itemsBasketList.getDataFromApi();
+    },
+    rowColor(body) {
+      if (body.item.step == "accept_fiscal_manager") {
+        return "teal lighten-4";
+      }
+    },
     profileCustomer() {
       this.loading = true;
       let form = { ...this.form };

@@ -46,8 +46,14 @@
                         <td>{{ setStatus(item.status) }}</td>
                         <td>{{ item.text }}</td>
                         <td>{{ item.transaction_number }}</td>
-                        <td class="d-flex justify-center align-center" v-if="item.receipt_img" >
-                          <v-btn @click="openFIle(item.receipt_img)" color="primary" >
+                        <td
+                          class="d-flex justify-center align-center"
+                          v-if="item.receipt_img"
+                        >
+                          <v-btn
+                            @click="openFIle(item.receipt_img)"
+                            color="primary"
+                          >
                             <v-icon>image</v-icon>
                           </v-btn>
                         </td>
@@ -103,8 +109,8 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="change"  max-width="500">
-      <v-card class="px-6 ">
+    <v-dialog v-model="change" max-width="500">
+      <v-card class="px-6">
         <v-card-title>
           <span>ارجاع به واحد مالی</span>
         </v-card-title>
@@ -166,6 +172,7 @@ export default {
     items: [],
     change: false,
     valid: false,
+    is_coordinator: false,
     actions: [],
     form_change_step: {
       message: "",
@@ -197,6 +204,10 @@ export default {
       {
         text: "ارجاع به واحد مالی",
         value: "refer_fiscal_manager",
+      },
+      {
+        text: "ارجاع به واحد هماهنگ کننده",
+        value: "refer_coordinator",
       },
       {
         text: "تایید واحد مالی",
@@ -255,6 +266,13 @@ export default {
     },
   }),
   beforeMount() {
+    if (this.$checkRole(this.$store.state.auth.role.coordinator_id)) {
+      this.is_coordinator = true;
+      this.items_chagne = [
+        { text: "برگشت سبد خرید", value: "reject_coordinator" },
+      ];
+    }
+
     this.$store.dispatch("setPageTitle", this.title);
     this.header_history = [
       {
@@ -321,7 +339,15 @@ export default {
             this.wallet_transactoin.item = body.wallet_transactions;
           }
         },
+        show_fun: (body) => {
+          if (body.wallet_transactions.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        },
       },
+
       {
         color: "primary",
         icon: "list",
@@ -344,6 +370,22 @@ export default {
         },
         show_fun: (body) => {
           if (body.step == "refer_fiscal_manager") {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "تغییر وضعیت",
+        icon: "change_circle",
+        color: "teal",
+        fun: (body) => {
+          this.change = true;
+          this.item_id = body.id;
+        },
+        show_fun: (body) => {
+          if (body.step == "refer_coordinator") {
             return true;
           } else {
             return false;
@@ -480,11 +522,21 @@ export default {
     },
     changeStep() {
       this.loading_for_chagne_status = true;
-      this.form_change_step.id = this.item_id;
-      this.$reqApi("/basket/referral", this.form_change_step)
+      let form = {};
+      if (Boolean(this.is_coordinator)) {
+        form["id"] = this.item_id;
+        form["step"] = this.form_change_step.step;
+        form["message"] = this.form_change_step.message;
+      } else {
+        this.form_change_step.id = this.item_id;
+        form = { ...this.form_change_step };
+      }
+
+      this.$reqApi("/basket/referral" , form)
         .then((res) => {
           this.loading_for_chagne_status = false;
           this.change = false;
+          this.$toast.success("سفارش با موفقیت ارجاع داده شد")
           this.$refs.changeTable.getDataFromApi();
         })
         .catch((err) => {

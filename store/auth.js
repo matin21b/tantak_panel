@@ -21,6 +21,7 @@ export const state = () => ({
     superviser_id: "9154bce8-a24c-4841-8d00-77bedf0ae90e",
     oprator_id: "b531a124-cc96-405b-aaab-3b5cc9526de2",
     fac_call_id:'920976fd-423f-413a-8dba-eead45af9dea',
+    coordinator_id:'b659c438-531d-4aab-93e0-58f5835c1cb2',
   },
 });
 

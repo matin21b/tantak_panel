@@ -9,71 +9,31 @@
           <amp-input text="نام خانوادگی" v-model="form.last_name" rules="" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input
-          
-            class="ltr-item"
-            text=" شماره همراه "
-            rules="phone,require"
-            v-model="form.username"
-          />
+          <amp-input class="ltr-item" text=" شماره همراه " rules="phone,require" v-model="form.username" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input
-            class="ltr-item"
-            text=" رمز عبور "
-            type="password"
-            :rules="modelId ? 'password' : 'require,password'"
-            v-model="form.password"
-          />
+          <amp-input class="ltr-item" text=" رمز عبور " type="password"
+            :rules="modelId ? 'password' : 'require,password'" v-model="form.password" />
         </v-col>
         <v-col cols="12" md="3" v-if="!Boolean(roleId)">
-          <amp-autocomplete
-            text="نقش"
-            chips
-            multiple
-            rules="require"
-            v-model="form.role_id"
-            :items="$store.state.setting.roles"
-          />
+          <amp-autocomplete text="نقش" chips multiple rules="require" v-model="form.role_id"
+            :items="$store.state.setting.roles" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-select
-            text="وضعیت"
-            rules="require"
-            v-model="form.status"
-            :items="$store.state.static.user_status"
-          />
+          <amp-select text="وضعیت" rules="require" v-model="form.status" :items="$store.state.static.status" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-select
-            text="نوع شخص"
-            rules="require"
-            v-model="form.person_type"
-            :items="$store.state.static.person_type"
-          />
+          <amp-select text="نوع شخص" rules="require" v-model="form.person_type"
+            :items="$store.state.static.person_type" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input
-            text="کد ملی"
-            rules="nationalCode"
-            :is-number="true"
-            v-model="form.national_code"
-          />
+          <amp-input text="کد ملی" rules="nationalCode" :is-number="true" v-model="form.national_code" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input
-            text="پست الکترونیکی"
-            rules="email"
-            dir="ltr"
-            v-model="form.email"
-          />
+          <amp-input text="پست الکترونیکی" rules="email" dir="ltr" v-model="form.email" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-jdate
-            text="تاریخ تولد"
-            :is-number="true"
-            v-model="form.birth_date"
-          />
+          <amp-jdate text="تاریخ تولد" :is-number="true" v-model="form.birth_date" />
         </v-col>
         <!-- <v-col cols="12" md="3">
           <amp-input
@@ -100,26 +60,14 @@
           />
         </v-col> -->
         <v-col cols="12" md="3" v-if="cheke_branch">
-          <UserSelectForm
-            text=" کاربر ناظر"
-            v-model="parent_id"
-            url="user"
-            :role-id="[$store.state.auth.role.admin_id]"
-          />
+          <UserSelectForm text=" کاربر ناظر" v-model="parent_id" url="user"
+            :role-id="[$store.state.auth.role.admin_id]" />
         </v-col>
         <v-col cols="12" md="3" v-if="cheke_branch">
-          <amp-select
-            text="ناحیه"
-            v-model="form.region_id"
-            :items="$store.state.setting.region"
-          />
+          <amp-select text="ناحیه" v-model="form.region_id" :items="$store.state.setting.region" />
         </v-col>
         <v-col cols="12" md="3" v-if="cheke_branch">
-          <amp-select
-            text=" کد شعبه "
-            v-model="form.branch_id"
-            :items="$store.state.setting.branch_code"
-          />
+          <amp-select text=" کد شعبه " v-model="form.branch_id" :items="$store.state.setting.branch_code" />
         </v-col>
         <v-col cols="12" md="3">
           <amp-upload-file v-model="form.avatar" />
@@ -134,10 +82,7 @@
           ></amp-textarea>
         </v-col> -->
         <v-col cols="12" md="12">
-          <amp-textarea
-            text="توضیحات"
-            v-model="form.description"
-          ></amp-textarea>
+          <amp-textarea text="توضیحات" v-model="form.description"></amp-textarea>
         </v-col>
       </v-row>
 
@@ -146,24 +91,9 @@
           <v-divider />
         </v-col>
         <v-col cols="12" md="12" class="text-center">
-          <amp-button
-            large
-            icon="redo"
-            class="my-1"
-            color="error"
-            text="انصراف"
-            @click="redirectPage()"
-          />
-          <amp-button
-            large
-            icon="done"
-            class="my-1"
-            type="submit"
-            color="success"
-            :loading="loading"
-            :disabled="!valid || loading"
-            :text="modelId ? 'ویرایش' : 'ثبت'"
-          />
+          <amp-button large icon="redo" class="my-1" color="error" text="انصراف" @click="redirectPage()" />
+          <amp-button large icon="done" class="my-1" type="submit" color="success" :loading="loading"
+            :disabled="!valid || loading" :text="modelId ? 'ویرایش' : 'ثبت'" />
         </v-col>
       </v-row>
     </v-container>
@@ -221,7 +151,7 @@ export default {
       if (this.form.role_id) {
         return (
           this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
-            -1 ||
+          -1 ||
           this.form.role_id.indexOf(
             this.$store.state.auth.role.warehouseman_id
           ) > -1
@@ -232,11 +162,11 @@ export default {
     cheke_user() {
       return (
         this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
-          -1 ||
+        -1 ||
         this.form.role_id.indexOf(this.$store.state.auth.role.writers_id) >
-          -1 ||
+        -1 ||
         this.form.role_id.indexOf(this.$store.state.auth.role.warehouseman_id) >
-          -1 ||
+        -1 ||
         this.form.role_id.indexOf(this.$store.state.auth.role.admin_id) > -1
       );
     },
