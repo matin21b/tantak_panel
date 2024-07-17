@@ -256,6 +256,12 @@ let mnue_tree = [
         name: "تنظیمات فروش عمده",
         access: "setting/index",
         route: "/setting/whole-sell",
+      },      
+      {
+        id: 5214,
+        name: "تخفیفات هماهنگ کنندگان",
+        access: "discount_coordinator/index",
+        route: "/setting/discount-coordinator",
       },
     ],
   },

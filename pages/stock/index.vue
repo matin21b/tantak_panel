@@ -283,7 +283,6 @@ export default {
       }
     },
     emitDataTable(data) {
-      console.log(data);
     },
   },
 };

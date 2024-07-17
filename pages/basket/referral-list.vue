@@ -1,166 +1,200 @@
 <template>
-  <div>
-    <BaseTable
-      url="/basket/referral-list"
-      :headers="headers"
-      :actions="actions"
-      :BTNactions="btn_actions"
-      :rootBody="rootBody"
-      :actionsList="actionsList"
-      ref="changeTable"
-    />
-    <v-dialog v-model="dialog_itesm.show">
-      <v-card class="white pa-3">
-        <v-card-title class="d-flex justify-space-between align-center">
-          <span>تاریخچه پرداخت ها</span>
-          <v-btn icon color="error" @click="dialog_itesm.show = false">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-text clsas="pa-5">
-          <v-row>
-            <v-col cols="12" md="12"> </v-col>
-            <v-col cols="12" md="12" class="pa-8">
-              <template>
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="text-center">مبلغ</th>
-                        <th class="text-center">نوع پرداخت</th>
-                        <th class="text-center">تاریخ پرداخت</th>
-                        <th class="text-center">وضعیت</th>
-                        <th class="text-center">توضیحات</th>
-                        <th class="text-center">شماره تراکنش</th>
-                        <th class="text-center">عکس رسید</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(item, index) in dialog_itesm.item"
-                        :key="index"
-                      >
-                        <td dir="ltr">{{ $toJalali(item.created_at) }}</td>
-                        <td><small>ریال</small>{{ $price(item.price) }}</td>
-                        <td>{{ setKind(item.kind_set) }}</td>
-                        <td>{{ setStatus(item.status) }}</td>
-                        <td>{{ item.text }}</td>
-                        <td>{{ item.transaction_number }}</td>
-                        <td
-                          class="d-flex justify-center align-center"
-                          v-if="item.receipt_img"
-                        >
-                          <v-btn
-                            @click="openFIle(item.receipt_img)"
-                            color="primary"
+  <v-window v-model="step">
+    <v-window-item :value="1">
+      <div>
+        <v-row class="d-flex justify-center align-center mt-5">
+          <v-col cols="12" md="4" class="text-center grey lighten-3">
+            <span class="font_13">
+              درصورت
+              <span class="orange--text font_15"> حذف سبد خرید </span>
+
+              , سفارش بسته شده و مبلغ به کیف پول کاربر برگردانده میشود
+            </span>
+          </v-col>
+        </v-row>
+
+        <BaseTable
+          url="/basket/referral-list"
+          :autoDelete="delete_url"
+          :headers="headers"
+          :actions="actions"
+          :BTNactions="btn_actions"
+          :rootBody="rootBody"
+          :actionsList="actionsList"
+          ref="changeTable"
+        />
+        <v-dialog v-model="dialog_itesm.show">
+          <v-card class="white pa-3">
+            <v-card-title class="d-flex justify-space-between align-center">
+              <span>تاریخچه پرداخت ها</span>
+              <v-btn icon color="error" @click="dialog_itesm.show = false">
+                <v-icon>close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-card-text clsas="pa-5">
+              <v-row>
+                <v-col cols="12" md="12"> </v-col>
+                <v-col cols="12" md="12" class="pa-8">
+                  <template>
+                    <v-simple-table>
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th class="text-center">مبلغ</th>
+                            <th class="text-center">نوع پرداخت</th>
+                            <th class="text-center">تاریخ پرداخت</th>
+                            <th class="text-center">وضعیت</th>
+                            <th class="text-center">توضیحات</th>
+                            <th class="text-center">شماره تراکنش</th>
+                            <th class="text-center">عکس رسید</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(item, index) in dialog_itesm.item"
+                            :key="index"
                           >
-                            <v-icon>image</v-icon>
-                          </v-btn>
-                        </td>
-                      </tr>
-                    </tbody>
+                            <td dir="ltr">{{ $toJalali(item.created_at) }}</td>
+                            <td><small>ریال</small>{{ $price(item.price) }}</td>
+                            <td>{{ setKind(item.kind_set) }}</td>
+                            <td>{{ setStatus(item.status) }}</td>
+                            <td>{{ item.text }}</td>
+                            <td>{{ item.transaction_number }}</td>
+                            <td
+                              class="d-flex justify-center align-center"
+                              v-if="item.receipt_img"
+                            >
+                              <v-btn
+                                @click="openFIle(item.receipt_img)"
+                                color="primary"
+                              >
+                                <v-icon>image</v-icon>
+                              </v-btn>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
                   </template>
-                </v-simple-table>
-              </template>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="wallet_transactoin.show">
-      <v-card class="white pa-3">
-        <v-card-title class="d-flex justify-space-between align-center">
-          <span>تاریخچه کیف پول</span>
-          <v-btn icon color="error" @click="wallet_transactoin.show = false">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-text clsas="pa-5">
-          <v-row>
-            <v-col cols="12" md="12"> </v-col>
-            <v-col cols="12" md="12" class="pa-8">
-              <template>
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="text-center">تاریخ پرداخت</th>
-                        <th class="text-center">مبلغ</th>
-                        <th class="text-center">نوع پرداخت</th>
-                        <th class="text-center">توضیحات</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(item, index) in wallet_transactoin.item"
-                        :key="index"
-                      >
-                        <td dir="ltr">{{ $toJalali(item.created_at) }}</td>
-                        <td><small>ریال</small>{{ $price(item.amount) }}</td>
-                        <td>{{ item.type == "remove" ? "کاهش" : "افزایش" }}</td>
-                        <td>{{ item.description }}</td>
-                      </tr>
-                    </tbody>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="wallet_transactoin.show">
+          <v-card class="white pa-3">
+            <v-card-title class="d-flex justify-space-between align-center">
+              <span>تاریخچه کیف پول</span>
+              <v-btn
+                icon
+                color="error"
+                @click="wallet_transactoin.show = false"
+              >
+                <v-icon>close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-card-text clsas="pa-5">
+              <v-row>
+                <v-col cols="12" md="12"> </v-col>
+                <v-col cols="12" md="12" class="pa-8">
+                  <template>
+                    <v-simple-table>
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th class="text-center">تاریخ پرداخت</th>
+                            <th class="text-center">مبلغ</th>
+                            <th class="text-center">نوع پرداخت</th>
+                            <th class="text-center">توضیحات</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(item, index) in wallet_transactoin.item"
+                            :key="index"
+                          >
+                            <td dir="ltr">{{ $toJalali(item.created_at) }}</td>
+                            <td>
+                              <small>ریال</small>{{ $price(item.amount) }}
+                            </td>
+                            <td>
+                              {{ item.type == "remove" ? "کاهش" : "افزایش" }}
+                            </td>
+                            <td>{{ item.description }}</td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
                   </template>
-                </v-simple-table>
-              </template>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="change" max-width="500">
-      <v-card class="px-6">
-        <v-card-title>
-          <span>ارجاع به واحد مالی</span>
-        </v-card-title>
-        <v-card-text>
-          <amp-select
-            text="تغییر وضعیت"
-            v-model="form_change_step.step"
-            :items="items_chagne"
-          ></amp-select>
-          <amp-textarea
-            text="پیام"
-            v-model="form_change_step.message"
-          ></amp-textarea>
-        </v-card-text>
-        <v-card-actions class="center-div">
-          <amp-button
-            text="تایید"
-            color="success"
-            @click="changeStep"
-            :disabled="valid"
-            :loading="loading_for_chagne_status"
-          />
-          <amp-button text="انصراف" color="error" @click="change = false" />
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="show_history">
-      <v-card>
-        <v-card-title class="d-flex justify-space-between align-center">
-          <span> تاریخچه ارجاعات </span>
-          <v-btn icon color="error" @click="show_history = false">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-text>
-          <BaseTable
-            url="basket/referral-history"
-            :rootBody="root_body_history"
-            :headers="header_history"
-          />
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="change" max-width="500">
+          <v-card class="px-6">
+            <v-card-title>
+              <span>ارجاع به واحد مالی</span>
+            </v-card-title>
+            <v-card-text>
+              <amp-select
+                text="تغییر وضعیت"
+                v-model="form_change_step.step"
+                :items="items_chagne"
+              ></amp-select>
+              <amp-textarea
+                text="پیام"
+                v-model="form_change_step.message"
+              ></amp-textarea>
+            </v-card-text>
+            <v-card-actions class="center-div">
+              <amp-button
+                text="تایید"
+                color="success"
+                @click="changeStep"
+                :disabled="valid"
+                :loading="loading_for_chagne_status"
+              />
+              <amp-button text="انصراف" color="error" @click="change = false" />
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="show_history">
+          <v-card>
+            <v-card-title class="d-flex justify-space-between align-center">
+              <span> تاریخچه ارجاعات </span>
+              <v-btn icon color="error" @click="show_history = false">
+                <v-icon>close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-card-text>
+              <BaseTable
+                url="basket/referral-history"
+                :rootBody="root_body_history"
+                :headers="header_history"
+              />
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </div>
+    </v-window-item>
+
+    <v-window-item :value="2">
+      <v-row class="d-flex justify-center">
+        <v-col cols="12" class="mx-5">
+          <Basket @backStep="step--" />
+        </v-col>
+      </v-row>
+    </v-window-item>
+  </v-window>
 </template>
 
 <script>
 import BaseTable from "@/components/DataTable/BaseTable";
+import Basket from "@/components/Product/Coordiantor/basket.vue";
+
 export default {
-  components: { BaseTable },
+  components: { BaseTable, Basket },
   props: {
     rootBody: { default: () => ({}) },
     filters: { default: () => ({}) },
@@ -168,6 +202,8 @@ export default {
     actionsList: { type: Array, default: () => [] },
   },
   data: () => ({
+    delete_url: "",
+    step: 1,
     headers: [],
     items: [],
     change: false,
@@ -268,6 +304,7 @@ export default {
   beforeMount() {
     if (this.$checkRole(this.$store.state.auth.role.coordinator_id)) {
       this.is_coordinator = true;
+      this.delete_url = "basket/special-delete";
       this.items_chagne = [
         { text: "برگشت سبد خرید", value: "reject_coordinator" },
       ];
@@ -326,6 +363,13 @@ export default {
           if (body.payments.length > 0) {
             this.dialog_itesm.show = true;
             this.dialog_itesm.item = body.payments;
+          }
+        },
+        show_fun: (body) => {
+          if (body.payments.length > 0) {
+            return true;
+          } else {
+            return false;
           }
         },
       },
@@ -390,6 +434,14 @@ export default {
           } else {
             return false;
           }
+        },
+      },
+      {
+        text: "جزییات سبد ",
+        icon: "shopping_basket",
+        color: "red darken-3",
+        fun: (body) => {
+          this.step++;
         },
       },
     ];
@@ -459,6 +511,11 @@ export default {
         value: "step",
         items: this.step_status,
       },
+
+      {
+        text: "وزن",
+        value: "total_weight",
+      },
       {
         text: "محصول",
         disableSort: "true",
@@ -467,17 +524,15 @@ export default {
           if (body.items) {
             let items = [];
             body.items.map((x) => {
-              items.push(`${x.product.name} | ${x.information}`);
+              items.push(
+                `<span class='teal--text'>${x.product.name} | ${x.information}</span>`
+              );
             });
             return items.join(" , ");
           } else {
             return "-";
           }
         },
-      },
-      {
-        text: "وزن",
-        value: "total_weight",
       },
     ];
   },
@@ -532,11 +587,11 @@ export default {
         form = { ...this.form_change_step };
       }
 
-      this.$reqApi("/basket/referral" , form)
+      this.$reqApi("/basket/referral", form)
         .then((res) => {
           this.loading_for_chagne_status = false;
           this.change = false;
-          this.$toast.success("سفارش با موفقیت ارجاع داده شد")
+          this.$toast.success("سفارش با موفقیت ارجاع داده شد");
           this.$refs.changeTable.getDataFromApi();
         })
         .catch((err) => {

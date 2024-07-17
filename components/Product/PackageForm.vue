@@ -84,12 +84,36 @@
             v-model="prepayment"
           />
         </v-col>
-
+        <v-col md="3" cols="12">
+          <amp-select
+            text="پکیج برای همه قابل شکستن است ؟"
+            rules="require"
+            :items="bool_text"
+            v-model="form.licence_break"
+          />
+        </v-col>
+        <v-col cols="12" md="3" v-if="form.licence_break == 'no'">
+          <amp-autocomplete
+            text="نقش های مثتثنا"
+            chips
+            multiple
+            v-model="form.role_ids"
+            :items="$store.state.setting.roles"
+          />
+        </v-col>
         <v-col cols="12" md="3">
-          <amp-input text="ترتیب" v-model="form.sort" cClass="ltr-item" rules="number" />
+          <amp-input
+            text="ترتیب"
+            v-model="form.sort"
+            cClass="ltr-item"
+            rules="number"
+          />
         </v-col>
         <v-col cols>
-          <amp-textarea text="توضیحات" v-model="form.description"></amp-textarea>
+          <amp-textarea
+            text="توضیحات"
+            v-model="form.description"
+          ></amp-textarea>
         </v-col>
       </v-row>
       <v-row dense>
@@ -146,6 +170,10 @@ export default {
     updateUrl: "/package/update",
     showUrl: "/package/show",
     product_varcoms: [],
+    bool_text: [
+      { text: "بله", value: "yes" },
+      { text: "خیر", value: "no" },
+    ],
     variations: [],
     selected: {},
     pay_type_item: [
@@ -165,11 +193,13 @@ export default {
       sort: 1,
       logo: "",
       name: "",
+      licence_break: false,
       prepay_type: "none",
       discount_type: "none",
       status: "active",
       description: "",
       product_varcom_ids: [],
+      role_ids: [],
     },
   }),
   computed: {
@@ -183,6 +213,7 @@ export default {
   },
   beforeMount() {},
   mounted() {
+    this.$store.dispatch("setting/getRoleServer");
     if (this.modelId) {
       this.loadData();
     }
@@ -198,6 +229,17 @@ export default {
       this.$refs.GetVariatonsId.sendVariation();
       return new Promise((res, rej) => {
         let form = { ...this.form };
+        switch (form.licence_break) {
+          case "yes":
+            form.licence_break = true;
+            form.role_ids = [];
+            break;
+
+          default:
+            form.licence_break = false;
+            break;
+        }
+
         form["sale_online"] = false;
         form["sale_phone"] = false;
         form["sale_person"] = false;
@@ -220,7 +262,6 @@ export default {
         }
         let url = this.createUrl;
         if (this.modelId) {
-   
           url = this.updateUrl;
           form["id"] = this.modelId;
         }
@@ -253,13 +294,21 @@ export default {
             for (let i in response) {
               this.form[i] = response[i];
             }
+            if (Array.isArray(response.roles) && response.roles.length > 0) {
+              response.roles.map((x) => this.form.role_ids.push(x.id));
+            }
+            this.form.licence_break = this.form.licence_break ? "yes" : "no";
+    
             if (response.prepay_type != "none") {
               this.prepayment = response.prepay_amount;
             }
             if (response.discount_type != "none") {
               this.discount_value = response.discount_amount;
             }
-            if (response.product_varcoms && response.product_varcoms.length > 0) {
+            if (
+              response.product_varcoms &&
+              response.product_varcoms.length > 0
+            ) {
               this.product_varcoms = response.product_varcoms;
             }
             if (Boolean(response.sale_online)) {
@@ -284,7 +333,6 @@ export default {
         })
         .catch((rej) => {
           this.loading = false;
-          return rej;
         });
     },
 
