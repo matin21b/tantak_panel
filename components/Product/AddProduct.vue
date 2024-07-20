@@ -442,15 +442,31 @@ export default {
       this.load_item = true;
       this.$reqApi("/package/show", { id: package_id })
         .then((response) => {
+          // count: x.number,
+          //     discount_amount: x.package.discount_amount,
+          //     id: x.id,
+          //     logo: x.package.logo,
+          //     name: x.information,
+          //     licence_break: access_barck,
+          //     prepay_amount: x.package.prepay_amount,
+          //     price: x.price,
+          //     weight: x.weight,
+          //     discount_type: x.package.discount_type,
+          //     product_varcoms: x.package.product_varcoms,
+
           const res = response.data;
           let items = {};
           items["prepay_amount"] = res.prepay_amount;
           items["name"] = res.name;
           items["price"] = res.price;
+          items["licence"] = res.licence_break;
           items["discount_amount"] = res.discount_amount;
           items["weight"] = res.weight;
           items["logo"] = res.logo;
           items["id"] = res.id;
+          items["discount_type"] = res.discount_type;
+          items["product_varcoms"] = res.product_varcoms;
+          items["roles"] = res.roles;
           items["count"] = 1;
           this.informations_package = items;
           this.load_item = false;

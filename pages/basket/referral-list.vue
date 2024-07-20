@@ -182,7 +182,14 @@
     <v-window-item :value="2">
       <v-row class="d-flex justify-center">
         <v-col cols="12" class="mx-5">
-          <Basket @backStep="step--" />
+          <Basket
+            @backStep="step--"
+            :itemsBasket="items_basket"
+            :basketId="basket_id"
+            :basketPrice="basket_price"
+            v-if="step == 2"
+            @refresh="refresh"
+          />
         </v-col>
       </v-row>
     </v-window-item>
@@ -191,7 +198,7 @@
 
 <script>
 import BaseTable from "@/components/DataTable/BaseTable";
-import Basket from "@/components/Product/Coordiantor/basket.vue";
+import Basket from "@/components/Product/Coordiantor/Basket.vue";
 
 export default {
   components: { BaseTable, Basket },
@@ -203,6 +210,7 @@ export default {
   },
   data: () => ({
     delete_url: "",
+    basket_id: "",
     step: 1,
     headers: [],
     items: [],
@@ -288,6 +296,7 @@ export default {
     },
     btn_actions: [],
     item_id: "",
+    basket_price: "",
     show_history: false,
     root_body_history: {},
     header_history: [],
@@ -442,12 +451,14 @@ export default {
         color: "red darken-3",
         fun: (body) => {
           this.step++;
+          this.items_basket = body.items;
+          this.basket_price = body.price;
+          this.basket_id = body.id;
         },
       },
     ];
   },
   mounted() {
-    // this.loadFiscal()
     this.headers = [
       {
         text: "زمان ثبت",
@@ -524,9 +535,10 @@ export default {
           if (body.items) {
             let items = [];
             body.items.map((x) => {
-              items.push(
-                `<span class='teal--text'>${x.product.name} | ${x.information}</span>`
-              );
+              items
+                .push
+                // `<span class='teal--text'>${x.product.name} | ${x.information}</span>`
+                ();
             });
             return items.join(" , ");
           } else {
@@ -598,6 +610,10 @@ export default {
           this.loading_for_chagne_status = false;
           return err;
         });
+    },
+    refresh() {
+      this.$refs.changeTable.getDataFromApi();
+      this.step = 1;
     },
   },
 };

@@ -290,7 +290,6 @@ export default {
         this.$reqApi(this.showUrl, { id: this.modelId })
           .then(async (response) => {
             response = response.data;
-
             for (let i in response) {
               this.form[i] = response[i];
             }
@@ -305,6 +304,7 @@ export default {
             if (response.discount_type != "none") {
               this.discount_value = response.discount_amount;
             }
+      
             if (
               response.product_varcoms &&
               response.product_varcoms.length > 0
@@ -314,6 +314,7 @@ export default {
             if (Boolean(response.sale_online)) {
               this.sale_type_selected.push("sale_online");
             }
+
             if (Boolean(response.sale_person)) {
               this.sale_type_selected.push("sale_person");
             }

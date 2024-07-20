@@ -2,9 +2,21 @@
   <div>
     <AddProduct
       @add="addBasket($event)"
-            @createList="createListPakage($event)"
+      @createList="createListPakage($event)"
       v-if="dialog_add_product.show"
       :DialogAdd="dialog_add_product"
+    />
+    <BrackDialog
+      :brackDialog="brack_dialog"
+      v-if="brack_dialog.show"
+      @continueBreack="brackPackage($event)"
+      :productPackage="show_product_package"
+    />
+    <PriceDialog
+      :priceDialog="price_dialog"
+      :basketPrice="basket_price"
+      @updateBasket="saveBasket"
+      v-if="price_dialog.show"
     />
     <v-col cols="12" class="mt-5">
       <v-col cols="12" class="text-start">
@@ -12,7 +24,6 @@
           icon="add_circle"
           height="40"
           @click="dialog_add_product.show = true"
-     
           color="orange darken-3"
           text="افزودن محصول"
         />
@@ -48,17 +59,22 @@
             <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
               <small>تصویر</small>
             </v-col>
-            <v-col
-              class="ma-0 pa-0 text-center"
-              md="1"
-              cols="4"
-            >
+            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
               <small> حذف </small>
             </v-col>
           </v-row>
         </v-col>
-
-        <div v-if="list_basket && list_basket.items">
+        <v-col
+          v-if="load_list"
+          v-for="i in 5"
+          :key="i"
+          class="ma-0 pa-0 text-center"
+          md="12"
+          cols="12"
+        >
+          <v-skeleton-loader v-bind="attrs" type="text"></v-skeleton-loader>
+        </v-col>
+        <div v-if="list_basket && list_basket.items && !load_list">
           <v-col
             cols="12"
             md="12"
@@ -67,7 +83,13 @@
           >
             <v-row>
               <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
-                <small> {{ item.name }}</small>
+                <small> {{ index + 1 }} - {{ item.name }}</small>
+                <small
+                  v-if="item.add_from_package && Boolean(item.add_from_package)"
+                  class="orange--text"
+                >
+                  ( پکیج )
+                </small>
               </v-col>
 
               <v-spacer />
@@ -78,11 +100,7 @@
               <v-spacer> </v-spacer>
               <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                 <v-row class="d-flex justify-center mt-1">
-                  <v-btn
-                    @click="addNumber(item, true, 'product')"
-                    x-small
-                    text
-                  >
+                  <v-btn @click="addNumber(item, true, 'product')" x-small text>
                     <v-icon small> add </v-icon>
                   </v-btn>
                   <small> {{ item.number }}</small>
@@ -128,13 +146,9 @@
                 </v-card>
               </v-col>
 
-              <v-col
-                class="ma-0 pa-0 text-center pr-3"
-                md="1"
-                cols="4"
-              >
+              <v-col class="ma-0 pa-0 text-center pr-3" md="1" cols="4">
                 <v-btn
-            @click="deleFromCard(index, item, 'product')"
+                  @click="deleFromCard(index, item, 'product')"
                   x-small
                   text
                   class="justify-center"
@@ -145,24 +159,29 @@
             </v-row>
           </v-col>
         </div>
+        <div v-if="list_basket.items == 0 && !load_list">
+          <v-col cols="12" class="text-center">
+            <v-icon large> production_quantity_limits </v-icon>
+          </v-col>
+        </div>
       </v-card>
-<v-col cols="12" class="mt-4">
-    <amp-section text="پکیج های ثبت شده" />
-</v-col>
+      <v-col cols="12" class="mt-4">
+        <amp-section text="پکیج های ثبت شده" />
+      </v-col>
       <v-card class="mt-5">
         <div>
           <v-col cols="12">
             <v-row class="py-2 mb-2 d-flex justify-center orange lighten-3">
-              <v-col class="ma-0 pa-0 text-center" md="2" cols="4">
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                 <small> نام پکیج</small>
               </v-col>
               <v-spacer />
 
-              <v-col class="ma-0 pa-0 text-center" md="3" cols="4">
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                 <small> قیمت پکیج (ریال)</small>
               </v-col>
               <v-spacer />
-              <v-col class="ma-0 pa-0 text-center" md="2" cols="4">
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                 <small> تعداد</small>
               </v-col>
               <v-spacer />
@@ -184,13 +203,111 @@
               <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                 <small> حذف </small>
               </v-col>
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4"> </v-col>
+            </v-row>
+          </v-col>
+          <v-col
+            v-if="
+              pckage_list_item && pckage_list_item.length != 0 && !load_list
+            "
+            v-for="(item, index) in pckage_list_item"
+            :key="index"
+            cols="12"
+          >
+            <v-row class="d-flex justify-center">
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                <small>
+                  {{ index + 1 }} -
+                  {{ item.name }}
+                </small>
+              </v-col>
+              <v-spacer />
+
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                <small> {{ $price(item.price) }}</small>
+              </v-col>
+              <v-spacer />
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                <v-row class="d-flex justify-center mt-1">
+                  <v-btn @click="addNumber(item, true, 'package')" x-small text>
+                    <v-icon small> add </v-icon>
+                  </v-btn>
+                  <small> {{ item.count }}</small>
+                  <v-btn
+                    :disabled="item.count == 1"
+                    @click="addNumber(item, false, 'package')"
+                    x-small
+                    text
+                  >
+                    <v-icon small> remove </v-icon>
+                  </v-btn>
+                </v-row>
+              </v-col>
+              <v-spacer />
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                <small> {{ $price(item.discount_amount) }} </small>
+              </v-col>
+              <v-spacer />
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                <small> {{ $price(item.prepay_amount) }}</small>
+              </v-col>
+              <v-spacer />
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                <small> {{ $price(item.price * item.count) }}</small>
+              </v-col>
+              <v-spacer />
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                <v-card
+                  elevation="0"
+                  max-width="50"
+                  class="mb-3 justify-center mr-14"
+                  max-height="50"
+                >
+                  <v-img
+                    class="size-img justify-center"
+                    :src="$getImage(item.logo)"
+                    height="auto"
+                  />
+                </v-card>
+              </v-col>
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+                <v-btn
+                  @click="deleFromCard(index, item, 'package')"
+                  x-small
+                  text
+                  class="justify-center"
+                >
+                  <v-icon small> delete </v-icon>
+                </v-btn>
+              </v-col>
+              <v-col
+                class="ma-0 pa-0 text-center"
+                md="1"
+                cols="4"
+                v-if="Boolean(item.licence_break)"
+              >
+                <v-btn
+                  color="teal"
+                  small
+                  outlined
+                  @click="showDialog(index, item)"
+                >
+                  <small>
+                    شکستن پکیج
+                    <v-icon small> auto_awesome_motion </v-icon>
+                  </small>
+                </v-btn>
+              </v-col>
+              <v-col class="ma-0 pa-0 text-center" md="1" cols="4" v-else>
+                <v-icon> dangerous </v-icon>
+              </v-col>
             </v-row>
           </v-col>
 
           <!-- ----------------------------------------------------------------------------------------------------- -->
 
           <v-col
-            v-if="loading && load_list"
+            v-if="load_list"
             v-for="i in 5"
             :key="i"
             class="ma-0 pa-0 text-center"
@@ -200,88 +317,9 @@
             <v-skeleton-loader v-bind="attrs" type="text"></v-skeleton-loader>
           </v-col>
 
-          <div v-if="pckage_list_item && pckage_list_item.length != 0">
-            <v-col
-              cols="12"
-              md="12"
-              v-for="(item, index) in pckage_list_item"
-              :key="index"
-            >
-              <v-row class="">
-                <v-col class="ma-0 pa-0 text-center" md="2" cols="4">
-                  <small>
-                    {{ index + 1 }} -
-                    {{ item.name }}
-                  </small>
-                </v-col>
-
-                <v-spacer />
-                <v-col class="ma-0 pa-0 text-center" md="3" cols="4">
-                  <small> {{ $price(item.price) }}</small>
-                </v-col>
-
-                <v-spacer> </v-spacer>
-                <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
-                  <v-row class="d-flex justify-center mt-1">
-                    <v-btn
-                      @click="addNumber(item, true, 'package')"
-                      x-small
-                      text
-                    >
-                      <v-icon small> add </v-icon>
-                    </v-btn>
-                    <small> {{ item.count }}</small>
-                    <v-btn
-                      :disabled="item.count == 1"
-                      @click="addNumber(item, false, 'package')"
-                      x-small
-                      text
-                    >
-                      <v-icon small> remove </v-icon>
-                    </v-btn>
-                  </v-row>
-                </v-col>
-
-                <v-spacer />
-                <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
-                  <small> {{ $price(item.discount_amount) }} </small>
-                </v-col>
-
-                <v-spacer />
-                <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
-                  <small> {{ $price(item.prepay_amount) }}</small>
-                </v-col>
-
-                <v-spacer />
-                <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
-                  <small> {{ $price(item.price * item.count) }}</small>
-                </v-col>
-
-                <v-spacer />
-                <v-card
-                  elevation="0"
-                  max-width="50"
-                  class="mb-3 justify-center"
-                  max-height="50"
-                >
-                  <v-img
-                    class="size-img justify-center"
-                    :src="$getImage(item.logo)"
-                    height="auto"
-                  />
-                </v-card>
-
-                <v-col class="ma-0 pa-0 text-center pr-3" md="1" cols="4">
-                  <v-btn
-                    @click="deleFromCard(index, item, 'package')"
-                    x-small
-                    text
-                    class="justify-center"
-                  >
-                    <v-icon small> delete </v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
+          <div v-if="pckage_list_item.length == 0 && !load_list">
+            <v-col cols="12" class="text-center">
+              <v-icon large> production_quantity_limits </v-icon>
             </v-col>
           </div>
         </div>
@@ -299,19 +337,19 @@
           @click="backStep()"
           color="red darken-1 "
           class="ma-1"
-          :text="disabl_update ? 'برگشت' : 'انصراف'"
+          text=" برگشت"
         />
       </v-col>
       <v-col cols="1">
         <amp-button
           block
-          :disabled="loading || disabl_update"
+          :disabled="loading"
           :loading="loading"
           height="40"
-          @click="updateBasket"
+          @click="priceDialog"
           color="info darken-1 "
           class="ma-1"
-          text="بروزرسانی"
+          text="ادامه"
         />
       </v-col>
     </v-row>
@@ -322,15 +360,37 @@
 import AddProduct from "@/components/Product/AddProduct.vue";
 import Payment from "@/components/User/Payment.vue";
 import CoordinatorDialog from "@/components/CallCenter/CoordinatorDialog.vue";
+import BrackDialog from "@/components/Product/Coordiantor/BrackDialog.vue";
+import PriceDialog from "@/components/Product/Coordiantor/PriceDialog.vue";
 
 export default {
   components: {
     AddProduct,
     Payment,
     CoordinatorDialog,
+    BrackDialog,
+    PriceDialog,
   },
-
+  props: {
+    itemsBasket: {
+      type: Array,
+      default: [],
+    },
+    basketPrice: {
+      require: false,
+      default: false,
+    },
+    basketId: {
+      require: false,
+      default: false,
+    },
+  },
   data: () => ({
+    attrs: {
+      class: "mb-6",
+      boilerplate: true,
+      elevation: 2,
+    },
     valid: true,
     headers: [],
     loading_for_chagne_status: false,
@@ -359,12 +419,15 @@ export default {
       show: false,
       item: null,
     },
-
+    basket_price: {
+      basket: 0,
+      new_price: 0,
+    },
     product_id: "",
     dialog_add_product: { show: false, items: null },
     basket_id: "",
     overlay: false,
-    disabl_update: true,
+    load_list: true,
     filters: {},
     steps: 1,
     e1: 1,
@@ -374,10 +437,19 @@ export default {
     step_basket: 1,
     loading: false,
     fical_messanger: [],
+    show_product_package: [],
     show_history: false,
     header_history: [],
     root_body_history: {},
     coordinator_dialog: {
+      itesm: null,
+      show: false,
+    },
+    price_dialog: {
+      itesm: null,
+      show: false,
+    },
+    brack_dialog: {
       itesm: null,
       show: false,
     },
@@ -433,9 +505,6 @@ export default {
     });
   },
   watch: {
-    step_basket() {
-      this.disabl_update = true;
-    },
     "payment_list.show"() {
       if (this.payment_list.show == false) {
         this.payment_list.item = null;
@@ -452,10 +521,12 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    this.createListBasket(this.itemsBasket);
+  },
   methods: {
-    deleFromCard(key, item, key_name) {
-      this.loading = true;
+    deleFromCard(key, item, key_name, brack) {
+      this.load_list = true;
       let items = [];
       if (key_name == "product") {
         items = this.list_basket.items;
@@ -463,11 +534,15 @@ export default {
         items = this.pckage_list_item;
       }
       items.splice(key, 1);
-      this.$toast.success(`${item.name} از لیست خرید  حذف شد`);
-      this.loading = false;
+      if ((brack, Boolean(brack))) {
+        this.$toast.success(`${item.name} با موفقیت شکسته شد `);
+      } else {
+      }
+
+      this.load_list = false;
     },
     addNumber(item, add, key_name) {
-      this.loading = true;
+      this.load_list = true;
       if (key_name == "product") {
         if (Boolean(add)) {
           item.number++;
@@ -483,64 +558,14 @@ export default {
       }
 
       this.$emit("chek_save");
-      this.loading = false;
+      this.load_list = false;
     },
-    loadListBAskets(id) {
-      this.loading = true;
-      this.list_basket.items = [];
-      this.$reqApi("basket-item", { basket_id: id })
-        .then((response) => {
-          for (let index = 0; index < response.model.data.length; index++) {
-            const x = response.model.data[index];
 
-            this.list_basket.items.push({
-              information: x.information,
-
-              number: x.number,
-              price: x.price,
-
-              full_barcode: x.full_barcode,
-              discount: x.discount,
-              id: x.product_varcomb_id,
-              name: x.product.name,
-              main_image: x.product.main_image,
-            });
-          }
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
-      // this.list_basket.items.unshift({
-      //     information:
-      //       event.product.variation1.variation_type.value +
-      //       " " +
-      //       event.product.variation1.value +
-      //       " - " +
-      //       event.product.variation2.variation_type.value +
-      //       " " +
-      //       event.product.variation2.value +
-      //       " - " +
-      //       event.product.variation3.variation_type.value +
-      //       " " +
-      //       event.product.variation3.value,
-      //     number: event.number,
-      //     price: event.product.price
-      //       ? event.product.price
-      //       : event.product.variation1.product.base_price,
-
-      //     full_barcode: event.product.full_barcode,
-      //     discount: event.product.discount,
-      //     id: event.product.id,
-      //     name: event.product.variation1.product.name,
-      //     main_image: event.product.variation1.product.main_image,
-      //   });
-    },
-    updateBasket() {
+    saveBasket() {
       this.loading = true;
       let form = {};
       let items = [];
-      form["id"] = this.product_id;
+      form["id"] = this.basketId;
       for (let index = 0; index < this.list_basket.items.length; index++) {
         const x = this.list_basket.items[index];
         items.push({
@@ -548,22 +573,29 @@ export default {
           product_varcomb_id: x.id,
         });
       }
+      let package_ids = [];
+      for (let index = 0; index < this.pckage_list_item.length; index++) {
+        const y = this.pckage_list_item[index];
+        package_ids.push({
+          id: y.id,
+          count: y.count,
+        });
+      }
       form["array_items"] = items;
-      this.$reqApi("basket/update", form)
+      form["package_ids"] = package_ids;
+      this.$reqApi("/basket/special-update", form)
         .then((response) => {
-          this.$toast.success("سبد خرید با موفقیت ویراش سبد");
-          this.$emit("basket_costumer_id", response);
+          this.$toast.success("سبد خرید با موفقیت به روز رسانی شد ");
           this.loading = false;
+          this.$emit("refresh")
         })
         .catch((error) => {
           this.loading = false;
         });
-      this.loading = false;
     },
     addBasket(event) {
       this.loading = true;
       let repetitious_item = false;
-
       for (let index = 0; index < this.list_basket.items.length; index++) {
         const element = this.list_basket.items[index];
         if (element.id == event.product.id) {
@@ -572,7 +604,6 @@ export default {
           this.$toast.success(`${event.name} بروزرسانی شد `);
         }
       }
-
       if (!Boolean(repetitious_item)) {
         this.list_basket.items.unshift({
           information:
@@ -600,15 +631,179 @@ export default {
         });
         this.$toast.success("محصول به سبد خرید اضافه شد");
       }
-      this.disabl_update = false;
       this.loading = false;
     },
     backStep() {
       this.$emit("backStep");
     },
     createListPakage(event) {
-        console.log(event);
+      let access_roles = [];
+      let access_barck = false;
+      if (!Boolean(event.licence)) {
+        access_roles = event.roles ? event.roles.map((x) => x.id) : [];
+        let login_user_role = this.$store.state.auth.user.roles;
+        access_roles.forEach((id) => {
+          login_user_role.forEach((element) => {
+            if (id == element.id) {
+              access_barck = true;
+            }
+          });
+        });
+      } else {
+        access_barck = true;
+      }
+
+      event["licence_break"] = access_barck;
+      event["calculated"] = false;
       this.pckage_list_item.push(event);
+    },
+    createListBasket(basket) {
+      return new Promise((res, rej) => {
+        for (let index = 0; index < basket.length; index++) {
+          const x = basket[index];
+          if (x.product_id && Boolean(x.product_id)) {
+            this.list_basket.items.push({
+              information: x.information,
+              number: x.number,
+              price: x.price,
+              full_barcode: x.full_barcode,
+              discount: x.discount,
+              id: x.product_varcomb_id,
+              name: x.product.name,
+              main_image: x.product.main_image,
+            });
+          } else if (x.package_id && Boolean(x.package_id)) {
+            let access_roles = [];
+            let access_barck = false;
+            if (!Boolean(x.package.licence_break)) {
+              access_roles = x.package.roles
+                ? x.package.roles.map((x) => x.id)
+                : [];
+              let login_user_role = this.$store.state.auth.user.roles;
+              access_roles.forEach((id) => {
+                login_user_role.forEach((element) => {
+                  if (id == element.id) {
+                    access_barck = true;
+                  }
+                });
+              });
+            } else {
+              access_barck = true;
+            }
+            this.pckage_list_item.push({
+              count: x.number,
+              calculated: true,
+              discount_amount: x.package.discount_amount,
+              id: x.id,
+              logo: x.package.logo,
+              name: x.information,
+              licence_break: access_barck,
+              prepay_amount: x.package.prepay_amount,
+              price: x.price,
+              weight: x.weight,
+              discount_type: x.package.discount_type,
+              product_varcoms: x.package.product_varcoms,
+            });
+          }
+        }
+        res(true);
+      })
+        .then((res) => {
+          setTimeout(() => {
+            this.load_list = false;
+          }, 300);
+        })
+        .catch((rej) => {
+          this.load_list = false;
+        });
+    },
+    brackPackage(event) {
+      this.load_list = true;
+      event.forEach((element) => {
+        element["add_from_package"] = true;
+        this.checkDublicate(element);
+      });
+      this.deleFromCard(
+        this.target_package.key,
+        this.target_package.item,
+        "package",
+        true
+      );
+    },
+    showDialog(key, item) {
+      let info_target_package = {};
+      info_target_package["key"] = key;
+      info_target_package["item"] = item;
+      this.brack_dialog.show = true;
+      let products = [];
+      item.product_varcoms.forEach((x) => {
+        let var_1 = x.variation1
+          ? x.variation1.variation_type.value + " " + x.variation1.value
+          : "";
+        let var_2 = x.variation2
+          ? x.variation2.variation_type.value + " " + x.variation2.value
+          : "";
+        let var_3 = x.variation3
+          ? x.variation3.variation_type.value + " " + x.variation3.value
+          : "";
+        products.push({
+          information: var_1 + " , " + var_2 + " , " + var_3,
+          number: x.count_product,
+          price: x.price ? x.price : x.product.base_price,
+          full_barcode: x.full_barcode,
+          id: x.id,
+          name: x.product.name,
+          main_image: x.product.main_image,
+        });
+      });
+      this.show_product_package = products;
+      this.target_package = info_target_package;
+    },
+    priceDialog() {
+      this.price_dialog.show = true;
+      let new_price = 0;
+      let product_price = 0;
+      let package_price = 0;
+      if (this.list_basket.items.length > 0) {
+        this.list_basket.items.forEach((x) => {
+          product_price += x.price * x.number;
+        });
+      }
+
+      if (this.pckage_list_item.length > 0) {
+        this.pckage_list_item.forEach((x) => {
+          let price = 0;
+          if (!Boolean(x.calculated)) {
+            if (x.discount_type == "amount") {
+              price = (x.price - x.discount_amount) * x.count;
+              package_price += price;
+            } else {
+              price = (x.discount_amount / 100) * x.price * x.count;
+              package_price += price;
+            }
+          }else{
+            price = x.price
+            package_price += price
+          }
+   
+        });
+      }
+      new_price = product_price + package_price;
+      this.basket_price.basket = this.basketPrice;
+      this.basket_price.new_price = new_price;
+    },
+    checkDublicate(data) {
+      let check_dublicate_id = false;
+      for (let i = 0; i < this.list_basket.items.length; i++) {
+        if (this.list_basket.items[i].id == data.id) {
+          check_dublicate_id = true;
+          this.list_basket.items[i].number =
+            parseInt(data.number) + parseInt(this.list_basket.items[i].number);
+        }
+      }
+      if (!check_dublicate_id) {
+        this.list_basket.items.unshift(data);
+      }
     },
   },
 };

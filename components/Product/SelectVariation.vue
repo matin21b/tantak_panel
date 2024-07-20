@@ -121,7 +121,7 @@
 
       <v-col cols="12" md="6" class="mt-8">
         <div v-for="(item, index) in variations_list" :key="index" class="">
-          <v-row class="px-5 py-4 mr-3">
+          <v-row class="px-5 py-4 mr-3 align-center">
             <h1 class="primary--text px-5 mr-3">
               {{ index + 1 }} - {{ item.variation1.product.name }}
             </h1>
@@ -436,17 +436,17 @@ export default {
         let obj = {};
         obj["id"] = e.id;
         obj["count"] = e.count_product;
-        if (Boolean(e.product_variation_1)) {
+        if (Boolean(e.variation1)) {
           obj["variation1"] = {
             product: e.product,
-            value: e.product_variation_1.value,
+            value: e.variation1.value,
           };
         }
-        if (Boolean(e.product_variation_2)) {
-          obj["variation2"] = e.product_variation_2;
+        if (Boolean(e.variation2)) {
+          obj["variation2"] = e.variation2;
         }
-        if (Boolean(e.product_variation_3)) {
-          obj["variation3"] = e.product_variation_3;
+        if (Boolean(e.variation3)) {
+          obj["variation3"] = e.variation3;
         }
         items.push(obj);
       }
@@ -466,7 +466,7 @@ export default {
           if (x.id == this.selected_product.id) {
             dublicate_variations = true;
             this.$toast.info("این محصولا قبلا اضافه شده");
-            return;
+            return true;
           }
           if (!Boolean(dublicate_variations)) {
             this.selected_product["count"] = this.number;
