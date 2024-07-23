@@ -47,8 +47,8 @@
                         <thead>
                           <tr>
                             <th class="text-center">مبلغ</th>
-                            <th class="text-center">نوع پرداخت</th>
                             <th class="text-center">تاریخ پرداخت</th>
+                            <th class="text-center">نوع پرداخت</th>
                             <th class="text-center">وضعیت</th>
                             <th class="text-center">توضیحات</th>
                             <th class="text-center">شماره تراکنش</th>
@@ -251,6 +251,9 @@ export default {
     kind_set_item: [
       { text: "کارت به کارت", value: "cardToCard" },
       { text: "ارسال لینک", value: "send_pay_link" },
+      { text: "دستی", value: "manual" },
+      { text: "پرداخت به اداره پست", value: "post" },
+      
     ],
     step_status: [
       { text: "ثبت اولیه", value: "init" },
@@ -304,9 +307,12 @@ export default {
       },
       {
         text: "در انتظار",
-        value: "waiting",
+        value: "wait",
       },
-
+      {
+        text: "عودت وجه",
+        value: "owdat",
+      },
       {
         text: "تکمیل شده ",
         value: "completed",
