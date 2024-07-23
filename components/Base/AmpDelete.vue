@@ -41,6 +41,8 @@ export default {
       default: 'آیا از حذف این مورد اطمینان دارید؟',
     },
   },
+  mounted(){
+  },
   data: () => ({
     loading: false,
     time: 3,

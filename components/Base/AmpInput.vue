@@ -218,6 +218,7 @@ export default {
       let ruleItem = []
       this.ruleItem = []
       let inpRules = this.$inpRules()
+
       if (typeof this.rules == 'string') {
         this.rules.split(',').forEach((element) => {
           if (typeof inpRules[element] != 'undefined') {
@@ -233,10 +234,12 @@ export default {
         })
       } else if (typeof this.rules == 'function') {
         ruleItem.push(this.rules)
+ 
       }
       this.$nextTick(() => {
         this.ruleItem = [...ruleItem]
       })
+    
     },
     appendClick($event) {
       this.$emit('click:append', $event)

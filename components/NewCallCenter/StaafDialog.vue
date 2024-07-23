@@ -1,0 +1,147 @@
+<template>
+  <div>
+    <v-dialog
+      persistent
+      v-model="DialogStaff.show"
+      :model-id="DialogStaff.items"
+      width="500"
+    >
+      <v-card class="pa-4">
+        <v-row class="mx-2 mt-1 align-center">
+          <h1 v-text="check_role" class="font_15 mr-2"></h1>
+          <v-spacer></v-spacer>
+            <v-icon class="mr-3" > add_circle </v-icon>
+          <v-col cols="12 " class="mt-0">
+            <v-divider></v-divider>
+          </v-col>
+        </v-row>
+
+        <v-card-text>
+          <v-form v-model="valid" @submit.prevent="submit()">
+            <v-row>
+              <v-col cols="12" md="12">
+                <amp-input
+                  text="نام"
+                  v-model="form.first_name"
+                  rules="require"
+                />
+                <amp-input
+                  text="نام خانوادگی"
+                  v-model="form.last_name"
+                  rules="require"
+                />
+                <amp-input
+                  class="ltr-item"
+                  text=" شماره همراه "
+                  rules="phone,require"
+                  v-model="form.username"
+                />
+              </v-col>
+            </v-row>
+
+            <v-row class="d-flex justify-center">
+              <v-col cols="12" md="4">
+                <amp-button
+                  text="تایید"
+                  height="38"
+                  block
+                  color="teal darken-2"
+                  type="submit"
+                  class="ma-1"
+                  :loading="loading"
+                  :disabled="loading || !valid"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-button
+                  text="انصراف"
+                  height="38"
+                  block
+                  color="red darken-2"
+                  @click="closeDialog"
+                  class="ma-1"
+        
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    DialogStaff: {
+      require: false,
+      default: false,
+    },
+  },
+
+  data: () => ({
+    valid: true,
+    valid_comment: true,
+    loading: false,
+    form: {
+      username: "",
+      last_name: "",
+      first_name: "",
+      role_id: [],
+    },
+  }),
+  computed: {
+    check_role() {
+      let dialog_title = "";
+      if (this.$checkRole(this.$store.state.auth.role.manager_financial_unit)) {
+        dialog_title = "ایجاد سرپرست واحد مالی";
+        this.form.role_id.push(this.$store.state.auth.role.head_financial_unit);
+      }
+      if (this.$checkRole(this.$store.state.auth.role.head_financial_unit)) {
+        dialog_title = "ایجاد  واحد مالی";
+        this.form.role_id.push(this.$store.state.auth.role.financial_unit_id);
+      }
+      if (this.$checkRole(this.$store.state.auth.role.coordinating_manager)) {
+        dialog_title = "ایجاد سرپرست هماهنگ کننده";
+        this.form.role_id.push(
+          this.$store.state.auth.role.supervisor_coordinator
+        );
+      }
+      if (this.$checkRole(this.$store.state.auth.role.supervisor_coordinator)) {
+        dialog_title = "ایجاد هماهنگ کننده";
+        this.form.role_id.push(this.$store.state.auth.role.coordinator_id);
+      }
+
+      return dialog_title;
+    },
+  },
+  methods: {
+    submit() {
+      this.loading = true;
+      let form = { ...this.form };
+      form["person_type"] = "real";
+      let url = "user/inser-employee";
+      this.$reqApi(url, form)
+        .then((res) => {
+          this.loading = false;
+          this.closeDialog();
+          this.relod();
+          this.$toast.success("کاربر با موفقیت ایجاد شد");
+        })
+        .catch((err) => {
+          this.loading = false;
+        });
+    },
+    closeDialog() {
+      this.DialogStaff.show = false;
+      this.DialogStaff.items = null;
+    },
+    relod() {
+      this.$emit("relod");
+    },
+  },
+};
+</script>
+
+<style></style>

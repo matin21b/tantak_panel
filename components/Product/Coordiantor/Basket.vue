@@ -587,7 +587,7 @@ export default {
         .then((response) => {
           this.$toast.success("سبد خرید با موفقیت به روز رسانی شد ");
           this.loading = false;
-          this.$emit("refresh")
+          this.$emit("refresh");
         })
         .catch((error) => {
           this.loading = false;
@@ -655,7 +655,13 @@ export default {
 
       event["licence_break"] = access_barck;
       event["calculated"] = false;
-      this.pckage_list_item.push(event);
+
+      let ckek_dublicate = this.pckage_list_item.find((f) => event.id == f.id);
+      if (Boolean(ckek_dublicate)) {
+        this.$toast.error("پکیج قبلا اضافه شده");
+      } else {
+        this.pckage_list_item.push(event);
+      }
     },
     createListBasket(basket) {
       return new Promise((res, rej) => {
@@ -781,11 +787,10 @@ export default {
               price = (x.discount_amount / 100) * x.price * x.count;
               package_price += price;
             }
-          }else{
-            price = x.price
-            package_price += price
+          } else {
+            price = x.price;
+            package_price += price;
           }
-   
         });
       }
       new_price = product_price + package_price;

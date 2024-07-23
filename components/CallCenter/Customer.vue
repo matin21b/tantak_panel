@@ -97,6 +97,7 @@
                         :rowColor="rowColor"
                       />
                       <CoordinatorDialog
+                        v-if="coordinator_dialog.show"
                         :coordinatorDialog="coordinator_dialog"
                         :bsaketId="basket_id"
                         @relod="refresh"
@@ -107,6 +108,7 @@
                   <v-window-item :value="2">
                     <AddProduct
                       @add="addBasket($event)"
+                      @createList="createListPakage($event)"
                       v-if="dialog_add_product.show"
                       :DialogAdd="dialog_add_product"
                     />
@@ -164,7 +166,9 @@
                         </v-col>
                       </v-row>
 
-                      <div v-if="list_basket && list_basket.items">
+                      <div
+                        v-if="list_basket && list_basket.items && !load_list"
+                      >
                         <v-col
                           cols="12"
                           md="12"
@@ -198,7 +202,7 @@
                               <v-row class="d-flex justify-center mt-1">
                                 <v-btn
                                   v-if="show_update_btn"
-                                  @click="addNumber(item, true)"
+                                  @click="addNumber(item, true, 'product')"
                                   x-small
                                   text
                                 >
@@ -208,7 +212,7 @@
                                 <v-btn
                                   v-if="show_update_btn"
                                   :disabled="item.number == 1"
-                                  @click="addNumber(item, false)"
+                                  @click="addNumber(item, false, 'product')"
                                   x-small
                                   text
                                 >
@@ -273,7 +277,7 @@
                               cols="4"
                             >
                               <v-btn
-                                @click="deleFromCard(index, item)"
+                                @click="deleFromCard(index, item, 'product')"
                                 x-small
                                 text
                                 class="justify-center"
@@ -285,8 +289,224 @@
                           <v-divider></v-divider>
                         </v-col>
                       </div>
+                      <v-col
+                        v-if="load_list"
+                        v-for="i in 5"
+                        :key="i"
+                        class="ma-0 pa-0 text-center"
+                        md="12"
+                        cols="12"
+                      >
+                        <v-skeleton-loader
+                          v-bind="attrs"
+                          type="text"
+                        ></v-skeleton-loader>
+                      </v-col>
+
+                      <div class="mt-6">
+                        <v-col cols="12">
+                          <amp-section text="پکیج های ثبت شده" />
+                        </v-col>
+                        <v-col cols="12">
+                          <v-row
+                            class="py-2 mb-2 d-flex justify-center orange lighten-3"
+                          >
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small> نام پکیج</small>
+                            </v-col>
+                            <v-spacer />
+
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small> قیمت پکیج (ریال)</small>
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small> تعداد</small>
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small> تخفیف</small>
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small> پیش پرداخت </small>
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small> مجموع قیمت</small>
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small>تصویر</small>
+                            </v-col>
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small> حذف </small>
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                        <v-col
+                          v-if="
+                            pckage_list_item &&
+                            pckage_list_item.length != 0 &&
+                            !load_list
+                          "
+                          v-for="(item, index) in pckage_list_item"
+                          :key="index"
+                          cols="12"
+                        >
+                          <v-row class="d-flex justify-center">
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small>
+                                {{ index + 1 }} -
+                                {{ item.name }}
+                              </small>
+                            </v-col>
+                            <v-spacer />
+
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small> {{ $price(item.price) }}</small>
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <v-row class="d-flex justify-center mt-1">
+                                <v-btn
+                                  v-if="show_update_btn"
+                                  @click="addNumber(item, true, 'package')"
+                                  x-small
+                                  text
+                                >
+                                  <v-icon small> add </v-icon>
+                                </v-btn>
+                                <small> {{ item.count }}</small>
+                                <v-btn
+                                  v-if="show_update_btn"
+                                  :disabled="item.count == 1"
+                                  @click="addNumber(item, false, 'package')"
+                                  x-small
+                                  text
+                                >
+                                  <v-icon small> remove </v-icon>
+                                </v-btn>
+                              </v-row>
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small>
+                                {{ $price(item.discount_amount) }}
+                              </small>
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small> {{ $price(item.prepay_amount) }}</small>
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <small>
+                                {{ $price(item.price * item.count) }}</small
+                              >
+                            </v-col>
+                            <v-spacer />
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <v-card
+                                elevation="0"
+                                max-width="50"
+                                class="mb-3 justify-center mr-14"
+                                max-height="50"
+                              >
+                                <v-img
+                                  class="size-img justify-center"
+                                  :src="$getImage(item.logo)"
+                                  height="auto"
+                                />
+                              </v-card>
+                            </v-col>
+                            <v-col
+                              class="ma-0 pa-0 text-center"
+                              md="1"
+                              cols="4"
+                            >
+                              <v-btn
+                                @click="deleFromCard(index, item, 'package')"
+                                x-small
+                                text
+                                class="justify-center"
+                              >
+                                <v-icon small> delete </v-icon>
+                              </v-btn>
+                            </v-col>
+                          </v-row>
+                        </v-col>
+
+                        <!-- ----------------------------------------------------------------------------------------------------- -->
+
+                        <div v-if="pckage_list_item.length == 0 && !load_list">
+                          <v-col cols="12" class="text-center">
+                            <v-icon large> production_quantity_limits </v-icon>
+                          </v-col>
+                        </div>
+                      </div>
                     </v-col>
-                    <v-row class="d-flex justify-center">
+                    <v-row class="d-flex justify-center mt-5">
                       <v-col cols="2">
                         <amp-button
                           block
@@ -428,43 +648,6 @@
           />
         </v-card>
       </v-dialog>
-      <v-overlay v-if="change_step">
-        <v-card min-width="600" class="px-6 teal darken-3">
-          <v-card-title>
-            <span>ارجاع به واحد مالی</span>
-          </v-card-title>
-          <v-card-text>
-            <amp-select
-              text="تغییر وضعیت"
-              v-model="form_change_step.step"
-              :items="step_items"
-            ></amp-select>
-            <amp-select
-              text="مدیر مالی"
-              :items="firacl_memebers"
-              v-model="form_change_step.fiscal_manager_id"
-            />
-            <amp-textarea
-              text="پیام"
-              v-model="form_change_step.message"
-            ></amp-textarea>
-          </v-card-text>
-          <v-card-actions class="center-div">
-            <amp-button
-              text="تایید"
-              color="success"
-              @click="changeStep"
-              :disabled="!valid"
-              :loading="loading_for_chagne_status"
-            />
-            <amp-button
-              text="انصراف"
-              color="error"
-              @click="change_step = false"
-            />
-          </v-card-actions>
-        </v-card>
-      </v-overlay>
     </v-dialog>
     <v-dialog v-model="show_history">
       <v-card>
@@ -525,6 +708,12 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <RefralDialog
+      :refralDialog="refral_basket"
+      v-if="refral_basket.show"
+      :basketId="ref_basket_id"
+      @relod="refresh"
+    />
   </div>
 </template>
 
@@ -532,12 +721,14 @@
 import AddProduct from "@/components/Product/AddProduct.vue";
 import Payment from "@/components/User/Payment.vue";
 import CoordinatorDialog from "@/components/CallCenter/CoordinatorDialog.vue";
+import RefralDialog from "@/components/CallCenter/RefralDialog.vue";
 
 export default {
   components: {
     AddProduct,
     Payment,
     CoordinatorDialog,
+    RefralDialog,
   },
   props: {
     DialogCustomer: {
@@ -551,18 +742,17 @@ export default {
   },
 
   data: () => ({
+    attrs: {
+      class: "mb-6",
+      boilerplate: true,
+      elevation: 2,
+    },
     valid: true,
     headers: [],
     loading_for_chagne_status: false,
-    form_change_step: {
-      id: "",
-      step: "",
-      message: "",
-      fiscal_manager_id: "",
-    },
+
     headers_basket: [],
     item_basket: [],
-    change_step: false,
     wallet_transactoin: {
       show: false,
       item: null,
@@ -580,8 +770,11 @@ export default {
     },
 
     product_id: "",
+    pckage_list_item: [],
     dialog_add_product: { show: false, items: null },
+    refral_basket: { show: false, items: null },
     basket_id: "",
+    ref_basket_id: "",
     overlay: false,
     disabl_update: true,
     filters: {},
@@ -595,6 +788,7 @@ export default {
     fical_messanger: [],
     show_update_btn: false,
     show_history: false,
+    load_list: false,
     header_history: [],
     root_body_history: {},
     coordinator_dialog: {
@@ -603,28 +797,44 @@ export default {
     },
     history_basket_id: "",
     step_status: [
+      { text: "ثبت اولیه", value: "init" },
+      { text: "بسته شده", value: "reject" },
+      { text: "ارجاع به مدیر واحد مالی", value: "refer_fiscal_manager" },
+      { text: "یرگشت از مدیر واحد مالی", value: "reject_fiscal_manager" },
       {
-        text: "ارجاع به واحد مالی",
-        value: "refer_fiscal_manager",
+        text: "ارجاع از مدیر واحد مالی به سرپرست",
+        value: "manager_supervisor_fiscal",
       },
       {
-        text: "تایید واحد مالی",
-        value: "accept_fiscal_manager",
+        text: "برگشت از سرپرست به مدیر واحد مالی",
+        value: "supervisor_manager_fiscal",
+      },
+      { text: "ارجاع از سرپرست به واحد مالی", value: "supervisor_to_fiscal" },
+      { text: "برگشت از واحد مالی به سرپرست", value: "fiscal_to_supervisor" },
+      { text: "تایید واحد مالی", value: "accept_fiscal" },
+      {
+        text: "ارجاع به مدیر هماهنگ کننده",
+        value: "admin_manager_coordinator",
       },
       {
-        text: "عدم تایید واحد مالی",
-        value: "reject_fiscal_manager",
+        text: "برگشت از مدیر هماهنگ کننده به ادمین",
+        value: "manager_admin_coordinator",
       },
       {
-        text: "ارجاع به هماهنگ کننده",
-        value: "refer_coordinator",
-      },      {
-        text: " برگشت توسط هماهنگ کننده",
-        value: "reject_coordinator",
+        text: "ارجاع مدیر به سرپرست هماهنگ کننده",
+        value: "manager_supervisor_coordinator",
       },
       {
-        text: "ثبت اولیه",
-        value: "init",
+        text: "برگشت سرپرست به مدیر هماهنگ کننده",
+        value: "supervisor_manager_coordinator",
+      },
+      {
+        text: "ارجاع سرپرست هماهنگ کننده به هماهنگ کننده",
+        value: "supervisor_to_coordinator",
+      },
+      {
+        text: "برگشت از هماهنگ کننده به سرپرست",
+        value: "coordinator_to_supervisor",
       },
     ],
     step_items: [],
@@ -733,23 +943,28 @@ export default {
       {
         color: "orange",
         icon: "change_circle",
-        text: "ارجاع به واحد مالی",
+        text: "برسی سفارش",
         fun: (body) => {
           if (body.id) {
-            this.change_step = true;
-            this.cahgned_step = body.step;
-            this.form_change_step.id = body.id;
+            this.refral_basket.show = true;
+            this.ref_basket_id = body.id;
           }
         },
         show_fun: (body) => {
-          if (body.status == "waiting" || body.status == "payed") {
-            if (body.step == "init" || body.step == "reject_fiscal_manager") {
-              return true;
+          if (body.step) {
+            if (body.status == "waiting" || body.status == "payed") {
+              if (
+                body.step == "init" ||
+                body.step == "reject_fiscal_manager" ||
+                body.step == "manager_admin_coordinator"
+              ) {
+                return true;
+              } else {
+                return false;
+              }
             } else {
               return false;
             }
-          } else {
-            return false;
           }
         },
       },
@@ -758,11 +973,11 @@ export default {
         icon: "change_circle",
         text: "ارجاع به  هماهنگ کننده",
         fun: (body) => {
-            this.coordinator_dialog.show = true;
-            this.basket_id = body.id;
+          this.coordinator_dialog.show = true;
+          this.basket_id = body.id;
         },
         show_fun: (body) => {
-          if (body.step == "accept_fiscal_manager") {
+          if (body.step == "accept_fiscal") {
             return true;
           } else {
             return false;
@@ -1122,16 +1337,6 @@ export default {
         this.payment_list.item = null;
       }
     },
-    change_step() {
-      if (this.change_step == false) {
-        this.cahgned_step = "";
-        this.form_change_step = {
-          id: "",
-          step: "",
-          message: "",
-        };
-      }
-    },
   },
   mounted() {
     this.loadProfile();
@@ -1178,6 +1383,15 @@ export default {
       this.DialogCustomer.show = false;
       this.DialogCustomer.items = null;
     },
+    createListPakage(event) {
+      let ckek_dublicate = this.pckage_list_item.find((f) => event.id == f.id);
+      if (Boolean(ckek_dublicate)) {
+        this.$toast.error("پکیج قبلا اضافه شده");
+      } else {
+        this.pckage_list_item.push(event);
+        this.disabl_update = false;
+      }
+    },
     relod() {
       this.$emit("relod");
     },
@@ -1208,21 +1422,7 @@ export default {
         : phone_number;
       this.username = name;
     },
-    changeStep() {
-      this.loading_for_chagne_status = true;
-      this.$reqApi("/basket/referral", this.form_change_step)
-        .then((res) => {
-          this.$toast.success("عملیات انجام شد");
-          this.change_step = false;
-          this.$refs.listPersonal.getDataFromApi();
-          this.loading_for_chagne_status = false;
-        })
-        .catch((err) => {
-          this.loading_for_chagne_status = false;
 
-          return err;
-        });
-    },
     loadQusestions(answers) {
       // --------------------------
       this.loading = true;
@@ -1264,50 +1464,92 @@ export default {
       }
       this.question_form = items;
     },
-    deleFromCard(key, item) {
-      this.loading = true;
-      let product = this.list_basket.items;
-      product.splice(key, 1);
-      this.$toast.success(`${item.name} از لیست خرید  حذف شد`);
-      this.loading = false;
+    deleFromCard(key, item, key_name, brack) {
+      this.load_list = true;
+      let items = [];
+      if (key_name == "product") {
+        items = this.list_basket.items;
+      } else {
+        items = this.pckage_list_item;
+      }
+      items.splice(key, 1);
+      if ((brack, Boolean(brack))) {
+        this.$toast.success(`${item.name} با موفقیت شکسته شد `);
+      } else {
+      }
+
+      this.load_list = false;
       this.disabl_update = false;
     },
-    addNumber(item, add) {
-      this.loading = true;
-      if (Boolean(add)) {
-        item.number++;
+    addNumber(item, add, key_name) {
+      this.load_list = true;
+      if (key_name == "product") {
+        if (Boolean(add)) {
+          item.number++;
+        } else {
+          item.number--;
+        }
       } else {
-        item.number--;
+        if (Boolean(add)) {
+          item.count += 1;
+        } else {
+          item.count -= 1;
+        }
       }
+
+      this.$emit("chek_save");
+      this.load_list = false;
       this.disabl_update = false;
-      this.loading = false;
     },
     loadListBAskets(id) {
-      this.loading = true;
+      this.load_list = true;
       this.list_basket.items = [];
       this.$reqApi("basket-item", { basket_id: id })
         .then((response) => {
-          for (let index = 0; index < response.model.data.length; index++) {
-            const x = response.model.data[index];
+          let products = response.model.data.filter(
+            (x) => x.product_id && Boolean(x.product_id)
+          );
+          let packages = response.model.data.filter(
+            (x) => x.package_id && Boolean(x.package_id)
+          );
+          if (Boolean(products) && products.length > 0) {
+            for (let index = 0; index < products.length; index++) {
+              const x = products[index];
+              this.list_basket.items.push({
+                information: x.information,
 
-            
-            this.list_basket.items.push({
-              information: x.information,
+                number: x.number,
+                price: x.price,
 
-              number: x.number,
-              price: x.price,
-
-              full_barcode: x.full_barcode,
-              discount: x.discount,
-              id: x.product_varcomb_id,
-              name: x.product.name,
-              main_image: x.product.main_image,
-            });
+                full_barcode: x.full_barcode,
+                discount: x.discount,
+                id: x.product_varcomb_id,
+                name: x.product.name,
+                main_image: x.product.main_image,
+              });
+            }
           }
-          this.loading = false;
+          if (Boolean(packages) && packages.length > 0) {
+            for (let index = 0; index < packages.length; index++) {
+              const x = packages[index];
+              this.pckage_list_item.push({
+                count: x.number,
+                discount_amount: x.package.discount_amount,
+                id: x.package_id,
+                logo: x.package.logo,
+                name: x.information,
+                prepay_amount: x.package.prepay_amount,
+                price: x.package.price,
+                weight: x.package.weight,
+                product_varcoms: x.package.product_varcoms,
+              });
+            }
+          }
+
+          this.load_list = false;
         })
         .catch((error) => {
-          this.loading = false;
+          this.load_list = false;
         });
       // this.list_basket.items.unshift({
       //     information:
@@ -1338,14 +1580,29 @@ export default {
       this.loading = true;
       let form = {};
       let items = [];
+      let package_ids = [];
+
       form["id"] = this.product_id;
-      for (let index = 0; index < this.list_basket.items.length; index++) {
-        const x = this.list_basket.items[index];
-        items.push({
-          number: x.number,
-          product_varcomb_id: x.id,
-        });
+      if (this.list_basket.items.length > 0) {
+        for (let index = 0; index < this.list_basket.items.length; index++) {
+          const x = this.list_basket.items[index];
+          items.push({
+            number: x.number,
+            product_varcomb_id: x.id,
+          });
+        }
       }
+      if (this.pckage_list_item.length > 0) {
+        for (let index = 0; index < this.pckage_list_item.length; index++) {
+          const y = this.pckage_list_item[index];
+          package_ids.push({
+            id: y.id,
+            count: y.count,
+          });
+        }
+      }
+
+      form["package_ids"] = package_ids;
       form["array_items"] = items;
       this.$reqApi("basket/update", form)
         .then((response) => {

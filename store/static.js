@@ -51,7 +51,7 @@ let mnue_tree = [
       {
         id: 3,
         name: "کاربران",
-        access: "user/index",
+        access: "user/root",
         route: "/user/list",
       },
       {
@@ -105,7 +105,7 @@ let mnue_tree = [
            {
         id: 112545,
         name: "پکیج ها",
-        access: "packages/index",
+        access: "packages/root",
         route: "/product/packages",
       },
       {
@@ -136,17 +136,37 @@ let mnue_tree = [
     ],
   },
   {
-    id:565,
+    id:444452,
     name:"سبد های خرید",
-    access:'basket/list_referrals',
-    route:'basket/referral-list',
+    children: [
+      {
+        id:565,
+        name:"لیست سبد های خرید",
+        access:'basket/list_referrals',
+        route:'/basket/referral-list',
+      },     
+       {
+        id:668541,
+        name:"تاریخچه ارجاعات سبد های خرید",
+        route:'/basket/all-history',
+        access:'basket/referral_history',
+      },
+    ],
   },
+
+
   {
     id: 31,
     name: "موجودی انبار",
-    access: "product/index",
+    access: "product/root",
     route: "/stock",
-  },
+  }, 
+  //  {
+  //   id: 34751,
+  //   name: "وظیفه ها",
+  //   access: "tasks/index",
+  //   route: "/tasks",
+  // },
   {
     id: 50,
     name: "مرکز فروش تلفنی",
@@ -183,9 +203,16 @@ let mnue_tree = [
         access: "messages/index",
         name: "پیام های دریافتی",
         route: "/new-call-center",
-      },
+      },  
+
 
     ],
+  },
+  {
+    id: 545613,
+    access: "user/access_managers",
+    name: "لیست کارکنان",
+    route: "/new-call-center/my-staff",
   },
   {
     id: 18,
@@ -262,6 +289,12 @@ let mnue_tree = [
         name: "تخفیفات هماهنگ کنندگان",
         access: "discount_coordinator/index",
         route: "/setting/discount-coordinator",
+      },    
+        {
+        id: 5265414,
+        name: "دسته بندی وظیفه ها",
+        access: "setting/index",
+        route: "/setting/category-task",
       },
     ],
   },

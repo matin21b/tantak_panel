@@ -610,6 +610,7 @@ export default {
     tab: null,
     pckage_list_item: [],
     user: [],
+    factor_data: [],
     products: [],
     list_basket: { items: [] },
     factor_list: {},
@@ -873,10 +874,7 @@ this.prepayment = response.model.data[0].prepay_amount
                 text: "کیف پول اعتباری",
                 value: data.credit_wallt,
               },
-              {
-                text: "کیف پول اعتباری",
-                value: data.credit_wallt,
-              },
+     
               {
                 text: "مبلغ",
                 value: data.price,

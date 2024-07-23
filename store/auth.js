@@ -22,6 +22,14 @@ export const state = () => ({
     oprator_id: "b531a124-cc96-405b-aaab-3b5cc9526de2",
     fac_call_id:'920976fd-423f-413a-8dba-eead45af9dea',
     coordinator_id:'b659c438-531d-4aab-93e0-58f5835c1cb2',
+
+    financial_unit_id:"920976fd-423f-413a-8dba-eead45af9dea",
+    supervisor_coordinator:"38d9a458-5aba-4274-a71f-877e2bf655d4",
+    
+coordinating_manager:"7e6e5f8b-84db-48f5-bd93-7e38fcc30c2e",
+manager_financial_unit:"f013ea6f-78ed-44c5-ab38-6ed3ff9a4145",
+    
+head_financial_unit:"d4d80c65-15fd-42e6-b578-594280168664",
   },
 });
 

@@ -4,6 +4,7 @@
       url="/discount-coordinator"
       :headers="headers"
       autoUpdate="/setting/discount-coordinator"
+      
       createUrl="/setting/discount-coordinator/insert"
     >
     </BaseTable>

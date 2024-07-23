@@ -1,5 +1,11 @@
 <template>
   <v-window v-model="step">
+    <RefralDialog
+      :refralDialog="refral_basket"
+      v-if="refral_basket.show"
+      :basketId="ref_basket_id"
+      @relod="refresh"
+    />
     <v-window-item :value="1">
       <div>
         <v-row class="d-flex justify-center align-center mt-5">
@@ -199,9 +205,10 @@
 <script>
 import BaseTable from "@/components/DataTable/BaseTable";
 import Basket from "@/components/Product/Coordiantor/Basket.vue";
+import RefralDialog from "@/components/CallCenter/RefralDialog.vue";
 
 export default {
-  components: { BaseTable, Basket },
+  components: { BaseTable, Basket, RefralDialog },
   props: {
     rootBody: { default: () => ({}) },
     filters: { default: () => ({}) },
@@ -211,6 +218,7 @@ export default {
   data: () => ({
     delete_url: "",
     basket_id: "",
+    ref_basket_id: "",
     step: 1,
     headers: [],
     items: [],
@@ -245,21 +253,44 @@ export default {
       { text: "ارسال لینک", value: "send_pay_link" },
     ],
     step_status: [
+      { text: "ثبت اولیه", value: "init" },
+      { text: "بسته شده", value: "reject" },
+      { text: "ارجاع به مدیر واحد مالی", value: "refer_fiscal_manager" },
+      { text: "یرگشت از مدیر واحد مالی", value: "reject_fiscal_manager" },
       {
-        text: "ارجاع به واحد مالی",
-        value: "refer_fiscal_manager",
+        text: "ارجاع از مدیر واحد مالی به سرپرست",
+        value: "manager_supervisor_fiscal",
       },
       {
-        text: "ارجاع به واحد هماهنگ کننده",
-        value: "refer_coordinator",
+        text: "برگشت از سرپرست به مدیر واحد مالی",
+        value: "supervisor_manager_fiscal",
+      },
+      { text: "ارجاع از سرپرست به واحد مالی", value: "supervisor_to_fiscal" },
+      { text: "برگشت از واحد مالی به سرپرست", value: "fiscal_to_supervisor" },
+      { text: "تایید واحد مالی", value: "accept_fiscal" },
+      {
+        text: "ارجاع به مدیر هماهنگ کننده",
+        value: "admin_manager_coordinator",
       },
       {
-        text: "تایید واحد مالی",
-        value: "accept_fiscal_manager",
+        text: "برگشت از مدیر هماهنگ کننده به ادمین",
+        value: "manager_admin_coordinator",
       },
       {
-        text: "عدم تایید واحد مالی",
-        value: "reject_fiscal_manager",
+        text: "ارجاع مدیر به سرپرست هماهنگ کننده",
+        value: "manager_supervisor_coordinator",
+      },
+      {
+        text: "برگشت سرپرست به مدیر هماهنگ کننده",
+        value: "supervisor_manager_coordinator",
+      },
+      {
+        text: "ارجاع سرپرست هماهنگ کننده به هماهنگ کننده",
+        value: "supervisor_to_coordinator",
+      },
+      {
+        text: "برگشت از هماهنگ کننده به سرپرست",
+        value: "coordinator_to_supervisor",
       },
     ],
     status_items: [
@@ -299,6 +330,7 @@ export default {
     basket_price: "",
     show_history: false,
     root_body_history: {},
+    refral_basket: { show: false, items: null },
     header_history: [],
     wallet_data: {
       show: false,
@@ -364,6 +396,17 @@ export default {
       },
     ];
     this.btn_actions = [
+      {
+        color: "orange",
+        icon: "change_circle",
+        text: "برسی سفارش",
+        fun: (body) => {
+          if (body.id) {
+            this.refral_basket.show = true;
+            this.ref_basket_id = body.id;
+          }
+        },
+      },
       {
         text: "تاریخچه پرداخت",
         icon: "list",
@@ -526,25 +569,6 @@ export default {
       {
         text: "وزن",
         value: "total_weight",
-      },
-      {
-        text: "محصول",
-        disableSort: "true",
-        filterable: false,
-        value: (body) => {
-          if (body.items) {
-            let items = [];
-            body.items.map((x) => {
-              items
-                .push
-                // `<span class='teal--text'>${x.product.name} | ${x.information}</span>`
-                ();
-            });
-            return items.join(" , ");
-          } else {
-            return "-";
-          }
-        },
       },
     ];
   },

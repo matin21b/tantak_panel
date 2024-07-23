@@ -246,7 +246,7 @@
                   <amp-button
                     block
                     height="40"
-                    :disabled="!Boolean(selected_package_id)"
+                    :disabled="!Boolean(selected_package_id) || load_item || loading"
                     icon="add"
                     class="my-1"
                     color="orange darken-4"
@@ -396,7 +396,6 @@ export default {
   methods: {
     addPackage() {
       this.$emit("createList", this.informations_package);
-      this.$toast.success("پکیج  به سبد خرید اضافه شد");
       this.closeDialog();
     },
     loadProduct() {

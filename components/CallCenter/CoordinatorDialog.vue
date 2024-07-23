@@ -4,7 +4,7 @@
             <v-card>
                 <v-toolbar color="primary" dark>
                     <v-toolbar-title>
-                        <span style="font-size: 18px"> ارجاع به هماهنگ کننده</span>
+                        <span style="font-size: 18px"> ارجاع به مدیر هماهنگ کننده</span>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn icon @click="closeDialog">
@@ -13,7 +13,7 @@
                 </v-toolbar>
                 <div class="pa-6">
                     <v-col cols="12" md="12">
-                    <amp-select rules="require" text="انتخاب هماهنگ کننده" :items="coordinator_list"
+                    <amp-select rules="require" text="انتخاب مدیر کننده" :items="coordinator_list"
                         v-model="coordinator_id" />
                     <amp-textarea rules="require" text="توضیحات" v-model="message"></amp-textarea>
                 </v-col>
@@ -65,8 +65,8 @@ export default {
             let form = {  };
             form["id"] = this.bsaketId
             form["message"] = this.message
-            form["coordinator_id"] = this.coordinator_id
-            form["step"] = "refer_coordinator"
+            form["user_refer_id"] = this.coordinator_id
+            form["step"] = "admin_manager_coordinator"
             let url = "basket/referral ";
             this.$reqApi(url, form)
                 .then((res) => {
@@ -81,7 +81,7 @@ export default {
         },
         coordinatorList() {
             this.loading = true;
-            let url = "/user/coordinator";
+            let url = "/user/coordinator-manager";
             this.$reqApi(url)
                 .then((res) => {
                     if (res.model.data.length > 0) {
