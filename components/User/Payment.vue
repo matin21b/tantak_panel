@@ -8,8 +8,8 @@
         ref="confimationManul"
         :BTNactions="btn_actions"
       />
-      <v-overlay v-if="overlay">
-        <v-card min-width="600" class="pa-6 primary lighten-1">
+      <v-overlay :dark="false" v-if="overlay">
+        <v-card min-width="600" class="pa-6 ">
           <v-form v-model="valid">
             <amp-select
               text="تغییر وضعیت"
@@ -104,7 +104,7 @@ export default {
     },
   },
   beforeMount() {
-    this.filters = { basket_id: this.modelId };
+    this.filters = { user_id: this.modelId };
     if (this.userChangeStatus) {
       this.btn_actions = [
         {

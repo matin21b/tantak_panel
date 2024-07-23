@@ -462,38 +462,38 @@ export default {
           }
         },
       },
-      {
-        text: "تغییر وضعیت",
-        icon: "change_circle",
-        color: "success",
-        fun: (body) => {
-          this.change = true;
-          this.item_id = body.id;
-        },
-        show_fun: (body) => {
-          if (body.step == "refer_fiscal_manager") {
-            return true;
-          } else {
-            return false;
-          }
-        },
-      },
-      {
-        text: "تغییر وضعیت",
-        icon: "change_circle",
-        color: "teal",
-        fun: (body) => {
-          this.change = true;
-          this.item_id = body.id;
-        },
-        show_fun: (body) => {
-          if (body.step == "refer_coordinator") {
-            return true;
-          } else {
-            return false;
-          }
-        },
-      },
+      // {
+      //   text: "تغییر وضعیت",
+      //   icon: "change_circle",
+      //   color: "success",
+      //   fun: (body) => {
+      //     this.change = true;
+      //     this.item_id = body.id;
+      //   },
+      //   show_fun: (body) => {
+      //     if (body.step == "refer_fiscal_manager") {
+      //       return true;
+      //     } else {
+      //       return false;
+      //     }
+      //   },
+      // },
+      // {
+      //   text: "تغییر وضعیت",
+      //   icon: "change_circle",
+      //   color: "teal",
+      //   fun: (body) => {
+      //     this.change = true;
+      //     this.item_id = body.id;
+      //   },
+      //   show_fun: (body) => {
+      //     if (body.step == "refer_coordinator") {
+      //       return true;
+      //     } else {
+      //       return false;
+      //     }
+      //   },
+      // },
       {
         text: "جزییات سبد ",
         icon: "shopping_basket",

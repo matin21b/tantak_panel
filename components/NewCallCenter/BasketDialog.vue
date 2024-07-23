@@ -727,10 +727,15 @@ export default {
       this.loading = false;
     },
 
-    deleFromCard(key, item) {
+    deleFromCard(key, item, key_name) {
       this.loading = true;
-      let product = this.list_basket.items;
-      product.splice(key, 1);
+      let items = [];
+      if (key_name == "product") {
+        items = this.list_basket.items;
+      } else {
+        items = this.pckage_list_item;
+      }
+      items.splice(key, 1);
       this.$toast.success(`${item.name} از لیست خرید  حذف شد`);
       this.loading = false;
     },
