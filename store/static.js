@@ -57,13 +57,13 @@ let mnue_tree = [
       {
         id: 4,
         name: "براساس نقش",
-        access: "user/index",
+        access: "user/root",
         route: "/user",
       },
       {
         id: 5,
         name: "نقش ها",
-        access: "role/index",
+        access: "role/root",
         route: "/role",
       },
     ],

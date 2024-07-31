@@ -146,11 +146,12 @@ export default {
   },
   watch: {
     for_person() {
-      this.show= true
       if (this.for_person == "role") {
+        setTimeout(() => {
         this.$store.dispatch("setting/getRoleServer");
+          
+        }, 200);
       }
-      this.show= false
     },
   },
   mounted() {

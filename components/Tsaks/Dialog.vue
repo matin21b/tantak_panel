@@ -65,10 +65,10 @@
                       }}
                     </h1>
                   </v-row>
-                  <h1 class="font_10" v-else>بازه زمانی مشخص نشده</h1>
+                  <h1 class="font_10  mr-6" v-else>بازه زمانی مشخص نشده</h1>
 
                   <v-spacer></v-spacer>
-                  <h1 class="font_10">
+                  <h1 class="font_10  mr-6">
                     ایجاد شده توسط :
                     {{ creator }}
                     در
@@ -88,7 +88,7 @@
                   آمار بازدید:
                 </h1>
                 <h1
-                  class="font_10 mr-2"
+                  class="font_10  "
                   v-if="Boolean(check_see)"
                   v-for="(name, index) in check_see"
                   :key="index"
@@ -107,7 +107,7 @@
                     <v-icon small>arrow_left</v-icon>
                     آمار بازدید:
                   </h1>
-                  <h1 class="font_10 mr-2">
+                  <h1 class="font_10  mr-6">
                     بازدیدی وجود ندارد
                     <v-icon small>visibility_off</v-icon>
                   </h1>
@@ -133,7 +133,7 @@
               </h1>
               <v-col cols="5">
                 <h1
-                  class="link"
+                  class="link  mr-6"
                   v-if="Boolean(task.link)"
                   @click="openLink(task.link)"
                 >
@@ -145,7 +145,7 @@
                 <v-icon small>arrow_left</v-icon>
                 توضیحات :
               </h1>
-              <h1 class="font_10">
+              <h1 class="font_10  mr-6">
                 {{ task.text }}
               </h1>
 
@@ -154,7 +154,7 @@
 
                 مکان :
               </h1>
-              <h1 class="font_10">
+              <h1 class="font_10 mr-6">
                 {{ task.place }}
               </h1>
 
