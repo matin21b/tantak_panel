@@ -467,6 +467,7 @@ export default {
           items["product_varcoms"] = res.product_varcoms;
           items["roles"] = res.roles;
           items["count"] = 1;
+          items["users"] = res.users;
           this.informations_package = items;
           this.load_item = false;
         })

@@ -504,6 +504,13 @@ export default {
           this.basket_price = body.price;
           this.basket_id = body.id;
         },
+        show_fun: (body) => {
+          if (body.status != "wait_discount") {
+            return true;
+          } else {
+            return false;
+          }
+        },
       },
     ];
   },
@@ -555,11 +562,34 @@ export default {
         value: "factor_number",
       },
       {
-        text: "مبلغ",
+        text: "مبلغ قابل پرداخت",
         filterCol: "price",
         value: (body) => {
           if (body.price) {
             return `${this.$price(body.price)} ریال`;
+          } else {
+            return "__";
+          }
+        },
+      },
+
+      {
+        text: "جمع کل سبد خرید",
+        filterCol: "base_price",
+        value: (body) => {
+          if (body.base_price) {
+            return `${this.$price(body.base_price)} ریال`;
+          } else {
+            return "__";
+          }
+        },
+      },
+      {
+        text: "تخفبف هماهنگ کننده",
+        filterCol: "discount_coordinat",
+        value: (body) => {
+          if (body.discount_coordinat) {
+            return `${this.$price(body.discount_coordinat)} ریال`;
           } else {
             return "__";
           }
@@ -600,6 +630,10 @@ export default {
           {
             text: "ترکیبی ",
             value: "mixture",
+          },
+          {
+            text: "منتظر تایید تخفیف ",
+            value: "wait_discount",
           },
         ],
       },

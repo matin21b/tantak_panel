@@ -101,8 +101,8 @@ let mnue_tree = [
         name: "دسته بندی محصولات",
         access: "category/index",
         route: "/product/category",
-      }, 
-           {
+      },
+      {
         id: 112545,
         name: "پکیج ها",
         access: "packages/root",
@@ -125,48 +125,46 @@ let mnue_tree = [
         access: "payments/index",
         name: "لیست پرداخت ها",
         route: "/product/pay",
-      },   
+      },
       //    {
       //   id: 84512,
       //   access: "sale_types/index",
       //   name: " انواع فروش",
       //   route: "/product/sale-type",
       // },
-
     ],
   },
   {
-    id:444452,
-    name:"سبد های خرید",
+    id: 444452,
+    name: "سبد های خرید",
     children: [
       {
-        id:565,
-        name:"لیست سبد های خرید",
-        access:'basket/list_referrals',
-        route:'/basket/referral-list',
-      },     
-       {
-        id:668541,
-        name:"تاریخچه ارجاعات سبد های خرید",
-        route:'/basket/all-history',
-        access:'basket/referral_history',
+        id: 565,
+        name: "لیست سبد های خرید",
+        access: "basket/list_referrals",
+        route: "/basket/referral-list",
+      },
+      {
+        id: 668541,
+        name: "تاریخچه ارجاعات سبد های خرید",
+        route: "/basket/all-history",
+        access: "basket/referral_history",
       },
     ],
   },
-
 
   {
     id: 31,
     name: "موجودی انبار",
     access: "product/root",
     route: "/stock",
-  }, 
-  //  {
-  //   id: 34751,
-  //   name: "وظیفه ها",
-  //   access: "tasks/index",
-  //   route: "/tasks",
-  // },
+  },
+   {
+    id: 34751,
+    name: "وظیفه ها",
+    access: "tasks/index",
+    route: "/tasks",
+  },
   {
     id: 50,
     name: "مرکز فروش تلفنی",
@@ -188,10 +186,12 @@ let mnue_tree = [
         access: (state) => {
           if (state.auth) {
             if (
-              state.auth.action.indexOf('call_center/index-superviser-messages') > -1 ||
-              state.auth.action.indexOf('recived_message/index') > -1) {
-
-              return true
+              state.auth.action.indexOf(
+                "call_center/index-superviser-messages"
+              ) > -1 ||
+              state.auth.action.indexOf("recived_message/index") > -1
+            ) {
+              return true;
             }
           }
         },
@@ -203,9 +203,13 @@ let mnue_tree = [
         access: "messages/index",
         name: "پیام های دریافتی",
         route: "/new-call-center",
-      },  
-
-
+      },
+      {
+        id: 55643,
+        access: "internals/index",
+        name: "اطلاعات داخلی",
+        route: "/new-call-center/internal",
+      },
     ],
   },
   {
@@ -283,14 +287,14 @@ let mnue_tree = [
         name: "تنظیمات فروش عمده",
         access: "setting/index",
         route: "/setting/whole-sell",
-      },      
+      },
       {
         id: 5214,
         name: "تخفیفات هماهنگ کنندگان",
         access: "discount_coordinator/index",
         route: "/setting/discount-coordinator",
-      },    
-        {
+      },
+      {
         id: 5265414,
         name: "دسته بندی وظیفه ها",
         access: "setting/index",
@@ -362,9 +366,7 @@ let status_work = [
 let status = [
   { text: "فعال", value: "active" },
   { text: "غیر فعال", value: "in_active" },
-]; 
-
-
+];
 
 let status_message = [
   { text: "ثبت اولیه", value: "init" },
@@ -384,7 +386,6 @@ let step_message = [
   { text: "از مرکز تماس به فروشنده", value: "supervisor_to_operator" },
   { text: "از فروشنده به مرکز تماس", value: "operator_to_supervisor" },
   { text: "انجام شده", value: "done" },
-
 ];
 
 let product_status = [
@@ -400,7 +401,9 @@ let sell_status = [
 ];
 let work_status = [
   { text: "مشغول به کار", value: "active" },
-  { text: "مرخصی", value: "inactive" },
+  { text: "مرخصی", value: "leave" },
+  { text: "استراحت", value: "rest" },
+  { text: "دور کاری", value: "remote" },
 ];
 
 let status_contact_form = [

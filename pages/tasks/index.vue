@@ -132,6 +132,7 @@ export default {
     ];
   },
   methods: {
+
     refresh() {
       this.$refs.TaskList.getDataFromApi();
       this.value = false;

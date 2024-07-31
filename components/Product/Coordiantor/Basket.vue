@@ -18,6 +18,13 @@
       @updateBasket="saveBasket"
       v-if="price_dialog.show"
     />
+    <GetLicenseDialog
+      :reqToLicense="dialog_req_to_license"
+      :basketPrice="basket_price"
+      :packageId="package_id"
+      @updateBasket="saveBasket($event)"
+      v-if="dialog_req_to_license.show"
+    />
     <v-col cols="12" class="mt-5">
       <v-col cols="12" class="text-start" v-if="Boolean(is_coordinator)">
         <amp-button
@@ -313,7 +320,17 @@
                 </v-btn>
               </v-col>
               <v-col class="ma-0 pa-0 text-center" md="1" cols="4" v-else>
-                <v-icon> dangerous </v-icon>
+                <v-btn
+                  color="red darken-3"
+                  small
+                  outlined
+                  @click="reqToLicense(item)"
+                >
+                  <small>
+                    درخواست مجوز
+                    <v-icon small> emoji_people </v-icon>
+                  </small>
+                </v-btn>
               </v-col>
             </v-row>
           </v-col>
@@ -376,6 +393,7 @@ import Payment from "@/components/User/Payment.vue";
 import CoordinatorDialog from "@/components/CallCenter/CoordinatorDialog.vue";
 import BrackDialog from "@/components/Product/Coordiantor/BrackDialog.vue";
 import PriceDialog from "@/components/Product/Coordiantor/PriceDialog.vue";
+import GetLicenseDialog from "@/components/Product/Coordiantor/GetLicenseDialog.vue";
 
 export default {
   components: {
@@ -384,6 +402,7 @@ export default {
     CoordinatorDialog,
     BrackDialog,
     PriceDialog,
+    GetLicenseDialog,
   },
   props: {
     itemsBasket: {
@@ -440,13 +459,14 @@ export default {
     },
     product_id: "",
     dialog_add_product: { show: false, items: null },
+    dialog_req_to_license: { show: false, items: null },
     basket_id: "",
     overlay: false,
     load_list: true,
     filters: {},
     steps: 1,
     e1: 1,
-
+    package_id: "",
     step_index: 1,
     step: 1,
     step_basket: 1,
@@ -579,11 +599,12 @@ export default {
       this.load_list = false;
     },
 
-    saveBasket() {
+    saveBasket(discount) {
       this.loading = true;
       let form = {};
       let items = [];
       form["id"] = this.basketId;
+      form["discount"] = discount;
       for (let index = 0; index < this.list_basket.items.length; index++) {
         const x = this.list_basket.items[index];
         items.push({
@@ -656,13 +677,23 @@ export default {
     },
     createListPakage(event) {
       let access_roles = [];
+      let access_users = [];
+      let user_id = this.$store.state.auth.user.id;
       let access_barck = false;
       if (!Boolean(event.licence)) {
-        access_roles = event.roles ? event.roles.map((x) => x.id) : [];
+        access_roles =
+          event.roles.length != 0 ? event.roles.map((x) => x.id) : [];
+        access_users =
+          event.users.length != 0 ? event.users.map((x) => x.id) : [];
         let login_user_role = this.$store.state.auth.user.roles;
         access_roles.forEach((id) => {
           login_user_role.forEach((element) => {
             if (id == element.id) {
+              access_barck = true;
+            }
+
+            let have_access = access_roles.find((f) => f == user_id);
+            if (Boolean(have_access)) {
               access_barck = true;
             }
           });
@@ -673,17 +704,18 @@ export default {
 
       event["licence_break"] = access_barck;
       event["calculated"] = false;
-
       let ckek_dublicate = this.pckage_list_item.find((f) => event.id == f.id);
       if (Boolean(ckek_dublicate)) {
         this.$toast.error("پکیج قبلا اضافه شده");
       } else {
         this.pckage_list_item.push(event);
+        this.$toast.success("پکیج به سبد اضافه شد");
       }
     },
     createListBasket(basket) {
       return new Promise((res, rej) => {
         for (let index = 0; index < basket.length; index++) {
+          console.log(basket);
           const x = basket[index];
           if (x.product_id && Boolean(x.product_id)) {
             this.list_basket.items.push({
@@ -698,6 +730,8 @@ export default {
             });
           } else if (x.package_id && Boolean(x.package_id)) {
             let access_roles = [];
+            let access_users = [];
+            let user_id = this.$store.state.auth.user.id;
             let access_barck = false;
             if (!Boolean(x.package.licence_break)) {
               access_roles = x.package.roles
@@ -711,6 +745,14 @@ export default {
                   }
                 });
               });
+              access_users =
+                x.package.users.length != 0
+                  ? x.package.users.map((x) => x.id)
+                  : [];
+              let have_access = access_roles.find((f) => f == user_id);
+              if (Boolean(have_access)) {
+                access_barck = true;
+              }
             } else {
               access_barck = true;
             }
@@ -718,7 +760,7 @@ export default {
               count: x.number,
               calculated: true,
               discount_amount: x.package.discount_amount,
-              id: x.id,
+              id: x.package.id,
               logo: x.package.logo,
               name: x.information,
               licence_break: access_barck,
@@ -832,6 +874,10 @@ export default {
       if (!check_dublicate_id) {
         this.list_basket.items.unshift(data);
       }
+    },
+    reqToLicense(pack) {
+      this.package_id = pack.id;
+      this.dialog_req_to_license.show = true;
     },
   },
 };

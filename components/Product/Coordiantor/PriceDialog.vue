@@ -62,7 +62,28 @@
             </v-col>
           </v-row>
         </v-col>
+        <v-col>
+          <v-divider></v-divider>
+        </v-col>
+        <v-col cols="12" class="text-center">
+          <amp-input
+            text="اعمال تخفیف (درصدی)"
+            cClass="ltr-item"
+            v-model="discount"
+            rules="percent"
+          />
 
+          <small class="grey lighten-3 pa-2">
+            در صورت اعمال تخفبف چنانچه دسترسی مربوط را داشتید تخفیف اعمال و
+            چنانچه
+            <span class="primary--text font_10"> مدیر و یا سرپرست شما </span>
+
+            دسترسی به این بخش را داشته باشد تسک برای آنها تعریف میشود و
+            <span class="primary--text font_10">
+              در غیر این صورت تخفیف اعمال نمیشود
+            </span>
+          </small>
+        </v-col>
         <v-row class="d-flex justify-center mt-4 mb-1">
           <v-col cols="2" md="3">
             <amp-button
@@ -136,7 +157,7 @@ export default {
       this.priceDialog.items = null;
     },
     updateBasket() {
-      this.$emit("updateBasket");
+      this.$emit("updateBasket", this.discount);
       this.closeDialog();
     },
   },

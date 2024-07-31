@@ -9,31 +9,79 @@
           <amp-input text="نام خانوادگی" v-model="form.last_name" rules="" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input class="ltr-item" text=" شماره همراه " rules="phone,require" v-model="form.username" />
+          <amp-input
+            class="ltr-item"
+            text=" شماره همراه "
+            rules="phone,require"
+            v-model="form.username"
+          />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input class="ltr-item" text=" رمز عبور " type="password"
-            :rules="modelId ? 'password' : 'require,password'" v-model="form.password" />
+          <amp-input
+            class="ltr-item"
+            text=" رمز عبور "
+            type="password"
+            :rules="modelId ? 'password' : 'require,password'"
+            v-model="form.password"
+          />
         </v-col>
         <v-col cols="12" md="3" v-if="!Boolean(roleId)">
-          <amp-autocomplete text="نقش" chips multiple rules="require" v-model="form.role_id"
-            :items="$store.state.setting.roles" />
+          <amp-autocomplete
+            text="نقش"
+            chips
+            multiple
+            rules="require"
+            v-model="form.role_id"
+            :items="$store.state.setting.roles"
+          />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-select text="وضعیت" rules="require" v-model="form.status" :items="$store.state.static.status" />
+          <amp-select
+            text="وضعیت"
+            rules="require"
+            v-model="form.status"
+            :items="$store.state.static.status"
+          />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-select text="نوع شخص" rules="require" v-model="form.person_type"
-            :items="$store.state.static.person_type" />
+          <amp-select
+            text="وضعیت کاری"
+            rules="require"
+            v-model="form.status_work"
+            :items="$store.state.static.work_status"
+          />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input text="کد ملی" rules="nationalCode" :is-number="true" v-model="form.national_code" />
+          <amp-select
+            text="نوع شخص"
+            rules="require"
+            v-model="form.person_type"
+            :items="$store.state.static.person_type"
+          />
+        </v-col>
+
+        <v-col cols="12" md="3">
+          <amp-input
+            text="کد ملی"
+            rules="nationalCode"
+            :is-number="true"
+            v-model="form.national_code"
+          />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input text="پست الکترونیکی" rules="email" dir="ltr" v-model="form.email" />
+          <amp-input
+            text="پست الکترونیکی"
+            rules="email"
+            dir="ltr"
+            v-model="form.email"
+          />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-jdate text="تاریخ تولد" :is-number="true" v-model="form.birth_date" />
+          <amp-jdate
+            text="تاریخ تولد"
+            :is-number="true"
+            v-model="form.birth_date"
+          />
         </v-col>
         <!-- <v-col cols="12" md="3">
           <amp-input
@@ -60,17 +108,43 @@
           />
         </v-col> -->
         <v-col cols="12" md="3" v-if="cheke_branch">
-          <UserSelectForm text=" کاربر ناظر" v-model="parent_id" url="user"
-            :role-id="[$store.state.auth.role.admin_id]" />
+          <UserSelectForm
+            text=" کاربر ناظر"
+            v-model="parent_id"
+            url="user"
+            :role-id="[$store.state.auth.role.admin_id]"
+          />
         </v-col>
         <v-col cols="12" md="3" v-if="cheke_branch">
-          <amp-select text="ناحیه" v-model="form.region_id" :items="$store.state.setting.region" />
+          <amp-select
+            text="ناحیه"
+            v-model="form.region_id"
+            :items="$store.state.setting.region"
+          />
         </v-col>
         <v-col cols="12" md="3" v-if="cheke_branch">
-          <amp-select text=" کد شعبه " v-model="form.branch_id" :items="$store.state.setting.branch_code" />
+          <amp-select
+            text=" کد شعبه "
+            v-model="form.branch_id"
+            :items="$store.state.setting.branch_code"
+          />
         </v-col>
         <v-col cols="12" md="3">
           <amp-upload-file v-model="form.avatar" />
+        </v-col>
+        <v-col cols="12" md="3" v-if="!is_user">
+          <amp-select
+            text="انتخاب داخلی"
+            v-model="form.internal_id"
+            :items="internal_items"
+          />
+        </v-col>
+        <v-col cols="12" md="3" v-if="!is_user">
+          <amp-input
+            text="شمار پورت داخلی"
+            v-model="form.internal_port"
+            cClass="ltr-item"
+          />
         </v-col>
         <v-col cols="12" md="12">
           <v-divider></v-divider>
@@ -81,8 +155,12 @@
             v-model="form.address.address"
           ></amp-textarea>
         </v-col> -->
+
         <v-col cols="12" md="12">
-          <amp-textarea text="توضیحات" v-model="form.description"></amp-textarea>
+          <amp-textarea
+            text="توضیحات"
+            v-model="form.description"
+          ></amp-textarea>
         </v-col>
       </v-row>
 
@@ -91,9 +169,24 @@
           <v-divider />
         </v-col>
         <v-col cols="12" md="12" class="text-center">
-          <amp-button large icon="redo" class="my-1" color="error" text="انصراف" @click="redirectPage()" />
-          <amp-button large icon="done" class="my-1" type="submit" color="success" :loading="loading"
-            :disabled="!valid || loading" :text="modelId ? 'ویرایش' : 'ثبت'" />
+          <amp-button
+            large
+            icon="redo"
+            class="my-1"
+            color="error"
+            text="انصراف"
+            @click="redirectPage()"
+          />
+          <amp-button
+            large
+            icon="done"
+            class="my-1"
+            type="submit"
+            color="success"
+            :loading="loading"
+            :disabled="!valid || loading"
+            :text="modelId ? 'ویرایش' : 'ثبت'"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -117,8 +210,10 @@ export default {
   data: () => ({
     valid: false,
     loading: false,
+    is_user: false,
     supervisor_status: "",
     supervisor: [],
+    internal_items: [],
     sales_manager: [],
     parent_id: [],
     psychologist: [],
@@ -140,8 +235,10 @@ export default {
       first_name: "",
       person_type: "",
       email: "",
+      internal_id: "",
+      internal_port: "",
+      status_work: "",
       role_id: [],
-
       national_code: "",
       status: "active",
     },
@@ -151,7 +248,7 @@ export default {
       if (this.form.role_id) {
         return (
           this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
-          -1 ||
+            -1 ||
           this.form.role_id.indexOf(
             this.$store.state.auth.role.warehouseman_id
           ) > -1
@@ -162,11 +259,11 @@ export default {
     cheke_user() {
       return (
         this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
-        -1 ||
+          -1 ||
         this.form.role_id.indexOf(this.$store.state.auth.role.writers_id) >
-        -1 ||
+          -1 ||
         this.form.role_id.indexOf(this.$store.state.auth.role.warehouseman_id) >
-        -1 ||
+          -1 ||
         this.form.role_id.indexOf(this.$store.state.auth.role.admin_id) > -1
       );
     },
@@ -195,9 +292,13 @@ export default {
   //   // },
   // },
   mounted() {
+    if (this.form.role_id.indexOf(this.$store.state.auth.role.user_id) > -1) {
+      this.is_user = true;
+    }
     if (this.modelId) {
       this.loadData();
     }
+    this.loadInternals();
     // this.loadState().then((res) => {
     //   res.filter((x) => {
     //     this.province.push({
@@ -249,11 +350,14 @@ export default {
           this.form.first_name = response.model.first_name;
           this.form.email = response.model.email;
           this.form.description = response.model.description;
+          this.form.status_work = response.model.status_work;
           this.form.avatar = response.model.avatar;
           this.form.region_id = response.model.region_id;
           this.form.parent_id = response.model.parent_id;
           this.form.national_code = response.model.national_code;
           this.form.branch_id = response.model.branch_id;
+          this.form.internal_id = response.model.internal_id;
+          this.form.internal_port = response.model.internal_port;
           if (response.model.parent) {
             this.parent_id = [response.model.parent];
           }
@@ -335,6 +439,25 @@ export default {
           });
         });
       }
+    },
+    loadInternals() {
+      this.$reqApi("/internal")
+        .then(async (response) => {
+          let items = [];
+          response.model.data.forEach((x) => {
+            items.push({
+              text: x.server_name + " | " + x.start_port + " - " + x.end_port,
+
+              value: x.id,
+            });
+          });
+          this.internal_items = items;
+          this.loading = false;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.loading = false;
+        });
     },
     redirectPage() {
       if (window.history.length > 2) {

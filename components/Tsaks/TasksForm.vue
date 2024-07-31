@@ -44,6 +44,7 @@
           <amp-jdate
             text="تاریخ شروع "
             :is-number="true"
+                  rules="require"
             v-model="form.start_task"
           />
         </v-col>
@@ -51,6 +52,7 @@
           <amp-jdate
             text="تاریخ پایان"
             :is-number="true"
+                  rules="require"
             v-model="form.end_task"
           />
         </v-col>
@@ -111,6 +113,7 @@ export default {
   data: () => ({
     valid: false,
     loading: false,
+    show: false,
     createUrl: "/task/insert",
     updateUrl: "/task/update",
     showUrl: "/task/show",
@@ -143,9 +146,11 @@ export default {
   },
   watch: {
     for_person() {
+      this.show= true
       if (this.for_person == "role") {
         this.$store.dispatch("setting/getRoleServer");
       }
+      this.show= false
     },
   },
   mounted() {

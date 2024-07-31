@@ -1,15 +1,20 @@
 <template>
-  <div>
+  <div >
     <v-dialog
       persistent
       v-model="dialogTask.show"
       :model-id="dialogTask.items"
-      width="750"
+      width="850"
     >
-      <v-card class="card-dialog">
-        <v-col cols="12" class="pa-3 mt-4 mr-2">
-          <v-row>
-            <h1 class="font_11 mr-3">
+      <v-card class="card-dialog pa-5">
+        <v-col
+          cols="12"
+          class="mr-2 mb-1"
+          style="border-bottom: 1px solid grey"
+        >
+          <v-row class="mb-1 align-center" >
+            <v-badge class="ml-3" :color="color_task" v-if="!loading" />
+            <h1 class="font_11 mr-3 " >
               عنوان :‌
               {{ task.title }}
               <br />
@@ -23,224 +28,254 @@
           </v-row>
         </v-col>
 
-        <v-col cols="12">
-          <v-divider></v-divider>
-        </v-col>
-        <v-card-text v-if="!loading_data">
-          <!-- <v-row class="align-center py-4 mr-1">
+        <v-row>
+          <v-col cols="10">
+            <v-card-text v-if="!loading_data">
+              <!-- <v-row class="align-center py-4 mr-1">
               <h1 class="font_12 mx-1">گیرنده :</h1>
               <h1 class="font_12 mx-1">
                 {{ geter }}
               </h1>
             </v-row> -->
-          <h1 class="font_14 mt-2">
-            <v-icon small>arrow_left</v-icon>
-            بازه زمانی
-          </h1>
-          <v-col cols="12">
-            <v-row class="align-center">
-              <v-row
-                v-if="Boolean(task.start_task) && Boolean(task.end_task)"
-                class="mr-2"
-              >
-                <small> شروع از تاریخ </small>
-                <h1 class="font_10 mx-1" v-if="task.start_task">
-                  {{
-                    $toJalali(task.start_task, "YYYY-MM-DD", "jYYYY/jMM/jDD")
-                  }}
-                </h1>
-                <small> تا </small>
-
-                <h1 class="font_10 mx-1" v-if="task.end_task">
-                  {{ $toJalali(task.end_task, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
-                </h1>
-              </v-row>
-              <small v-else> بازه زمانی مشخص نشده </small>
-
-              <v-spacer></v-spacer>
-              <small class="font_10">
-                ایجاد شده توسط :
-                {{ creator }}
-                در
-                {{ $toJalali(task.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
-              </small>
-            </v-row>
-          </v-col>
-          <v-col
-            v-if="is_creator && Boolean(check_see)"
-            class="mt-4 mr-0 pr-0"
-            cols="12"
-          >
-            <h1 class="font_14">
-              <v-icon small>arrow_left</v-icon>
-              آمار بازدید:
-            </h1>
-            <h1
-              class="font_10 mr-2"
-              v-if="Boolean(check_see)"
-              v-for="(name, index) in check_see"
-              :key="index"
-            >
-              <v-icon small>done_all</v-icon>
-              {{ name }}
-            </h1>
-          </v-col>
-          <v-col
-            v-if="is_creator && !Boolean(check_see)"
-            class="mt-4 mr-0 pr-0"
-            cols="12"
-          >
-            <v-row class="text-center mt-4">
-              <h1 class="font_14">
+              <h1 class="font_14 mt-2">
                 <v-icon small>arrow_left</v-icon>
-                آمار بازدید:
+                بازه زمانی
               </h1>
-              <h1 class="font_10 mr-2">
-                بازدیدی وجود ندارد
-                <v-icon small>visibility_off</v-icon>
-              </h1>
-            </v-row>
-          </v-col>
-          <v-row v-if="task.file" class="align-center mt-4">
-            <h1 class="font_14">
-              <v-icon small>arrow_left</v-icon>
-              فایل بار گذاری شده
-            </h1>
-            <v-spacer></v-spacer>
-            <v-col cols="12" md="4" class="text-center">
-              <v-btn height="30" outlined block @click="getFile(task.file)">
-                مشاهده فایل
-                <v-icon>attach_file</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-
-          <h1 class="font_14 mt-4" v-if="Boolean(task.link)">
-            <v-icon small>arrow_left</v-icon>
-            لینک
-          </h1>
-          <v-col cols="5">
-            <h1
-              class="link"
-              v-if="Boolean(task.link)"
-              @click="openLink(task.link)"
-            >
-              {{ task.link }}
-            </h1>
-          </v-col>
-
-          <h1 class="font_14 mt-4">
-            <v-icon small>arrow_left</v-icon>
-            توضیحات :
-          </h1>
-          <small>
-            {{ task.text }}
-          </small>
-
-          <h1 class="font_14 mt-4">
-            <v-icon small>arrow_left</v-icon>
-
-            مکان :
-          </h1>
-          <small>
-            {{ task.place }}
-          </small>
-
-          <v-col
-            class="mt-4 pt-4"
-            cols="12"
-            v-if="!is_creator && (status == 'wait' || status == 'see')"
-          >
-            <v-row class="align-center mt-2">
-              <h1 class="font_16 ml-3 mr-7">تعیین وضعیت</h1>
-              <v-badge class="mt-2" :color="set_color" v-if="!loading" dot />
-              <v-progress-circular
-                v-else
-                :size="16"
-                :width="4"
-                indeterminate
-                :color="set_color"
-              />
               <v-col cols="12">
-                <amp-select
-                  :disabled="Boolean(loading)"
-                  v-model="task_status"
-                  :items="items"
-                />
-              </v-col>
+                <v-row class="align-center">
+                  <v-row
+                    v-if="Boolean(task.start_task) && Boolean(task.end_task)"
+                    class="mr-2"
+                  >
+                    <small> شروع از تاریخ </small>
+                    <h1 class="font_10 mx-1" v-if="task.start_task">
+                      {{
+                        $toJalali(
+                          task.start_task,
+                          "YYYY-MM-DD",
+                          "jYYYY/jMM/jDD"
+                        )
+                      }}
+                    </h1>
+                    <small> تا </small>
 
-              <v-col cols="1"> </v-col>
-            </v-row>
-          </v-col>
-          <v-col
-            cols="12"
-            class="text-center"
-            v-if="is_creator && log_change_status.length != 0"
-          >
-            <v-row class="align-center py-3">
-              <v-divider></v-divider>
+                    <h1 class="font_10 mx-1" v-if="task.end_task">
+                      {{
+                        $toJalali(task.end_task, "YYYY-MM-DD", "jYYYY/jMM/jDD")
+                      }}
+                    </h1>
+                  </v-row>
+                  <h1 class="font_10" v-else>بازه زمانی مشخص نشده</h1>
 
-              <h1 class="mx-2">
-                تاریخچه تغییر وضعیت
-                <v-icon small>history</v-icon>
-              </h1>
-              <v-divider></v-divider>
-            </v-row>
-          </v-col>
-          <div v-if="is_creator && log_change_status.length != 0">
-            <v-col cols="12" class="mr-3">
-              <v-row class="align-center pa-3">
-                <h1 class="font_10">تاریخ ثبت</h1>
-                <v-spacer></v-spacer>
-                <h1 class="font_10">کاربر</h1>
-                <v-spacer></v-spacer>
-                <h1 class="font_10">وضعیت تعیین شده</h1>
-                <v-spacer></v-spacer>
-                <span></span>
-              </v-row>
-              <v-divider></v-divider>
-              <v-divider></v-divider>
-            </v-col>
-            <div v-for="(item, index) in log_change_status" :key="index">
-              <v-col cols="12 ">
-                <v-row
-                  class="align-center pa-3"
-                  :class="index % 2 == 0 ? 'grey lighten-3' : ''"
-                >
+                  <v-spacer></v-spacer>
                   <h1 class="font_10">
+                    ایجاد شده توسط :
+                    {{ creator }}
+                    در
                     {{
-                      $toJalali(item.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD")
+                      $toJalali(task.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD")
                     }}
                   </h1>
-                  <v-spacer></v-spacer>
-                  <h1 class="font_10">
-                    {{ item.user }}
-                  </h1>
-                  <v-spacer></v-spacer>
-                  <h1 class="font_10">
-                    {{ item.status }}
-                  </h1>
-                  <v-spacer></v-spacer>
-                  <v-badge
-                    dot
-                    :color="item.done == true ? 'green' : 'red'"
-                    class="ml-2"
-                  />
                 </v-row>
               </v-col>
+              <v-col
+                v-if="is_creator && Boolean(check_see)"
+                class="mt-4 mr-0 pr-0"
+                cols="12"
+              >
+                <h1 class="font_14">
+                  <v-icon small>arrow_left</v-icon>
+                  آمار بازدید:
+                </h1>
+                <h1
+                  class="font_10 mr-2"
+                  v-if="Boolean(check_see)"
+                  v-for="(name, index) in check_see"
+                  :key="index"
+                >
+                  <v-icon small>done_all</v-icon>
+                  {{ name }}
+                </h1>
+              </v-col>
+              <v-col
+                v-if="is_creator && !Boolean(check_see)"
+                class="mt-4 mr-0 pr-0"
+                cols="12"
+              >
+                <v-row class="text-center mt-4">
+                  <h1 class="font_14">
+                    <v-icon small>arrow_left</v-icon>
+                    آمار بازدید:
+                  </h1>
+                  <h1 class="font_10 mr-2">
+                    بازدیدی وجود ندارد
+                    <v-icon small>visibility_off</v-icon>
+                  </h1>
+                </v-row>
+              </v-col>
+              <v-row v-if="task.file" class="align-center mt-4">
+                <h1 class="font_14">
+                  <v-icon small>arrow_left</v-icon>
+                  فایل بار گذاری شده
+                </h1>
+                <v-spacer></v-spacer>
+                <v-col cols="12" md="4" class="text-center">
+                  <v-btn height="30" outlined block @click="getFile(task.file)">
+                    مشاهده فایل
+                    <v-icon>attach_file</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+
+              <h1 class="font_14 mt-4" v-if="Boolean(task.link)">
+                <v-icon small>arrow_left</v-icon>
+                لینک
+              </h1>
+              <v-col cols="5">
+                <h1
+                  class="link"
+                  v-if="Boolean(task.link)"
+                  @click="openLink(task.link)"
+                >
+                  {{ task.link }}
+                </h1>
+              </v-col>
+
+              <h1 class="font_14 mt-4">
+                <v-icon small>arrow_left</v-icon>
+                توضیحات :
+              </h1>
+              <h1 class="font_10">
+                {{ task.text }}
+              </h1>
+
+              <h1 class="font_14 mt-4">
+                <v-icon small>arrow_left</v-icon>
+
+                مکان :
+              </h1>
+              <h1 class="font_10">
+                {{ task.place }}
+              </h1>
+
+              <v-col
+                class="mt-4 pt-4"
+                cols="12"
+                v-if="!is_creator && (status == 'wait' || status == 'see')"
+              >
+                <v-row class="align-center mt-2">
+                  <h1 class="font_16 ml-3 mr-7">تعیین وضعیت</h1>
+                  <v-badge
+                    class="mt-2"
+                    :color="set_color"
+                    v-if="!loading"
+                    dot
+                  />
+                  <v-progress-circular
+                    v-else
+                    :size="16"
+                    :width="4"
+                    indeterminate
+                    :color="set_color"
+                  />
+                  <v-col cols="12">
+                    <amp-select
+                      :disabled="Boolean(loading)"
+                      v-model="task_status"
+                      :items="items"
+                    />
+                  </v-col>
+
+                  <v-col cols="1"> </v-col>
+                </v-row>
+              </v-col>
+              <v-col
+                cols="12"
+                class="text-center"
+                v-if="is_creator && log_change_status.length != 0"
+              >
+                <v-row class="align-center py-3">
+                  <v-divider></v-divider>
+
+                  <h1 class="mx-2">
+                    تاریخچه تغییر وضعیت
+                    <v-icon small>history</v-icon>
+                  </h1>
+                  <v-divider></v-divider>
+                </v-row>
+              </v-col>
+              <div v-if="is_creator && log_change_status.length != 0">
+                <v-col cols="12" class="mr-3">
+                  <v-row class="align-center pa-3">
+                    <h1 class="font_10">تاریخ ثبت</h1>
+                    <v-spacer></v-spacer>
+                    <h1 class="font_10">کاربر</h1>
+                    <v-spacer></v-spacer>
+                    <h1 class="font_10">وضعیت تعیین شده</h1>
+                    <v-spacer></v-spacer>
+                    <span></span>
+                  </v-row>
+                  <v-divider></v-divider>
+                  <v-divider></v-divider>
+                </v-col>
+                <div v-for="(item, index) in log_change_status" :key="index">
+                  <v-col cols="12 ">
+                    <v-row
+                      class="align-center pa-3"
+                      :class="index % 2 == 0 ? 'grey lighten-3' : ''"
+                    >
+                      <h1 class="font_10">
+                        {{
+                          $toJalali(
+                            item.created_at,
+                            "YYYY-MM-DD",
+                            "jYYYY/jMM/jDD"
+                          )
+                        }}
+                      </h1>
+                      <v-spacer></v-spacer>
+                      <h1 class="font_10">
+                        {{ item.user }}
+                      </h1>
+                      <v-spacer></v-spacer>
+                      <h1 class="font_10">
+                        {{ item.status }}
+                      </h1>
+                      <v-spacer></v-spacer>
+                      <v-badge
+                        dot
+                        :color="item.done == true ? 'green' : 'red'"
+                        class="ml-2"
+                      />
+                    </v-row>
+                  </v-col>
+                </div>
+              </div>
+            </v-card-text>
+            <div v-else calss="text-center my-15">
+              <v-row class="d-felx justify-center py-15 my-15 align-center">
+                <v-progress-circular
+                  :size="70"
+                  :width="7"
+                  indeterminate
+                  color="grey"
+                />
+              </v-row>
             </div>
-          </div>
-        </v-card-text>
-        <div v-else calss="text-center my-15">
-          <v-row class="d-felx justify-center py-15 my-15 align-center">
-            <v-progress-circular
-              :size="70"
-              :width="7"
-              indeterminate
-              color="grey"
-            />
-          </v-row>
-        </div>
+          </v-col>
+          <v-col cols="2" class="set-color mt-2">
+            <v-autocomplete
+              :disabled="!is_creator"
+              class="mt-2"
+              color="black"
+              label="  تعیین رنگ"
+              dense
+              :items="set_color_items"
+              v-model="get_color_task"
+            >
+            </v-autocomplete>
+          </v-col>
+        </v-row>
       </v-card>
     </v-dialog>
   </div>
@@ -267,17 +302,26 @@ export default {
       { text: "رد شده", value: "reject" },
     ],
     creator: "",
+    ex7: "red",
     geter: "",
     color: "",
     task_status: "",
     status: "",
+    get_color_task: "",
     users_see: [],
+    set_color_items: [],
     log_change_status: [],
     loading: false,
     loading_data: true,
     is_creator: false,
   }),
   mounted() {
+    this.set_color_items = [
+      { text: "قرمز", value: "red" },
+      { text: "نارنجی", value: "orange" },
+      { text: "سبز", value: "green" },
+      { text: "آبی", value: "blue" },
+    ];
     this.loadGeter();
     this.loadData();
     if (this.task.user_creator) {
@@ -300,6 +344,11 @@ export default {
   watch: {
     task_status() {
       this.changeStatus();
+    },
+    get_color_task() {
+      if (Boolean(this.get_color_task)) {
+        this.changeColorTask();
+      }
     },
   },
   computed: {
@@ -330,6 +379,24 @@ export default {
       if (!Boolean(this.task_status)) {
         return "grey";
       }
+    },
+    color_task() {
+      let color = "grey";
+      switch (this.get_color_task) {
+        case "red":
+          color = "#ff2313";
+          break;
+        case "blue":
+          color = "#256bcd";
+          break;
+        case "green":
+          color = "#21ab2e";
+          break;
+        case "orange":
+          color = "#ff8100";
+          break;
+      }
+      return color;
     },
   },
   methods: {
@@ -371,6 +438,21 @@ export default {
           return err;
         });
     },
+    changeColorTask() {
+      this.loading = true;
+      let form = {};
+      form["id"] = this.task.id;
+      form["color"] = this.get_color_task;
+      this.$reqApi("task/change-color", form)
+        .then((res) => {
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.loading = false;
+
+          return err;
+        });
+    },
     loadData() {
       this.$reqApi("task/show", { id: this.task.id })
         .then((res) => {
@@ -395,6 +477,7 @@ export default {
               done: x.status == "done" ? true : false,
             });
           });
+          this.get_color_task = res.data.color;
           items.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
           items.reverse();
           this.log_change_status = items;
@@ -424,5 +507,8 @@ export default {
 .link:hover {
   cursor: pointer !important;
   color: #3434c7bd;
+}
+.set-color {
+  border-right: 1px solid #0c0b0b21;
 }
 </style>
