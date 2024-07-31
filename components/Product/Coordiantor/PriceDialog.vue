@@ -73,16 +73,16 @@
             rules="percent"
           />
 
-          <small class="grey lighten-3 pa-2">
+          <h1 class="grey lighten-3 pa-2 ma-1 font_10">
             در صورت اعمال تخفبف چنانچه دسترسی مربوط را داشتید تخفیف اعمال و
             چنانچه
-            <span class="primary--text font_10"> مدیر و یا سرپرست شما </span>
+            <span class="primary--text font_12"> مدیر و یا سرپرست شما </span>
 
-            دسترسی به این بخش را داشته باشد تسک برای آنها تعریف میشود و
-            <span class="primary--text font_10">
+            دسترسی به این بخش را داشته باشد وظیفه  برای آنها تعریف میشود و
+            <span class="primary--text font_12">
               در غیر این صورت تخفیف اعمال نمیشود
             </span>
-          </small>
+          </h1>
         </v-col>
         <v-row class="d-flex justify-center mt-4 mb-1">
           <v-col cols="2" md="3">
@@ -131,6 +131,7 @@ export default {
     valid_comment: true,
     headers: [],
     loading: false,
+    discount:""
   }),
   computed: {
     check_price() {

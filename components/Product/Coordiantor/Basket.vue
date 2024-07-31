@@ -692,7 +692,7 @@ export default {
               access_barck = true;
             }
 
-            let have_access = access_roles.find((f) => f == user_id);
+            let have_access = access_users.find((f) => f == user_id);
             if (Boolean(have_access)) {
               access_barck = true;
             }
@@ -715,7 +715,6 @@ export default {
     createListBasket(basket) {
       return new Promise((res, rej) => {
         for (let index = 0; index < basket.length; index++) {
-          console.log(basket);
           const x = basket[index];
           if (x.product_id && Boolean(x.product_id)) {
             this.list_basket.items.push({
@@ -749,7 +748,7 @@ export default {
                 x.package.users.length != 0
                   ? x.package.users.map((x) => x.id)
                   : [];
-              let have_access = access_roles.find((f) => f == user_id);
+              let have_access = access_users.find((f) => f == user_id);
               if (Boolean(have_access)) {
                 access_barck = true;
               }

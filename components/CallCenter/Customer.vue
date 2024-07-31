@@ -969,9 +969,9 @@ export default {
         },
       },
       {
-        color: "orange darken-4",
+        color: "orange",
         icon: "change_circle",
-        text: "ارجاع به  هماهنگ کننده",
+        text: "برسی سفارش",
         fun: (body) => {
           this.coordinator_dialog.show = true;
           this.basket_id = body.id;
@@ -1114,6 +1114,10 @@ export default {
           {
             text: "ترکیبی ",
             value: "mixture",
+          },
+          {
+            text: "منتظر تایید تخفیف ",
+            value: "wait_discount",
           },
         ],
       },
