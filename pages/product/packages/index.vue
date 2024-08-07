@@ -50,7 +50,8 @@ export default {
       {
         text: "عنوان پکیج",
         value: "name",
-      },
+      },     
+
       {
         text: " وزن محصول (گرم)",
         value: "weight",
@@ -121,6 +122,10 @@ export default {
             return body.description.slice(0, 25) + "...";
           }
         },
+      },
+      {
+        text: "تعداد بازدید",
+        value: "sees_count",
       },
     ];
 

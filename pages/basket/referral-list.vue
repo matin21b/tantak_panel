@@ -51,7 +51,7 @@
                             <th class="text-center">نوع پرداخت</th>
                             <th class="text-center">وضعیت</th>
                             <th class="text-center">توضیحات</th>
-                            <th class="text-center">شماره تراکنش</th>
+                            <th class="text-center"> شناسه پرداخت</th>
                             <th class="text-center">عکس رسید</th>
                           </tr>
                         </thead>
@@ -193,6 +193,7 @@
             :itemsBasket="items_basket"
             :basketId="basket_id"
             :basketPrice="basket_price"
+            :deliveryInfo="delivery_info"
             v-if="step == 2"
             @refresh="refresh"
           />
@@ -294,6 +295,35 @@ export default {
         text: "برگشت از هماهنگ کننده به سرپرست",
         value: "coordinator_to_supervisor",
       },
+
+      {
+        text: "تایید واحد هماهنگی",
+        value: "accept_coordinator",
+      },
+      {
+        text: "ادمین به مدیر هماهنگی ارسال ",
+        value: "admin_manager_send",
+      },
+      {
+        text: "مدیر هماهنگی به ادمین",
+        value: "manager_admin_send",
+      },
+      {
+        text: "مدیر به سرپرست هماهنگی ارسال",
+        value: "manager_supervisor_send",
+      },
+      {
+        text: "سرپست به مدیر هماهنگی ارسال ",
+        value: "supervisor_manager_send",
+      },
+      {
+        text: "سرپرست به هماهنگی ارسال",
+        value: "supervisor_to_send",
+      },
+      {
+        text: " هماهنگی ارسال به سرپرست",
+        value: "send_to_supervisor",
+      },
     ],
     status_items: [
       {
@@ -334,6 +364,7 @@ export default {
     items_basket: [],
     item_id: "",
     basket_price: "",
+    delivery_info: "",
     show_history: false,
     root_body_history: {},
     refral_basket: { show: false, items: null },
@@ -503,6 +534,7 @@ export default {
           this.items_basket = body.items;
           this.basket_price = body.price;
           this.basket_id = body.id;
+          this.delivery_info = body.delivery_info;
         },
         show_fun: (body) => {
           if (body.status != "wait_discount") {

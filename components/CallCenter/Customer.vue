@@ -106,6 +106,12 @@
                   </v-window-item>
 
                   <v-window-item :value="2">
+                    <v-row class="d-flex justify-center mt-5">
+                      <v-col cols="12" md="4">
+                        <DeliveryInfo :data="user_informations" />
+                      </v-col>
+                    </v-row>
+
                     <AddProduct
                       @add="addBasket($event)"
                       @createList="createListPakage($event)"
@@ -662,6 +668,7 @@
             url="basket/referral-history"
             :rootBody="root_body_history"
             :headers="header_history"
+            :BTNactions="log_btns"
           />
         </v-card-text>
       </v-card>
@@ -712,6 +719,7 @@
       :refralDialog="refral_basket"
       v-if="refral_basket.show"
       :basketId="ref_basket_id"
+      :stepOrder="step_order"
       @relod="refresh"
     />
   </div>
@@ -722,6 +730,7 @@ import AddProduct from "@/components/Product/AddProduct.vue";
 import Payment from "@/components/User/Payment.vue";
 import CoordinatorDialog from "@/components/CallCenter/CoordinatorDialog.vue";
 import RefralDialog from "@/components/CallCenter/RefralDialog.vue";
+import DeliveryInfo from "@/components/Product/DeliveryInfo.vue";
 
 export default {
   components: {
@@ -729,6 +738,7 @@ export default {
     Payment,
     CoordinatorDialog,
     RefralDialog,
+    DeliveryInfo,
   },
   props: {
     DialogCustomer: {
@@ -749,6 +759,7 @@ export default {
     },
     valid: true,
     headers: [],
+    log_btns: [],
     loading_for_chagne_status: false,
 
     headers_basket: [],
@@ -775,12 +786,13 @@ export default {
     refral_basket: { show: false, items: null },
     basket_id: "",
     ref_basket_id: "",
+    step_order: "",
     overlay: false,
     disabl_update: true,
     filters: {},
     steps: 1,
     e1: 1,
-
+    user_informations: {},
     step_index: 1,
     step: 1,
     step_basket: 1,
@@ -836,6 +848,35 @@ export default {
         text: "برگشت از هماهنگ کننده به سرپرست",
         value: "coordinator_to_supervisor",
       },
+
+      {
+        text: "تایید واحد هماهنگی",
+        value: "accept_coordinator",
+      },
+      {
+        text: "ادمین به مدیر هماهنگی ارسال ",
+        value: "admin_manager_send",
+      },
+      {
+        text: "مدیر هماهنگی به ادمین",
+        value: "manager_admin_send",
+      },
+      {
+        text: "مدیر به سرپرست هماهنگی ارسال",
+        value: "manager_supervisor_send",
+      },
+      {
+        text: "سرپست به مدیر هماهنگی ارسال ",
+        value: "supervisor_manager_send",
+      },
+      {
+        text: "سرپرست به هماهنگی ارسال",
+        value: "supervisor_to_send",
+      },
+      {
+        text: " هماهنگی ارسال به سرپرست",
+        value: "send_to_supervisor",
+      },
     ],
     step_items: [],
     admin: [
@@ -886,7 +927,23 @@ export default {
         this.step_items = this.firac;
       }
     });
-
+    this.log_btns = [
+      {
+        text: "مشاهده فایل",
+        icon: "attach_file",
+        color: "info darken-2",
+        fun: (body) => {
+          window.open(this.$getImage(body.file));
+        },
+        show_fun: (body) => {
+          if (body.file) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+    ];
     this.btn_actions = [
       {
         text: "پاسخ های داده شده",
@@ -948,6 +1005,7 @@ export default {
           if (body.id) {
             this.refral_basket.show = true;
             this.ref_basket_id = body.id;
+            this.step_order = body.step;
           }
         },
         show_fun: (body) => {
@@ -956,7 +1014,9 @@ export default {
               if (
                 body.step == "init" ||
                 body.step == "reject_fiscal_manager" ||
-                body.step == "manager_admin_coordinator"
+                body.step == "manager_admin_coordinator" ||
+                body.step == "accept_coordinator"||
+                body.step == "manager_admin_send"
               ) {
                 return true;
               } else {
@@ -991,6 +1051,10 @@ export default {
         fun: (body) => {
           this.step_basket++;
           this.product_id = body.id;
+          if (Boolean(body.delivery_info)) {
+            let info = JSON.parse(body.delivery_info);
+            this.user_informations = info;
+          }
 
           this.loadListBAskets(body.id);
           if (body.status == "open") {

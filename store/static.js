@@ -69,6 +69,12 @@ let mnue_tree = [
     ],
   },
   {
+    id: 6185,
+    name: "لیست کارکنان",
+    access: "user/internal_personnels",
+    route: "/user/internal-personnel",
+  },
+  {
     id: 6,
     name: "ناحیه ها",
     access: "region/index",

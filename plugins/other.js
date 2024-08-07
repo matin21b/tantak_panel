@@ -17,6 +17,7 @@ import AmpSection from '~/components/Base/AmpSection.vue'
 import AmpTextarea from '~/components/Base/AmpTextarea.vue'
 import AmpRadioGroup from '~/components/Base/AmpRadioGroup.vue'
 import AmpUploadFile from '~/components/Base/AmpUploadFile.vue'
+import AmpUploadFileNew from '~/components/Base/AmpUploadFileNew.vue'
 import AmpAutocomplete from '~/components/Base/AmpAutocomplete.vue'
 import AmpRatingCircle from '~/components/Base/AmpRatingCircle.vue'
 import AmpNewDatePicker from "~/components/Base/AmpNewDatePicker.vue";
@@ -45,6 +46,7 @@ Vue.component('AmpTextarea', AmpTextarea)
 Vue.component('AmpJsonInput', AmpJsonInput)
 Vue.component('AmpRadioGroup', AmpRadioGroup)
 Vue.component('AmpUploadFile', AmpUploadFile)
+Vue.component('AmpUploadFileNew', AmpUploadFileNew)
 Vue.component('AmpAutocomplete', AmpAutocomplete)
 Vue.component('AmpRatingCircle', AmpRatingCircle)
 Vue.component("amp-new-date-picker", AmpNewDatePicker)

@@ -8,10 +8,11 @@
     >
       <v-card class="card-dialog">
         <v-col cols="12" class="text-center mt-2">
-          <h1 class="font_16">درخواست مجوز برای شکستن پکیج</h1>
+          <h1 class="font_16">درخواست مجوز برای ویرایش پکیج</h1>
           <v-divider class="mt-4"></v-divider>
         </v-col>
         <v-col cols="12">
+          <AmpUploadFile title="بارگذاری فایل" v-model="form.file" />
           <amp-textarea
             text="توضیحات"
             v-model="form.message"
@@ -68,6 +69,7 @@ export default {
     form: {
       message: "",
       id: "",
+      file: "",
     },
     loading: false,
   }),

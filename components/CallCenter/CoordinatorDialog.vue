@@ -16,8 +16,7 @@
         </v-row>
 
         <v-col cols="12">
-            <v-divider></v-divider>
-
+          <v-divider></v-divider>
         </v-col>
         <div class="pa-6">
           <v-col cols="12" md="12">
@@ -27,6 +26,8 @@
               :items="coordinator_list"
               v-model="coordinator_id"
             />
+            <AmpUploadFile title="بارگذاری فایل" v-model="form.file" />
+
             <amp-textarea
               rules="require"
               text="توضیحات"
@@ -64,6 +65,7 @@ export default {
   data: () => ({
     valid: true,
     coordinator_id: "",
+    file: "",
     message: "",
     valid_comment: true,
     coordinator_list: [],
@@ -79,6 +81,7 @@ export default {
       form["id"] = this.bsaketId;
       form["message"] = this.message;
       form["user_refer_id"] = this.coordinator_id;
+      form["file"] = this.file;
       form["step"] = "admin_manager_coordinator";
       let url = "basket/referral ";
       this.$reqApi(url, form)

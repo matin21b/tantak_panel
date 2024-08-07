@@ -25,7 +25,15 @@
       @updateBasket="saveBasket($event)"
       v-if="dialog_req_to_license.show"
     />
+    <v-row class="d-flex justify-center mt-4">
+      <v-col calss=""cols="12" md="4">
+      <DeliveryInfo :data="user_informations" />
+    </v-col>
+    </v-row>
+
+    
     <v-col cols="12" class="mt-5">
+    
       <v-col cols="12" class="text-start" v-if="Boolean(is_coordinator)">
         <amp-button
           icon="add_circle"
@@ -314,7 +322,7 @@
                   @click="showDialog(index, item)"
                 >
                   <small>
-                    شکستن پکیج
+                    ویرایش پکیج
                     <v-icon small> auto_awesome_motion </v-icon>
                   </small>
                 </v-btn>
@@ -393,6 +401,7 @@ import Payment from "@/components/User/Payment.vue";
 import CoordinatorDialog from "@/components/CallCenter/CoordinatorDialog.vue";
 import BrackDialog from "@/components/Product/Coordiantor/BrackDialog.vue";
 import PriceDialog from "@/components/Product/Coordiantor/PriceDialog.vue";
+import DeliveryInfo from "@/components/Product/DeliveryInfo.vue";
 import GetLicenseDialog from "@/components/Product/Coordiantor/GetLicenseDialog.vue";
 
 export default {
@@ -403,6 +412,7 @@ export default {
     BrackDialog,
     PriceDialog,
     GetLicenseDialog,
+    DeliveryInfo,
   },
   props: {
     itemsBasket: {
@@ -410,6 +420,10 @@ export default {
       default: [],
     },
     basketPrice: {
+      require: false,
+      default: false,
+    },
+    deliveryInfo: {
       require: false,
       default: false,
     },
@@ -457,6 +471,7 @@ export default {
       basket: 0,
       new_price: 0,
     },
+    user_informations: {},
     product_id: "",
     dialog_add_product: { show: false, items: null },
     dialog_req_to_license: { show: false, items: null },
@@ -560,6 +575,11 @@ export default {
     },
   },
   mounted() {
+    if (this.deliveryInfo) {
+      let user_informations = JSON.parse(this.deliveryInfo);
+      this.user_informations = user_informations;
+    }
+
     this.createListBasket(this.itemsBasket);
   },
   methods: {

@@ -159,6 +159,7 @@ export default {
       },
       {
         text: "ارسال کننده",
+        type:"phone",
         value: (body) => {
           if (body.user) {
             if (
@@ -179,6 +180,7 @@ export default {
       {
         text: "گیرنده",
         value: "receptor",
+       
       },
       {
         text: "شناسه پیام",

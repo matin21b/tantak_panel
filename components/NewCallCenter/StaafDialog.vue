@@ -10,7 +10,7 @@
         <v-row class="mx-2 mt-1 align-center">
           <h1 v-text="check_role" class="font_15 mr-2"></h1>
           <v-spacer></v-spacer>
-            <v-icon class="mr-3" > add_circle </v-icon>
+          <v-icon class="mr-3"> add_circle </v-icon>
           <v-col cols="12 " class="mt-0">
             <v-divider></v-divider>
           </v-col>
@@ -60,7 +60,6 @@
                   color="red darken-2"
                   @click="closeDialog"
                   class="ma-1"
-        
                 />
               </v-col>
             </v-row>
@@ -111,6 +110,26 @@ export default {
       if (this.$checkRole(this.$store.state.auth.role.supervisor_coordinator)) {
         dialog_title = "ایجاد هماهنگ کننده";
         this.form.role_id.push(this.$store.state.auth.role.coordinator_id);
+      }
+      if (
+        this.$checkRole(
+          this.$store.state.auth.role.delivery_coordination_manager
+        )
+      ) {
+        dialog_title = " ایجاد سرپرست هماهنگ کننده ارسال";
+        this.form.role_id.push(
+          this.$store.state.auth.role.delivery_coordination_supervisor
+        );
+      }
+      if (
+        this.$checkRole(
+          this.$store.state.auth.role.delivery_coordination_supervisor
+        )
+      ) {
+        dialog_title = " ایجاد  هماهنگ کننده ارسال";
+        this.form.role_id.push(
+          this.$store.state.auth.role.delivery_coordination
+        );
       }
 
       return dialog_title;
