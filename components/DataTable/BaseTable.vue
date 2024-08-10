@@ -124,12 +124,7 @@
             <v-skeleton-loader type="image" height="20px" v-if="loading" />
             <template v-else v-for="(btn, index) in btn_actions">
               <v-btn
-                dark
-                rounded
-                raised
-                elevation="2"
-                x-small
-                depressed
+              small
                 :title="btn.text"
                 :color="btn.color"
                 :key="index + btn.text"
@@ -138,8 +133,8 @@
                 v-if="btn.show_fun(data.item)"
                 :disabled="btn.disab_fun(data.item)"
               >
-                <span style="font-size: 13px">{{ btn.text }}</span>
-                <v-icon v-if="btn.icon" class="mr-1" size="14">{{
+                <span style="font-size: 12px">{{ btn.text }}</span>
+                <v-icon v-if="btn.icon" class="mr-1" size="16">{{
                   btn.icon
                 }}</v-icon>
               </v-btn>
