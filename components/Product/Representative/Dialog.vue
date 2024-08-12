@@ -144,6 +144,7 @@ export default {
       actions_list: [],
       response: [],
       headers: [],
+      btn_actions: [],
       product: { product_id: "" },
       root_body: "",
       send_prop: "",

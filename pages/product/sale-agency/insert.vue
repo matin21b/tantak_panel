@@ -1,6 +1,6 @@
 <template>
-</template>
   <SealRepresentativeForm />
+</template>
 
 <script>
 import SealRepresentativeForm from "~/components/Product/Representative/SealRepresentativeForm.vue";
