@@ -458,7 +458,7 @@ export default {
     loadAgencyes() {
       this.loading = true;
       let url = this.url;
-      this.$reqApi(url)
+      this.$reqApi(url , {basket_id:this.basketId})
         .then((res) => {
           this.loading = false;
 

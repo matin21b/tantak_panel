@@ -163,7 +163,6 @@ export default {
         this.selected_product = {};
 
       id = this.product_varcomb_id;
-      console.log("id ==== ? ", id);
       if (Boolean(id)) {
         this.loadInfoProduct(id);
       }
