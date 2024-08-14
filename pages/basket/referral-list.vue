@@ -548,7 +548,7 @@ export default {
           this.basket_id = body.id;
         },
         show_fun: (body) => {
-          if (body.step == "agency_to_stockclerk" && body.status_stock !="wait") {
+          if (body.step == "agency_to_stockclerk" && body.status_stock =="wait") {
             return true;
           } else {
             return false;
