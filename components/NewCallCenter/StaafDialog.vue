@@ -100,6 +100,15 @@ export default {
       if (this.$checkRole(this.$store.state.auth.role.head_financial_unit)) {
         dialog_title = "ایجاد  واحد مالی";
         this.form.role_id.push(this.$store.state.auth.role.financial_unit_id);
+      }      
+      
+      if (this.$checkRole(this.$store.state.auth.role.admin_call_center_id)) {
+        dialog_title = "ایجاد مرکز تماس";
+        this.form.role_id.push(this.$store.state.auth.role.superviser_id);
+      }    
+        if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
+        dialog_title = "ایجاد اپراتور مرکز تماس";
+        this.form.role_id.push(this.$store.state.auth.role.oprator_id);
       }
       if (this.$checkRole(this.$store.state.auth.role.coordinating_manager)) {
         dialog_title = "ایجاد سرپرست هماهنگ کننده";

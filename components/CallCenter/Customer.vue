@@ -51,9 +51,11 @@
               <v-stepper-step
                 complete
                 editable
-                edit-icon="account_circle"
+                edit-icon="shopping_basket
+"
                 step="4"
               >
+ 
                 <span class="font_16"> سفارشات </span>
                 <small class="pt-2">
                   لیست سفارشات باز مشتری
