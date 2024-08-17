@@ -474,6 +474,7 @@ export default {
       let form = this.$copyForm(this.form);
       form["prepay_type"] = this.prepay_type;
       form["online_sale"] = false;
+      form["prepay_type"] = this.prepay_type;
       form["phone_sale"] = false;
       form["person_sale"] = false;
       this.publish_status.map((y) => {
