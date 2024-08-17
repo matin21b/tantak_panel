@@ -196,12 +196,7 @@ export default {
     this.role_id = [this.$store.state.auth.role.seal_manager];
     this.loadCitise();
   },
-  location() {
-    if (this.location.length > 0) {
-      this.form.lat = this.location[0].toString();
-      this.form.long = this.location[1].toString();
-    }
-  },
+
 
   watch: {
     location() {

@@ -276,6 +276,12 @@ let mnue_tree = [
         name: "تنظیمات عمومی",
         access: "setting/index",
         route: "/setting/public/1",
+      },     
+       {
+        id: 29541,
+        name: "علل های کنسلی",
+        access: "setting/index",
+        route: "/setting/reason-cancel",
       },
       {
         id: 22,
