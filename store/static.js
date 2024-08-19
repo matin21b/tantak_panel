@@ -345,6 +345,12 @@ let mnue_tree = [
       },
     ],
   },
+  {
+    id: 1373,
+    access: "small_stocks/index",
+    name: "انبارک",
+    route: "/new-call-center/small-store",
+  },
 ];
 
 let setting_keys = [
