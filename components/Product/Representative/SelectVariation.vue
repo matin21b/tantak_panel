@@ -9,7 +9,7 @@
           :items="products"
           outlined
           dense
-          :disabled="Boolean(load_item) "
+          :disabled="Boolean(load_item)"
           :loading="Boolean(load_item)"
           label="انتخاب محصول"
           placeholder="نام محصول مورد نظر را وارد کنید ..."
@@ -39,8 +39,7 @@
                   (loading &&
                     !Boolean(step_var_1) &&
                     !Boolean(product_sort_1)) ||
-                  !Boolean(product_varcomb_id) 
-            
+                  !Boolean(product_varcomb_id)
                 "
             /></v-col>
             <v-col cols="12" md="4">
@@ -62,7 +61,7 @@
                 v-model="var_id_3"
                 :items="available_items_3"
                 :loading="loading"
-                :disabled="!Boolean(var_id_2) || loading "
+                :disabled="!Boolean(var_id_2) || loading"
               />
             </v-col>
           </v-row>
@@ -94,10 +93,10 @@
 <script>
 export default {
   props: {
-    clear_vaue:{
-      default :false,
-      require:false
-    }
+    clear_vaue: {
+      default: false,
+      require: false,
+    },
   },
   data: () => ({
     e1: 2,
@@ -149,9 +148,9 @@ export default {
   },
   mounted() {},
   watch: {
-    clear_vaue(){
+    clear_vaue() {
       if (!this.clear_vaue) {
-        this.product_varcomb_id = ""
+        this.product_varcomb_id = "";
       }
     },
     product_varcomb_id() {
@@ -204,6 +203,7 @@ export default {
     },
     valid_variations() {
       if (Boolean(this.valid_variations)) {
+ 
         this.findSelectedProduct();
       }
     },
@@ -268,7 +268,6 @@ export default {
 
           if (Boolean(response.model.data[0])) {
             if (response.model.data[0].variation1) {
-  
               this.step_var_1 = true;
               set_title[
                 `var_${response.model.data[0].variation1.variation_type.sort}`
@@ -295,8 +294,7 @@ export default {
           } else {
             this.check = true;
           }
-          this.main_image =
-            response.model.data[0].product.main_image;
+          this.main_image = response.model.data[0].product.main_image;
           this.product_name = response.model.data[0].productname;
           // get price
           this.main_price = response.model.data[0].price
@@ -443,8 +441,9 @@ export default {
       })
         .then((res) => {
           this.selected_product = res;
-          this.main_price = res.price ? res.price : res.product.base_price;
-          this.sumb_price = this.main_price;
+          this.$emit("validVariations", true);
+          this.$emit("productId", res.id);
+
         })
         .catch((rej) => {
           console.log(rej);

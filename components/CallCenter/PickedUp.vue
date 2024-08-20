@@ -72,7 +72,9 @@ export default {
 
       this.$reqApi("sale-agency-stock/sale", form)
         .then((res) => {
-          this.$toast.success("درخواست شما ارسال شد");
+          this.$toast.success("برداشت انجام شد");
+          this.$emit("refresh")
+          this.$emit("closeDialog");
         })
         .catch((err) => {
           return err;

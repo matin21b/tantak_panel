@@ -2,10 +2,10 @@
   <div>
     <BaseTable
       url="/sale-agency"
-        autoDelete="/sale-agency/delete"
+      autoDelete="/sale-agency/delete"
       :headers="headers"
       autoUpdate="/product/sale-agency"
-      createUrl="/product/sale-agency/insert"
+      :createUrl="create_url"
       :BTNactions="btn_actions"
     >
     </BaseTable>
@@ -14,8 +14,7 @@
       :dialog="show_dialog"
       v-if="show_dialog"
       @closeDialog="closeDialog"
-    />   
-
+    />
   </div>
 </template>
 
@@ -30,6 +29,7 @@ export default {
     id: "",
     title: "لیست نمایندگی های فروش",
     show_dialog: false,
+    create_url: "",
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -48,9 +48,10 @@ export default {
         filtercol: "manager.first_name",
         value: (body) => {
           if (body.manager) {
-            let user = body.manager.first_name && body.manager.last_name
-              ? body.manager.first_name + " " + body.manager.last_name
-              : body.manager.username;
+            let user =
+              body.manager.first_name && body.manager.last_name
+                ? body.manager.first_name + " " + body.manager.last_name
+                : body.manager.username;
             return user;
           }
         },
@@ -149,14 +150,15 @@ export default {
           this.id = body.id;
           this.show_dialog = true;
         },
-      },   
-
+      },
     ];
+    if (this.$store.state.auth.action.indexOf("sale_agencies/root")) {
+      this.create_url = "/product/sale-agency/insert";
+    }
   },
   methods: {
     closeDialog() {
       this.show_dialog = false;
-    
     },
   },
 };

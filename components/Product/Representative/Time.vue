@@ -92,7 +92,7 @@ export default {
         {
           id: "",
           week_days: [],
-          number_send: 1,
+          number_send: "",
         },
       ],
       loading: true,

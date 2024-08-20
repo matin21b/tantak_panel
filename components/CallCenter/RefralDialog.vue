@@ -225,7 +225,7 @@ export default {
           this.show_select_user = false;
           break;
       }
-      if (this.courier && this.form.step == "reject") {
+      if (this.courier && this.form.step == "cancel") {
         this.loadCauses();
       }
     },
