@@ -35,6 +35,7 @@ export const state = () => ({
   wallet_type,
   wallet_kind,
   status_work,
+  status_type
 });
 
 let mnue_tree = [
@@ -345,7 +346,18 @@ let mnue_tree = [
       },
     ],
   },
+  {
+    id: 1373,
+    access: "small_stocks/index",
+    name: "انبارک",
+    route: "/new-call-center/small-store",
+  },
 ];
+let status_type = [
+  {text: "شارژ", value: "charg"},
+  {text: "خرید", value: "buy"},
+  {text: "برگشت", value:"reject"}
+]
 
 let setting_keys = [
   { text: "لوگوی صفحه اصلی", value: "header_logo", type: "image" },
