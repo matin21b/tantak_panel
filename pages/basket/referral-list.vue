@@ -9,6 +9,7 @@
 
     <PickedUp
       @closeDialog="closeDialog"
+      @refresh="refresh"
       v-if="show_picked_up"
       :dialog="show_picked_up"
       :basketId="basket_id"
@@ -354,8 +355,8 @@ export default {
         value: "employee_to_stockclerk",
       },
       {
-        text: "stockclerk_to_employee",
-        value: "ارجاع انبار دار به کارمند نمایندگی",
+        text: "ارجاع انبار دار به کارمند نمایندگی",
+        value: "stockclerk_to_employee",
       },
       {
         text: "ارجاع کارمند به پیک",
@@ -489,6 +490,17 @@ export default {
             this.ref_basket_id = body.id;
           }
         },
+        show_fun: (body) => {
+          if (body.step == "agency_to_stockclerk") {
+            if (body.status_stock == "done") {
+              return true;
+            } else {
+              return false;
+            }
+          } else {
+            return true;
+          }
+        },
       },
       {
         text: "تاریخچه پرداخت",
@@ -548,7 +560,10 @@ export default {
           this.basket_id = body.id;
         },
         show_fun: (body) => {
-          if (body.step == "agency_to_stockclerk" && body.status_stock =="wait") {
+          if (
+            body.step == "agency_to_stockclerk" &&
+            body.status_stock == "wait"
+          ) {
             return true;
           } else {
             return false;

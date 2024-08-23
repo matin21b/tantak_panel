@@ -2,10 +2,10 @@
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-card class="elevation-0 pa-8" :disabled="Boolean(loading)">
       <v-row dense>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-input text="نام نمایندگی" v-model="form.name" rules="require" />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-input
             text="کد نمایندگی"
             v-model="form.code"
@@ -13,7 +13,7 @@
             cClass="ltr-item"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-select
             text="وضعیت"
             rules="require"
@@ -21,7 +21,7 @@
             :items="$store.state.static.status"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <UserSelectForm
             text="انتخاب مدیر"
             v-model="manager"
@@ -30,7 +30,7 @@
             :role-id="role_id"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-select
             text="شعبه اصلی است ؟‌"
             v-model="form.agency_main"
@@ -38,7 +38,7 @@
             rules="require"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-autocomplete
             text="انتخاب استان"
             rules="require"
@@ -46,7 +46,7 @@
             :items="province"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-autocomplete
             :disabled="!Boolean(province_id)"
             text="انتخاب شهر"
@@ -55,7 +55,7 @@
             :items="citis"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-select
             text="نوع فروش"
             multiple
@@ -64,22 +64,30 @@
             :items="sale_type_items"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-select
-            text="بازه زمانی"
-            multiple
+            text="ارسال کالا"
             rules="require"
-            v-model="form.delivery_time_ids"
-            :items="delivery_time"
+            v-model="form.send_good"
+            :items="check_have"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
+          <amp-select
+            text="خدمات پس از فروش"
+            rules="require"
+            v-model="form.after_sale_service"
+            :items="check_have"
+          />
+        </v-col>
+
+        <v-col cols="12" md="2">
           <SelectLocationDialog v-model="location" />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <AmpUploadFileNew v-model="form.img" />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-input
             text="امتیاز"
             v-model="form.score"
@@ -87,7 +95,7 @@
             cClass="ltr-item"
           />
         </v-col>
-        <v-col cols="12" md="1">
+        <v-col cols="12" md="2">
           <amp-input
             text="ترتیب"
             v-model="form.sort"
@@ -103,6 +111,16 @@
             :rows="1"
           ></amp-textarea>
         </v-col>
+
+        <v-col cols="12" md="12">
+          <Time
+            v-if="!loading"
+            :deliveryTime="delivery_time"
+            :deliveryTimeIds="form.delivery_time_ids"
+            @validTime="valid_time = $event"
+            @deliveryForm="form.delivery_time_ids = $event"
+          />
+        </v-col>
       </v-row>
       <v-row dense>
         <v-col cols="12" md="12">
@@ -117,6 +135,7 @@
             text="انصراف"
             @click="redirectPage"
           />
+
           <amp-button
             large
             icon="done"
@@ -124,7 +143,7 @@
             type="submit"
             :loading="loading"
             color="success"
-            :disabled="!valid || loading"
+            :disabled="!valid || loading || !valid_time"
             :text="modelId ? 'ویرایش' : 'ثبت'"
           />
         </v-col>
@@ -136,18 +155,31 @@
 <script>
 import UserSelectForm from "@/components/User/UserSelectForm";
 import SelectLocationDialog from "@/components/Base/SelectLocationDialog.vue";
+import Time from "@/components/Product/Representative/Time.vue";
 export default {
   components: {
     UserSelectForm,
     SelectLocationDialog,
+    Time,
   },
   props: {
     modelId: { default: null },
   },
   data: () => ({
     valid: false,
+    valid_time: false,
     loading: false,
     location: [],
+    check_have: [
+      {
+        text: "دارد",
+        value: "have",
+      },
+      {
+        text: "ندارد",
+        value: "dont_have",
+      },
+    ],
     citis: [],
     province: [],
     province_id: "",
@@ -177,6 +209,8 @@ export default {
       score: "",
       name: "",
       status: "active",
+      after_sale_service: "",
+      send_good: "",
       address: "",
       sale_online: "",
       sale_phone: "",
@@ -192,16 +226,10 @@ export default {
     this.role_id = [this.$store.state.auth.role.seal_manager];
     this.loadCitise();
   },
-  location() {
-    if (this.location.length > 0) {
-      this.form.lat = this.location[0].toString();
-      this.form.long = this.location[1].toString();
-    }
-  },
 
   watch: {
     location() {
-      if (this.location.length > 0) {
+      if (this.location.length > 0 && this.location[0] && this.location[1]) {
         this.form.lat = this.location[0].toString();
         this.form.long = this.location[1].toString();
       }
@@ -225,7 +253,29 @@ export default {
   },
   methods: {
     submit() {
-      let form = { ...this.form };
+      this.loading = true;
+      if (
+        !this.form.delivery_time_ids ||
+        this.form.delivery_time_ids.length == 0
+      ) {
+        this.loading = false;
+        this.$toast.error(
+          "نمایندگی باید حداقل یک بازه زمانی ارسال  داشته باشد"
+        );
+        return;
+      }
+      this.form.delivery_time_ids = this.form.delivery_time_ids.map((x) => {
+        let week_days = x.week_days;
+        if (typeof week_days != "string") {
+          week_days = JSON.stringify(x.week_days);
+        }
+        return {
+          ...x,
+          week_days,
+        };
+      });
+      let form = JSON.parse(JSON.stringify(this.form));
+
       switch (form.agency_main) {
         case "main":
           form.agency_main = true;
@@ -234,6 +284,24 @@ export default {
           form.agency_main = false;
           break;
       }
+
+      switch (form.send_good) {
+        case "have":
+          form.send_good = true;
+          break;
+        case "dont_have":
+          form.send_good = false;
+          break;
+      }
+      switch (form.after_sale_service) {
+        case "have":
+          form.after_sale_service = true;
+          break;
+        case "dont_have":
+          form.after_sale_service = false;
+          break;
+      }
+
       form["sale_online"] = false;
       form["sale_phone"] = false;
       form["sale_person"] = false;
@@ -286,12 +354,26 @@ export default {
               this.form.agency_main = "sub";
               break;
           }
-          let ids = [];
-          response.delivery_times.map((x) => {
-            ids.push(x.id);
-          });
-          this.form.delivery_time_ids = ids;
+          switch (response.send_good) {
+            case true:
+              this.form.send_good = "have";
+              break;
 
+            default:
+              this.form.send_good = "dont_have";
+              break;
+          }
+          switch (response.after_sale_service) {
+            case true:
+              this.form.after_sale_service = "have";
+              break;
+
+            default:
+              this.form.after_sale_service = "dont_have";
+              break;
+          }
+
+          this.form.delivery_time_ids = response.delivery_times;
           this.location.push(response.lat);
           this.location.push(response.long);
           if (Boolean(response.sale_online)) {
@@ -304,6 +386,7 @@ export default {
           if (Boolean(response.sale_phone)) {
             this.sale_type_selected.push("sale_phone");
           }
+
           this.loading = false;
         })
         .catch((error) => {
@@ -339,34 +422,16 @@ export default {
           this.city_items = response;
           if (Boolean(this.modelId)) {
             this.loadData();
+          } else {
+            this.loading = false;
           }
-          this.timsSend();
         })
         .catch((rej) => {
           console.log(rej);
           this.loading = false;
         });
     },
-    timsSend() {
-      this.$reqApi("delivery-time", { row_number: 50000 })
-        .then(async (response) => {
-          let items = [];
-          let data = response.model.data;
-          for (let index = 0; index < data.length; index++) {
-            const element = data[index];
-            items.push({
-              text: element.range_time,
-              value: element.id,
-            });
-          }
-          this.delivery_time = items;
 
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
-    },
     redirectPage() {
       if (window.history.length > 2) {
         this.$router.back();

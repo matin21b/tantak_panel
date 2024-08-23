@@ -42,6 +42,20 @@
                   v-model="agency_id"
                   :items="agencyes"
                 />
+                <amp-autocomplete
+                  v-if="form.step == 'cancel' && Boolean(courier)"
+                  text="علت لغو سفارش"
+                  rules="require"
+                  v-model="cancel"
+                  :items="cancel_items"
+                />
+                <amp-input
+                  v-if="form.step == 'done' && Boolean(courier)"
+                  text="کد تحویل"
+                  rules="require,number"
+                  v-model="delivery_code"
+                  Cclass="ltr-item"
+                />
                 <AmpUploadFileNew title="بارگذاری فایل" v-model="form.file" />
               </v-col>
 
@@ -97,7 +111,9 @@ export default {
     valid: true,
     url: "",
     agency_id: "",
+    delivery_code: "",
     message: "",
+    cancel: "",
     title_select: "",
     form: {
       step: "",
@@ -108,6 +124,7 @@ export default {
     step_items: [],
     agencyes: [],
     user: [],
+    cancel_items: [],
     loading: false,
     show_select_user: false,
     is_admin: false,
@@ -201,18 +218,31 @@ export default {
           this.show_select_user = true;
           this.url = "user/list-employee";
           this.title_select = "انتخاب  به پیک";
+
           break;
         default:
           this.show_select_user = false;
           break;
+      }
+      if (this.courier && this.form.step == "cancel") {
+        this.loadCauses();
       }
     },
   },
   methods: {
     submit() {
       this.loading = true;
+    
       let form = {};
       form = { ...this.form };
+      if (Boolean(this.courier)) {
+        if (form.step == "cancel") {
+          form["text_cancel"] = this.cancel;
+        }
+        if (form.step == "done") {
+          form["delivery_code"] = this.delivery_code;
+        }
+      }
       form["id"] = this.basketId;
       if (form.step == "send_to_agency") {
         form["sale_agency_id"] = this.agency_id;
@@ -451,13 +481,17 @@ export default {
             text: "تحویل داده شده",
             value: "done",
           },
+          {
+            text: "لغو سفارش",
+            value: "cancel",
+          },
         ];
       }
     },
     loadAgencyes() {
       this.loading = true;
       let url = this.url;
-      this.$reqApi(url , {basket_id:this.basketId})
+      this.$reqApi(url, { basket_id: this.basketId })
         .then((res) => {
           this.loading = false;
 
@@ -475,6 +509,24 @@ export default {
         .catch((err) => {
           this.loading = false;
         });
+    },
+    loadCauses() {
+      this.$reqApi("/setting/reason-cancel")
+        .then(async (response) => {
+          let items = [];
+          if (response.model.data.length > 0) {
+            for (let index = 0; index < response.model.data.length; index++) {
+              const element = response.model.data[index];
+
+              items.push({
+                text: element.value,
+                value: element.value,
+              });
+            }
+            this.cancel_items = items;
+          }
+        })
+        .catch((error) => {});
     },
   },
 };

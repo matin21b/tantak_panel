@@ -365,6 +365,9 @@ export default {
       this.var_id_1 = "";
       this.var_id_2 = "";
       this.var_id_3 = "";
+      this.sumb_price = "";
+      this.main_price = "";
+      this.number = 1;
       id = this.product_varcomb_id;
       if (Boolean(id)) {
         this.loadInfoProduct(id);
@@ -562,12 +565,15 @@ export default {
           this.main_image =
             response.model.data[0].variation1.product.main_image;
           this.product_name = response.model.data[0].variation1.product.name;
-          // get price
+         ///*******get price
           this.main_price =
             response.model.data[0].variation1.product.base_price;
           this.sumb_price = this.main_price;
 
-          // set items variations
+          ///*******get price
+    
+
+          // *******set items variations
           let items_var_1 = [];
           let items_var_2 = [];
           let items_var_3 = [];
@@ -655,6 +661,52 @@ export default {
       };
       this.$emit("add", product);
       this.closeDialog();
+    },
+    findSelectedProduct() {
+      return new Promise((res, rej) => {
+        if (Boolean(this.valid_variations)) {
+          let product = {};
+          this.all_variatons_product.filter((f) => {
+            if (Boolean(this.step_var_3)) {
+              if (
+                this.var_id_1 == f.variation_1_id &&
+                this.var_id_2 == f.variation_2_id &&
+                this.var_id_3 == f.variation_3_id
+              ) {
+                product = f;
+              }
+            }
+            if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
+              if (
+                this.var_id_1 == f.variation_3_id &&
+                this.var_id_2 == f.variation_2_id
+              ) {
+                product = f;
+              }
+            }
+            if (
+              Boolean(this.step_var_1) &&
+              !Boolean(this.step_var_2) &&
+              !Boolean(this.step_var_3)
+            ) {
+              if (this.var_id_1 == f.variation_1_id) {
+                product = f;
+              }
+            }
+            if (Object.keys(product).length > 0) {
+              res(product);
+            }
+          });
+        }
+      })
+        .then((res) => {
+          this.selected_product = res;
+          this.main_price = res.price ? res.price : res.product.base_price;
+          this.sumb_price = this.main_price;
+        })
+        .catch((rej) => {
+          console.log(rej);
+        });
     },
   },
 };

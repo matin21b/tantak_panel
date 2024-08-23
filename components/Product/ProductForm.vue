@@ -30,10 +30,10 @@
                   rules="require"
                 />
               </v-col>
-              <v-col cols="12" md="3">
+              <v-col cols="12" md="2">
                 <amp-input text="لینک" v-model="form.slug" rules="" />
               </v-col>
-              <v-col cols="12" md="3">
+              <v-col cols="12" md="2">
                 <amp-input
                   text="قیمت  پایه (ریال)"
                   is-price
@@ -41,7 +41,7 @@
                   v-model="form.base_price"
                 />
               </v-col>
-              <v-col cols="12" md="3">
+              <v-col cols="12" md="2">
                 <amp-input
                   is-price
                   text="قیمت عمده فروشی پایه (ریال)"
@@ -58,7 +58,7 @@
                   rules="number"
                 />
               </v-col>
-              <v-col cols="12" md="3">
+              <v-col cols="12" md="2">
                 <amp-select
                   text="واحد فروش عمده"
                   rules="require"
@@ -66,7 +66,7 @@
                   :items="wholesale_unit_items"
                 />
               </v-col>
-              <v-col cols="12" md="3">
+              <v-col cols="12" md="2">
                 <amp-select
                   text="وضعیت انتشار"
                   multiple
@@ -75,7 +75,7 @@
                   :items="publish_status_items"
                 />
               </v-col>
-              <v-col cols="12" md="3" v-if="Boolean(chek_phone_sale)">
+              <v-col cols="12" md="2" v-if="Boolean(chek_phone_sale)">
                 <amp-select
                   text="نوع پیش پرداخت"
                   rules="require"
@@ -83,7 +83,7 @@
                   :items="prepay_type_item"
                 />
               </v-col>
-              <v-col cols="12" md="3" v-if="Boolean(chek_phone_sale)">
+              <v-col cols="12" md="2" v-if="Boolean(chek_phone_sale)">
                 <amp-input
                   v-if="prepay_type == 'amount'"
                   text="مبلغ پیش پرداخت (ریال)"
@@ -101,7 +101,7 @@
                 />
               </v-col>
 
-              <v-col cols="12" md="3">
+              <v-col cols="12" md="2">
                 <amp-select
                   text="برند"
                   rules=""

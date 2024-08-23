@@ -1,16 +1,15 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent width="300">
-      <v-card class="pa-2 called" style="overflow: hidden"  >
-        <v-col cols="12" class="mb-3">
-          <h1>
-            برقراری تماس 
-            <small>
-            ( {{ username }} )
-            </small>
-            
-          </h1>
+      <v-card class="pa-2 called" style="overflow: hidden">
+        <v-col cols="12">
+          <v-row cols="12" class="mb-3 align-center mt-1">
+            <h1 class="font_12 mx-1">برقراری تماس با </h1>
+
+            <h1 class="ltr-item font_12" >( {{ $showUsername(username) }} )</h1>
+          </v-row>
         </v-col>
+
         <v-col
           cols="12"
           :disabled="loading"
@@ -119,10 +118,9 @@ export default {
 </script>
 <style scoped>
 .call-card:hover {
-background-color: rgb(236, 236, 236);
+  background-color: rgb(236, 236, 236);
   transition: all 0.3s ease !important;
   cursor: pointer;
   box-shadow: 2px 2px 2px #0000008a !important;
 }
-
 </style>
