@@ -123,7 +123,8 @@
         <div v-for="(item, index) in variations_list" :key="index" class="">
           <v-row class="px-5 py-4 mr-3 align-center">
             <h1 class="primary--text px-5 mr-3">
-              {{ index + 1 }} - {{ item.product.name }}
+              {{ index + 1 }} - {{ item.variation1.product.name
+ }}
             </h1>
             <v-spacer></v-spacer>
             <small> {{ item.variation1.value }} </small>
@@ -388,13 +389,7 @@ export default {
           } else {
             this.check = true;
           }
-          this.main_image = response.model.data[0].product.main_image;
-          this.product_name = response.model.data[0].product.name;
-          // get price
-          this.main_price = response.model.data[0].price
-            ? response.model.data[0].price
-            : response.model.data[0].product.base_price;
-          this.sumb_price = this.main_price;
+         
 
           // set items variations
           let items_var_1 = [];
@@ -402,7 +397,6 @@ export default {
           let items_var_3 = [];
           for (let index = 0; index < response.model.data.length; index++) {
             const element = response.model.data[index];
-
             if (Boolean(this.step_var_1)) {
               items_var_1.push({
                 text: element.variation1.value,
@@ -468,6 +462,7 @@ export default {
         }
         items.push(obj);
       }
+      console.log("i" , items);
       this.variations_list = items;
     },
 

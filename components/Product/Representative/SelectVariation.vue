@@ -315,10 +315,9 @@ export default {
           } else {
             this.check = true;
           }
-
           this.main_image =
             response.model.data[0].variation1.product.main_image;
-          this.product_name = response.model.data[0].variation1.productname;
+          this.product_name = response.model.data[0].variation1.product.name;
 
           // set items variations
           let items_var_1 = [];
