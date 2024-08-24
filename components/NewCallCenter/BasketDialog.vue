@@ -34,7 +34,9 @@
               </v-icon>
 
               <v-row class="d-flex justify-center">
-                <small class="orange--text"> برای افزودن محصول کلیک کنید </small>
+                <small class="orange--text">
+                  برای افزودن محصول کلیک کنید
+                </small>
               </v-row>
               <br />
               <br />
@@ -152,7 +154,9 @@
 
                           <v-spacer />
                           <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
-                            <small> {{ $price(item.price * item.number) }}</small>
+                            <small>
+                              {{ $price(item.price * item.number) }}</small
+                            >
                           </v-col>
 
                           <v-spacer />
@@ -170,7 +174,11 @@
                             />
                           </v-card>
 
-                          <v-col class="ma-0 pa-0 text-center pr-3" md="1" cols="4">
+                          <v-col
+                            class="ma-0 pa-0 text-center pr-3"
+                            md="1"
+                            cols="4"
+                          >
                             <v-btn
                               @click="deleFromCard(index, item, 'product')"
                               x-small
@@ -187,9 +195,15 @@
                   <v-col
                     cols="12"
                     class="text-center"
-                    v-if="!list_basket || !list_basket.items || !list_basket.items.length"
+                    v-if="
+                      !list_basket ||
+                      !list_basket.items ||
+                      !list_basket.items.length
+                    "
                   >
-                    <v-icon large class="mb-1"> production_quantity_limits </v-icon>
+                    <v-icon large class="mb-1">
+                      production_quantity_limits
+                    </v-icon>
                   </v-col>
                 </v-card>
               </v-col>
@@ -253,10 +267,15 @@
                       md="12"
                       cols="12"
                     >
-                      <v-skeleton-loader v-bind="attrs" type="text"></v-skeleton-loader>
+                      <v-skeleton-loader
+                        v-bind="attrs"
+                        type="text"
+                      ></v-skeleton-loader>
                     </v-col>
 
-                    <div v-if="pckage_list_item && pckage_list_item.length != 0">
+                    <div
+                      v-if="pckage_list_item && pckage_list_item.length != 0"
+                    >
                       <v-col
                         cols="12"
                         md="12"
@@ -310,7 +329,9 @@
 
                           <v-spacer />
                           <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
-                            <small> {{ $price(item.price * item.count) }}</small>
+                            <small>
+                              {{ $price(item.price * item.count) }}</small
+                            >
                           </v-col>
 
                           <v-spacer />
@@ -327,7 +348,11 @@
                             />
                           </v-card>
 
-                          <v-col class="ma-0 pa-0 text-center pr-3" md="1" cols="4">
+                          <v-col
+                            class="ma-0 pa-0 text-center pr-3"
+                            md="1"
+                            cols="4"
+                          >
                             <v-btn
                               @click="deleFromCard(index, item, 'package')"
                               x-small
@@ -346,7 +371,9 @@
                     class="text-center"
                     v-if="!pckage_list_item || pckage_list_item.length == 0"
                   >
-                    <v-icon large class="mb-1"> production_quantity_limits </v-icon>
+                    <v-icon large class="mb-1">
+                      production_quantity_limits
+                    </v-icon>
                   </v-col>
                 </v-card>
               </v-col>
@@ -392,7 +419,11 @@
               <v-divider class="mt-4 mb-5"></v-divider>
             </v-row>
             <v-row class="d-flex justify-center">
-              <v-col cols="12" md="6" v-if="factor_list.user && !loading && show_factor">
+              <v-col
+                cols="12"
+                md="6"
+                v-if="factor_list.user && !loading && show_factor"
+              >
                 <v-row class="d-flex justify-center">
                   <v-col cols="12" class="box-items text-center">
                     نام کاربر :
@@ -458,9 +489,14 @@
                   <v-divider> </v-divider>
                 </v-col>
 
-                <v-overlay v-model="overlay" class="d-flex justify-center align-center">
+                <v-overlay
+                  v-model="overlay"
+                  class="d-flex justify-center align-center"
+                >
                   <v-card class="white pa-6">
-                    <v-card-title class="black--text d-flex justify-center align-center">
+                    <v-card-title
+                      class="black--text d-flex justify-center align-center"
+                    >
                       تایید فاکتور پرداخت
                     </v-card-title>
                     <v-divider></v-divider>
@@ -478,7 +514,11 @@
                           item.value ? `${$price(item.value)} ریال` : "__"
                         }}</span>
                       </v-col>
-                      <v-col cols="12" md="12" class="d-flex justify-center align-center">
+                      <v-col
+                        cols="12"
+                        md="12"
+                        class="d-flex justify-center align-center"
+                      >
                         <amp-button
                           icon="credit_card"
                           height="40"
@@ -560,7 +600,7 @@
                 :disabled="loading"
               />
             </v-col>
-            <v-col cols="2" >
+            <v-col cols="2">
               <amp-button
                 block
                 height="40"
@@ -697,6 +737,7 @@ export default {
       }
 
       if (!Boolean(repetitious_item)) {
+  
         this.list_basket.items.unshift({
           information:
             event.product.variation1.variation_type.value +
@@ -713,13 +754,13 @@ export default {
           number: event.number,
           price: event.product.price
             ? event.product.price
-            : event.product.product.base_price,
+            : event.product.variation1.product.base_price,
 
           full_barcode: event.product.full_barcode,
           discount: event.product.discount,
           id: event.product.id,
-          name: event.product.product.name,
-          main_image: event.product.product.main_image,
+          name: event.name,
+          main_image: event.product.variation1.product.main_image,
         });
         this.$toast.success("محصول به سبد خرید اضافه شد");
       }
@@ -820,7 +861,7 @@ export default {
             information = response.model.data[0].delivery_info;
             info_user = JSON.parse(information);
           }
-this.prepayment = response.model.data[0].prepay_amount
+          this.prepayment = response.model.data[0].prepay_amount;
           info_basket = {
             discount: response.model.data[0].discount,
             prepay_amount: response.model.data[0].prepay_amount,
@@ -879,7 +920,7 @@ this.prepayment = response.model.data[0].prepay_amount
                 text: "کیف پول اعتباری",
                 value: data.credit_wallt,
               },
-     
+
               {
                 text: "مبلغ",
                 value: data.price,
@@ -888,7 +929,7 @@ this.prepayment = response.model.data[0].prepay_amount
             this.overlay = true;
           } else {
             this.$toast.success("پرداخت با مو فقیت انجام شد");
-            this.overlay =false
+            this.overlay = false;
             this.loading = false;
           }
         })
