@@ -35,7 +35,8 @@ export const state = () => ({
   wallet_type,
   wallet_kind,
   status_work,
-  status_type
+  status_type,
+  notif_type,
 });
 
 let mnue_tree = [
@@ -351,6 +352,12 @@ let mnue_tree = [
     access: "small_stocks/index",
     name: "انبارک",
     route: "/new-call-center/small-store",
+  }, 
+   {
+    id: 75373,
+    access: "custom_notifications/index",
+    name: "الگوریتم های اعلان",
+    route: "/custom-notif",
   },
 ];
 let status_type = [
@@ -636,4 +643,9 @@ let repeatation_cycle = [
 let menu_type = [
   { text: "فعال", value: "active" },
   { text: "غیرفعال", value: "hidden" },
+
+];let notif_type = [
+  { text: "پیامک", value: "sms" },
+  { text: "اعلان", value: "notification" },
+  { text: "هردو", value: "all" },
 ];
