@@ -37,7 +37,8 @@ export const state = () => ({
   status_work,
   status_type,
   type_message,
-  send_for
+  send_for,
+  notif_type,
 });
 
 let mnue_tree = [
@@ -299,6 +300,12 @@ let mnue_tree = [
         route: "/notification",
       },
       {
+        id: 61013734,
+        name: "بخش های الگوریتم پیامها",
+        access: "setting/index",
+        route: "/setting/message-algouritm",
+      },
+      {
         id: 23,
         name: "روش های ارسال",
         access: "setting/index",
@@ -359,6 +366,12 @@ let mnue_tree = [
     access: "small_stocks/index",
     name: "انبارک",
     route: "/new-call-center/small-store",
+  }, 
+   {
+    id: 75373,
+    access: "custom_notifications/index",
+    name: "الگوریتم های اعلان",
+    route: "/custom-notif",
   },
 ];
 let status_type = [
@@ -652,4 +665,9 @@ let repeatation_cycle = [
 let menu_type = [
   { text: "فعال", value: "active" },
   { text: "غیرفعال", value: "hidden" },
+
+];let notif_type = [
+  { text: "پیامک", value: "sms" },
+  { text: "اعلان", value: "notification" },
+  { text: "هردو", value: "all" },
 ];
