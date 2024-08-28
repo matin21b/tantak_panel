@@ -303,6 +303,12 @@ let mnue_tree = [
         route: "/notification",
       },
       {
+        id: 61013734,
+        name: "بخش های الگوریتم پیامها",
+        access: "setting/index",
+        route: "/setting/message-algouritm",
+      },
+      {
         id: 23,
         name: "روش های ارسال",
         access: "setting/index",
