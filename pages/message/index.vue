@@ -5,10 +5,11 @@
         <v-col cols="12" md="12" v-for="(item, index) in items" :key="index">
           <v-alert
             text
+            class="pt-5"
             prominent
             border="top"
             :icon="item.seen_at == null ? 'notifications' : 'done_all'"
-            :color="item.seen_at == null ? '#348ed9' : 'grey darken-2'"
+            :color="item.seen_at == null ? 'teal darken-2' : 'grey darken-2'"
           >
             <h1 class="font_12">
               ثبت شده در تاریخ
