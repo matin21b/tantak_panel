@@ -1,11 +1,9 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-container fluid class="px-8">
-      <v-row dense>
-        <v-col cols="12" md="8">
-          <amp-input text="متن" rules="require" v-model="form.text" />
-        </v-col>
-        <v-col cols="12" md="2">
+      <v-row dense class="d-flex justify-center">
+      
+        <v-col cols="12" md="6">
           <amp-select
             text="ارسال برای"
             rules="require"
@@ -13,7 +11,7 @@
             :items="$store.state.static.send_for"
           />
         </v-col>
-        <v-col cols="12" md="2" v-if="form.section_name == 'User' ">
+        <v-col cols="12" md="6" v-if="form.section_name == 'User' ">
           <UserSelectForm
             rules="require"
             v-model="users"
@@ -21,8 +19,17 @@
           />
         </v-col>
         <v-col cols="12">
-            <amp-textarea class="ltr-item" text="تنظیمات(JSON)" v-model="form.option" />
+          <v-row>
+          <v-col cols="12" md="6">
+            <amp-textarea text="متن" rules="require" v-model="form.text"  :rows="4"/>
+          </v-col>     
+            <v-col cols="12" md="6">
+            <amp-textarea class="ltr-item" text="تنظیمات(JSON)" v-model="form.option" :rows="4" />
           </v-col>
+        </v-row>
+        </v-col>
+    
+  
       </v-row>
 
       <v-row dense>
