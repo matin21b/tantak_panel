@@ -266,3 +266,37 @@ tr {
 .theme--light.v-select .v-select__selection--disabled {
   color: #5c5c5c !important;
 }
+
+.primary-border-bottom {
+  border-bottom: 2px solid #fd5800 !important;
+}
+
+.border-radius-10 {
+  border-radius: 10px !important;
+}
+
+.green-border {
+  border: 2px solid rgb(19, 219, 19) !important;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+.gray-border {
+  border: 1px solid gray;
+}
+
+/* .dashboard-table > td {
+  padding: 12px !important;
+} */
+
+table > tr > td:first-child {
+  width: 200px;
+  padding: 12px;
+}
+
+table > tr > td:nth-child(2) {
+  width: 500px;
+  padding: 12px;
+}
