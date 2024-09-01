@@ -1,48 +1,80 @@
 <template>
   <div>
-    <v-col cols="12" class="text-center">
-      <v-alert class="text-center" color="info darken-4" shaped text>
-        <h1 style="font-size: 18px">موجودی کیف پول</h1></v-alert
-      >
+    <v-col cols="12">
+      <v-alert prominent color="info darken-4" text>
+        <v-col cols="12" class="text-center mb-5">
+          <h1 style="font-size: 23px">موجودی کیف پول</h1>
+          <h1 style="font-size: 14px">
+            کیف پول نقدی :
+            <small> (ریال)</small>
+            {{ $price(user.cash_wallt) }}
+          </h1>
+          <h1 style="font-size: 14px">
+            کیف پول اعتباری:
+            <small> (ریال)</small>
+            {{ $price(user.credit_wallt) }}
+          </h1>
+          <v-divider class="mt-2"></v-divider>
+          <v-col cols="12" class="mb-2 text-center">
+          <h1 style="font-size: 23px" class="mx-2">
+          
+            تراکنش
+          </h1>
+        </v-col>
+     
+        </v-col>
+        <v-row>
+          <v-col
+            cols="12 "
+            md="6"
+            class="ma-0"
+            v-for="(item, index) in walet_items"
+            :key="index"
+          >
+            <v-alert
+              icon="receipt_long"
+              dens
+              text
+              color="info darken-4"
+              class="ma-0"
+              prominent
+              border="left"
+            >
+              <strong>
+                {{ item.pay_text }} (
+                {{ $getItemEnum($store.state.static.wallet_type, item.type)  }}
+          
+                )
+              </strong>
+              <br />
+
+              <h1>
+                تاریخ ثبت :‌
+                {{ $toJalali(item.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
+              </h1>
+              <h1>
+                تاریخ پرداخت :
+                {{ $toJalali(item.paid_date, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
+              </h1>
+
+              <h1>
+                نوع :
+                {{ $getItemEnum($store.state.static.wallet_kind, item.kind) }}
+              </h1>
+              <h1>
+                مقدار :
+                {{ $price(item.amount) }} (ریال)
+              </h1>
+
+              <h1 v-if="item.description">
+                توضیحات :‌
+                {{ item.description }}
+              </h1>
+            </v-alert>
+          </v-col>
+        </v-row>
+      </v-alert>
     </v-col>
-
-    <v-row class="mx-1">
-      <v-col cols="12" md="6" v-for="(item, index) in walet_items" :key="index">
-        <v-alert
-          dens
-          color="info darken-4"
-          text
-          prominent
-          icon="credit_card"
-          border="left"
-        >
-          <strong>
-            {{ item.pay_text }} (
-            {{ $getItemEnum($store.state.static.wallet_kind, item.kind) }}
-            )
-          </strong>
-          <br />
-
-          <h1>
-            تاریخ ثبت :‌
-            {{ $toJalali(item.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
-          </h1>
-          <h1>
-            تاریخ پرداخت :
-            {{ $toJalali(item.paid_date, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
-          </h1>
-
-          <h1>
-            مقدار :
-            {{ $price(item.amount) }} (ریال)
-          </h1>
-          <small>
-            توضیحات :‌
-            {{ item.description }}
-          </small>
-        </v-alert>
-      </v-col>
-    </v-row>
   </div>
 </template>
 
@@ -51,8 +83,11 @@ export default {
   components: {},
   data: () => ({
     walet_items: [],
+    user: {},
   }),
   beforeMount() {
+    this.user = this.$store.state.auth.user;
+    console.log();
     this.getWallet();
   },
   methods: {
