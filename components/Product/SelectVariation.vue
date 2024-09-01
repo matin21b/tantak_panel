@@ -462,7 +462,6 @@ export default {
         }
         items.push(obj);
       }
-      console.log("i" , items);
       this.variations_list = items;
     },
 
