@@ -32,6 +32,14 @@
         </v-col>
         <v-col cols="12" md="2">
           <amp-select
+            text="انتخاب ناحیه"
+            rules="require"
+            v-model="form.region_id"
+            :items="region"
+          />
+        </v-col>
+        <v-col cols="12" md="2">
+          <amp-select
             text="شعبه اصلی است ؟‌"
             v-model="form.agency_main"
             :items="type_items"
@@ -180,6 +188,7 @@ export default {
         value: "dont_have",
       },
     ],
+    region: [],
     citis: [],
     province: [],
     province_id: "",
@@ -219,12 +228,14 @@ export default {
       agency_main: "",
       country_division_id: "",
       delivery_time_ids: [],
+      region_id: "",
     },
   }),
 
   beforeMount() {
     this.role_id = [this.$store.state.auth.role.seal_manager];
     this.loadCitise();
+    this.loadRegion()
   },
 
   watch: {
@@ -430,6 +441,20 @@ export default {
           console.log(rej);
           this.loading = false;
         });
+    },
+    loadRegion() {
+      this.loading = true;
+      this.$reqApi("/region").then(async (response) => {
+        let data = response.model.data;
+        data.forEach((element) => {
+          this.region.push({
+            text: element.fa_name,
+            value: element.id,
+          });
+        });
+      });
+      console.log(this.region);
+      
     },
 
     redirectPage() {
