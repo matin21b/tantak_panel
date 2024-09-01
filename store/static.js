@@ -42,6 +42,7 @@ export const state = () => ({
   status_invitor,
   type_invitor,
   step_invitor,
+  prepaid_type,
 });
 
 let mnue_tree = [
@@ -380,6 +381,12 @@ let mnue_tree = [
         name: "دسته بندی وظیفه ها",
         access: "setting/index",
         route: "/setting/category-task",
+      },   
+         {
+        id: 89563,
+        name: "پرداخت های نمایندگی",
+        access: "setting/index",
+        route: "/setting/payment",
       },
     ],
   },
@@ -428,6 +435,10 @@ let status_work = [
 let status = [
   { text: "فعال", value: "active" },
   { text: "غیر فعال", value: "in_active" },
+];
+let prepaid_type = [
+  { text: "درصدی", value: "percent" },
+  { text: "مقدار", value: "amount" },
 ];
 
 let status_message = [
