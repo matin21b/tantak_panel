@@ -5,8 +5,8 @@
         url="/product-request"
         :headers="headers"
         :extraBtn="extra_btn"
+        :BTNactions="btn_actions"
         :actionsList="actions_list"
-        :BTNactions="btn_action"
         ref="ProductRequest"
       />
     </v-col>
@@ -18,11 +18,26 @@
         v-if="show_dialog"
         @closeDialog="show_dialog = false"
         @reload="refresh"
-      />
+        />
       <HistoryInventoryRequest
         v-if="dialog_history.show"
         :dialogHistory="dialog_history"
         :messageId="id_message"
+        />
+      <DialogRefral
+        :dialog="show_refral"
+        :basketId="basket_id"
+        :statusPayment="status_payment"
+        v-if="show_refral"
+        @closeDialog="show_refral = false"
+        @reload="refresh"
+      />
+      <DialogTransactions
+        :dialog="add_transaction"
+        :data="payments"
+        v-if="add_transaction"
+        @closeDialog="add_transaction = false"
+        @reload="refresh"
       />
     </v-col>
   </v-row>
@@ -31,23 +46,30 @@
 <script>
 import Dialog from "@/components/NewCallCenter/InventoryRequest/Dialog.vue";
 import HistoryInventoryRequest from "~/components/NewCallCenter/InventoryRequest/HistoryInventoryRequest.vue";
+import DialogRefral from "@/components/NewCallCenter/InventoryRequest/DialogRefral.vue";
+import DialogTransactions from "@/components/NewCallCenter/InventoryRequest/DialogTransactions.vue";
 export default {
-  components: { Dialog, HistoryInventoryRequest },
+  components: { Dialog, DialogRefral, DialogTransactions , HistoryInventoryRequest },
   data: () => ({
     title: "درخواست موجودی",
     headers: [],
+    payments: [],
     extra_btn: [],
     actions_list: [],
-    btn_action: [],
+    btn_actions: [],
     show_dialog: false,
+    show_refral: false,
+    add_transaction: false,
     request: "",
     basket_id: "",
     dialog_history: {
       show: false,
       items: null,
     },
+    status_payment: "",
   }),
   beforeMount() {
+    this.$store.dispatch("setPageTitle", this.title);
     this.headers = [
       {
         text: "زمان ثبت",
@@ -96,20 +118,13 @@ export default {
         filterType: "select",
         items: this.$store.state.static.type_invitor,
       },
-    ];
-    this.btn_action = [
       {
-        color: "primary",
-        icon: "history",
-        text: "تاریخچه",
-        fun: (body) => {
-          if (body.id) {
-            this.dialog_history.show = true;
-            this.id_message = body.id;
-          }
-        },
+        text: "وضعیت پرداخت",
+        value: "status_payment",
+        filterType: "select",
+        items: this.$store.state.static.status_payment_invitor,
       },
-    ],
+    ];
     this.$store.dispatch("setPageTitle", this.title);
     this.extra_btn = [
       {
@@ -120,6 +135,83 @@ export default {
           this.show_dialog = true;
           this.request = true;
           this.basket_id = "";
+        },
+      },
+    ];
+    this.btn_actions = [
+    {
+        color: "primary",
+        icon: "history",
+        text: "تاریخچه",
+        fun: (body) => {
+          if (body.id) {
+            this.dialog_history.show = true;
+            this.id_message = body.id;
+          }
+        },
+      },
+      {
+        text: "‌برسی روند ارجاع ",
+        color: "primary darkeb-2",
+        icon: "event_repeat",
+        fun: (body) => {
+          this.show_refral = true;
+          this.status_payment = body.status_payment
+          this.basket_id = body.id;
+        },
+        show_fun: (body) => {
+          let show = true;
+          if (
+            Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
+          ) {
+            if (body.step != "init") {
+              show = false;
+            }
+          }
+          return show;
+        },
+      },
+      {
+        text: "ایجاد تراکنش",
+        color: "teal darkeb-2",
+        icon: "post_add",
+        fun: (body) => {
+          this.add_transaction = true;
+          this.createPayment(body.id);
+        },
+        show_fun: (body) => {
+          if (
+            Boolean(
+              this.$checkRole(this.$store.state.auth.role.sales_expert) &&
+                body.step == "supervisor_to_employee_sale" &&
+                body.status_payment == "none"
+            )
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "مشاهده  تراکنش",
+        color: "teal darkeb-2",
+        icon: "receipt_long",
+        fun: (body) => {
+          this.add_transaction = true;
+          this.payments = body.payments;
+
+        },
+        show_fun: (body) => {
+          if (
+            body.payments &&
+            Array.isArray(body.payments) &&
+            body.payments.length > 0
+          ) {
+            return true;
+          } else {
+            return false;
+          }
         },
       },
     ];
@@ -139,6 +231,14 @@ export default {
   methods: {
     refresh() {
       this.$refs.ProductRequest.getDataFromApi();
+    },
+    createPayment(id) {
+      this.$reqApi("product-request/insert-payment", { id: id })
+        .then((res) => {
+          this.$toast.success("تراکنش با موفقیت ایجاد شد");
+          this.refresh();
+        })
+        .catch((err) => {});
     },
   },
 };

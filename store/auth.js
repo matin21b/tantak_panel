@@ -13,6 +13,7 @@ export const state = () => ({
     is_operator: false,
     is_adming_call_center_id: false,
     seal_manager: "1964bd45-1d8d-4666-9330-0955f8c2c4c6",
+
     cashier_id: "38d3025b-ed61-4d0d-815f-31c008eb33fc", //  صندوق دار
     user_id: "5246f14d-1905-4e34-a412-8fb689d20f23",
     warehouseman_id: "1deb3b9b-a4bb-46cd-8c20-592767aa1d22", //انبار گردان
@@ -22,13 +23,9 @@ export const state = () => ({
     superviser_id: "9154bce8-a24c-4841-8d00-77bedf0ae90e",
     oprator_id: "b531a124-cc96-405b-aaab-3b5cc9526de2",
     fac_call_id: "920976fd-423f-413a-8dba-eead45af9dea",
-    coordinator_id: "b659c438-531d-4aab-93e0-58f5835c1cb2",
-    store_employee: "dbcbc932-552a-4f3b-ad81-5b3a5734b803", //کارمند انبار
-    store_head: "023b91d1-392b-4f46-8921-94d87316ddb4", //سرپرست انبار
-    financial_unit_id: "920976fd-423f-413a-8dba-eead45af9dea",
     sale_manager: "7dd0a103-1dd1-4571-bb6b-d0f65101f5b0", //مدیر فروش
-    sale_head: "3c22da53-9982-4634-81ce-293600e03d97", //سرپرست فروش
-    sale_employee: "acf183ec-4b47-4afb-8238-461df51fc4e6", //کارشناس فروش
+    coordinator_id: "b659c438-531d-4aab-93e0-58f5835c1cb2",
+    financial_unit_id: "920976fd-423f-413a-8dba-eead45af9dea",
     supervisor_coordinator: "38d9a458-5aba-4274-a71f-877e2bf655d4",
     coordinating_manager: "7e6e5f8b-84db-48f5-bd93-7e38fcc30c2e",
     manager_financial_unit: "f013ea6f-78ed-44c5-ab38-6ed3ff9a4145",
@@ -40,6 +37,8 @@ export const state = () => ({
     agency_manager: "1964bd45-1d8d-4666-9330-0955f8c2c4c6",
     agency_employee: "bc5bde21-2126-4c7a-b979-12c9a0b73744",
     courier: "32b21551-05fe-42ad-a769-d1c633efd8e0",
+    sales_manager: "3c22da53-9982-4634-81ce-293600e03d97",
+    sales_expert: "acf183ec-4b47-4afb-8238-461df51fc4e6",
   },
 });
 

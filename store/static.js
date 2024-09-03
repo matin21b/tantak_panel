@@ -43,6 +43,8 @@ export const state = () => ({
   type_invitor,
   step_invitor,
   prepaid_type,
+  status_payment_invitor,
+  status_transactions,
 });
 
 let mnue_tree = [
@@ -401,8 +403,8 @@ let mnue_tree = [
         name: "دسته بندی وظیفه ها",
         access: "setting/index",
         route: "/setting/category-task",
-      },   
-         {
+      },
+      {
         id: 89563,
         name: "پرداخت های نمایندگی",
         access: "setting/index",
@@ -712,6 +714,37 @@ let notif_type = [
   { text: "اعلان", value: "notification" },
   { text: "هردو", value: "all" },
 ];
-let status_invitor = [{ text: "ثبت اولیه", value: "init" }];
-let type_invitor = [{ text: "عادی ", value: "normal" }];
-let step_invitor = [{ text: "ثبت اولیه", value: "init" }];
+let status_invitor = [
+  { text: "ثبت اولیه", value: "init" },
+  { text: "در حال برسی", value: "wait" },
+  { text: "انجام شده", value: "done" },
+  { text: "کنسل شده ", value: "cancel" },
+];
+
+let status_payment_invitor = [
+  { text: "تعریف نشده ", value: "none" },
+  { text: "منتظر پرداخت ", value: "wait" },
+  { text: "پرداخت دشه ", value: "payed" },
+  { text: "کنسل شده ", value: "cancel" },
+];
+let type_invitor = [
+  { text: "عادی ", value: "normal" },
+  { text: "نقص موجودی", value: "deficit" }
+];
+let step_invitor = [
+  { text: "ثبت اولیه", value: "init" },
+  { text: "ارجاع به سرپرست فروش", value: "manager_to_supervisor_sale" },
+  {
+    text: " سرپرست به مدیر نمایندگی فروش",
+    value: "supervisor_to_manager_sale",
+  },
+  { text: "سرپرست فروش به کارشناس فروش", value: "supervisor_to_employee_sale" },
+  { text: "کارشناس فروش به سرپرست فروش", value: "employee_to_supervisor_sale" },
+];
+let status_transactions =[
+  { text: "منتظر پرداخت", value: "wait" },
+  { text: "پرداخت شده", value: "payed" },
+  { text: " پرداخت نشده", value: "unpayed" },
+  { text: "برگشت ", value: "reject" },
+  { text: "کنسل شده", value: "cancled" },
+]
