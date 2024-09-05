@@ -410,6 +410,12 @@ let mnue_tree = [
         access: "setting/index",
         route: "/setting/payment",
       },
+      {
+        id:13731006,
+        name: "تغییر روزهای چک",
+        access: "setting/index",
+        route: "/setting/change-check-days"
+      },
     ],
   },
 ];
