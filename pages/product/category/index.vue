@@ -3,10 +3,14 @@
     <v-row class="d-flex justify-center mt-3">
       <v-col cols="12" md="8" v-if="this.show_catgory_list" class="mx-3">
 
-<v-alert border="left" text icon="space_dashboard" prominent>
-  <h1 class="font_16 mb-1">دسته بندی های مرتبط</h1>
+<v-card  text class="elevation-3 pa-3 card-class" prominent>
+  <h1 class="font_16 mb-1">
+    <v-icon large>
+      space_dashboard
+    </v-icon>
+    دسته بندی های مرتبط</h1>
   <v-row class="align-center">
-    <h1
+    <span
       v-for="(text, index) in catgory_name"
       :key="index"
       @click="SelectCategory(text, index)"
@@ -14,7 +18,7 @@
     >
       <v-icon> {{ text.icon }} </v-icon>
       {{ text.text }}
-    </h1>
+    </span>
     <v-spacer></v-spacer>
     <v-btn text @click="clearAll" class="mr-10" color="primary">
       <h1>
@@ -23,7 +27,7 @@
       </h1>
     </v-btn>
   </v-row>
-</v-alert>
+</v-card>
 </v-col>
       </v-row>
 
@@ -303,5 +307,9 @@ export default {
 .hover-class:hover {
   color: rgb(253, 81, 2);
   cursor: pointer;
+}
+.card-class{
+  border: 1px solid #00000038 !important;
+  border-radius: 7px !important;
 }
 </style>
