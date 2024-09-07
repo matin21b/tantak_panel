@@ -18,13 +18,14 @@
         md="3"
         :class="$vuetify.breakpoint.mdAndUp ? '' : 'd-flex'"
       >
+        <!-- کاردهای کناری داشبورد -->
         <SideCard v-for="(card, i) in sides" :key="i" :card="card" />
       </v-col>
       <v-col cols="12" md="6">
-        <v-sheet class="d-flex align-center gray">
+        <v-sheet :class="['d-flex align-center gray py-1 px-4 border5', $vuetify.breakpoint.mdAndUp ? 'width-800' : '']">
           <div>همکاران من:</div>
           <div class="mr-3">
-            <img src="/image/default-user.jpg" width="30" />
+            <img src="/image/default-user.jpg" width="30" class="mt-2" />
           </div>
         </v-sheet>
         <!-- جدول کارتابل -->
@@ -41,27 +42,38 @@ export default {
   data: () => ({
     title: "کارتابل",
     roles: [],
-
     sides: [
       {
-        icon: "fact_check",
+        icon: "/image/dashboard/todolist.svg",
         title: "کارهای امروز من",
-        count: "",
+        // backgroundColor: '#8BE014',
+        color: "#80CC16B2",
+        // textcolor: '#fff',
+        count: "0",
       },
       {
-        icon: "fact_check",
+        icon: "/image/dashboard/works2.svg",
         title: "کارهای دارای تاخیر",
-        count: "",
+        // backgroundColor: '#FFA04DB2',
+        color: "#FF7700B2",
+        // textcolor: '#fff',
+        count: "0",
       },
       {
-        icon: "fact_check",
+        icon: "/image/dashboard/works3.svg",
         title: "کارهای قابل پیگیری",
-        count: "",
+        // backgroundColor: '#7EC5FF',
+        color: "#118EF3B2",
+        // textcolor: '#fff',
+        count: "0",
       },
       {
-        icon: "fact_check",
+        icon: "/image/dashboard/Chat.svg",
         title: "پیام های شخصی من",
-        count: "",
+        backgroundColor: '#EDA6FF',
+        color: "#E476FFB2",
+        textcolor: '#fff',
+        count: "6",
       },
     ],
   }),

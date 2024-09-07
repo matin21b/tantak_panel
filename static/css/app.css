@@ -116,6 +116,10 @@ tr {
   white-space: nowrap;
 }
 
+.width-800 {
+  width: 800px;
+}
+
 .v-btn__content {
   letter-spacing: 0 !important;
 }
@@ -204,6 +208,14 @@ tr {
 
 .border-none {
   border: none !important;
+}
+
+.border5 {
+  border-radius: 5px !important;
+}
+
+table {
+  border-radius: 5px !important;
 }
 
 .position_r {
