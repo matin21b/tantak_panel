@@ -270,7 +270,6 @@ export default {
       }
 
       if (Boolean(category)) {
-        console.log("category", category);
 
         this.catgory_name.push({
           text: category.name,
