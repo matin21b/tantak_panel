@@ -9,7 +9,7 @@
         :BTNactions="btn_actions"
       />
       <v-overlay :dark="false" v-if="overlay">
-        <v-card min-width="600" class="pa-6 ">
+        <v-card min-width="600" class="pa-6">
           <v-form v-model="valid">
             <amp-select
               text="تغییر وضعیت"
@@ -62,7 +62,7 @@
 <script>
 export default {
   props: {
-    modelId: { default: null },
+    basketId: { default: null },
     userChangeStatus: {
       type: Boolean,
       default: false,
@@ -104,7 +104,7 @@ export default {
     },
   },
   beforeMount() {
-    this.filters = { user_id: this.modelId };
+    this.filters = { section_id: this.basketId, section_name: "Basket" };
     if (this.userChangeStatus) {
       this.btn_actions = [
         {
@@ -184,7 +184,6 @@ export default {
           { text: "ارسال لینک پرداخت", value: "send_pay_link" },
           { text: "   کارت خوان", value: "pos" },
           { text: " پرداخت درب منزل", value: "post" },
-          { text: " پرداخت با چک", value: "demand_note" },
         ],
       },
       {

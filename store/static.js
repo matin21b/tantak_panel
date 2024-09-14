@@ -42,6 +42,9 @@ export const state = () => ({
   status_invitor,
   type_invitor,
   step_invitor,
+  prepaid_type,
+  status_payment_invitor,
+  status_transactions,
 });
 
 let mnue_tree = [
@@ -76,6 +79,71 @@ let mnue_tree = [
     ],
   },
   {
+    id: 50,
+    name: "مرکز فروش تلفنی",
+    children: [
+      {
+        id: 51,
+        access: "recived_message/insert",
+        name: "ورود اکسل",
+        route: "/call-center/import",
+      },
+      {
+        id: 222,
+        access: "wholesale_form/index",
+        name: "فروش تلفنی",
+        route: "/product/buy-person",
+      },
+      // {
+      //   id: 52,
+      //   access: (state) => {
+      //     if (state.auth) {
+      //       if (
+      //         state.auth.action.indexOf(
+      //           "call_center/index-superviser-messages"
+      //         ) > -1 ||
+      //         state.auth.action.indexOf("recived_message/index") > -1
+      //       ) {
+      //         return true;
+      //       }
+      //     }
+      //   },
+      //   name: "لیست کارکنان",
+      //   route: "/call-center/list",
+      // },
+      {
+        id: 53,
+        access: "messages/index",
+        name: "پیام های دریافتی",
+        route: "/new-call-center",
+      },
+      {
+        id: 55643,
+        access: "internals/index",
+        name: "اطلاعات داخلی",
+        route: "/new-call-center/internal",
+      },
+    ],
+  },
+  {
+    id: 610,
+    name: "نمایندگی ها",
+    children: [
+      {
+        id: 6185145,
+        name: "نمایندگی های فروش",
+        access: "sale_agencies/index",
+        route: "/product/sale-agency",
+      },
+      {
+        id: 6,
+        name: "ناحیه ها",
+        access: "region/index",
+        route: "/region",
+      },
+    ],
+  },
+  {
     id: 6185,
     name: "لیست کارکنان",
     access: "user/internal_personnels",
@@ -83,23 +151,12 @@ let mnue_tree = [
   },
 
   // {
-  //   id: 6,
-  //   name: "ناحیه ها",
-  //   access: "region/index",
-  //   route: "/region",
-  // },
-  // {
   //   id: 7,
   //   name: "شعبات",
   //   access: "branch/index",
   //   route: "/branches",
   // },
-  {
-    id: 6185145,
-    name: "نمایندگی های فروش",
-    access: "sale_agencies/index",
-    route: "/product/sale-agency",
-  },
+
   // {
   //   id: 200,
   //   name: "فروش تجمیعی",
@@ -185,53 +242,7 @@ let mnue_tree = [
     access: "tasks/index",
     route: "/tasks",
   },
-  {
-    id: 50,
-    name: "مرکز فروش تلفنی",
-    children: [
-      {
-        id: 51,
-        access: "recived_message/insert",
-        name: "ورود اکسل",
-        route: "/call-center/import",
-      },
-      {
-        id: 222,
-        access: "wholesale_form/index",
-        name: "فروش تلفنی",
-        route: "/product/buy-person",
-      },
-      // {
-      //   id: 52,
-      //   access: (state) => {
-      //     if (state.auth) {
-      //       if (
-      //         state.auth.action.indexOf(
-      //           "call_center/index-superviser-messages"
-      //         ) > -1 ||
-      //         state.auth.action.indexOf("recived_message/index") > -1
-      //       ) {
-      //         return true;
-      //       }
-      //     }
-      //   },
-      //   name: "لیست کارکنان",
-      //   route: "/call-center/list",
-      // },
-      {
-        id: 53,
-        access: "messages/index",
-        name: "پیام های دریافتی",
-        route: "/new-call-center",
-      },
-      {
-        id: 55643,
-        access: "internals/index",
-        name: "اطلاعات داخلی",
-        route: "/new-call-center/internal",
-      },
-    ],
-  },
+
   {
     id: 545613,
     access: "user/access_managers",
@@ -268,18 +279,30 @@ let mnue_tree = [
     access: "small_stocks/index",
     name: "انبارک",
     route: "/new-call-center/small-store",
-  }, 
-   {
-    id: 75373,
-    access: "custom_notifications/index",
-    name: "الگوریتم های اعلان",
-    route: "/custom-notif",
-  },  
-   {
+  },
+  // {
+  //   id: 75373,
+  //   access: "custom_notifications/index",
+  //   name: "الگوریتم های اعلان",
+  //   route: "/custom-notif",
+  // },
+  {
     id: 7587453,
-    access: "product_requests/index",
     name: "درخواست موجودی",
-    route: "/new-call-center/inventory-request",
+    children: [
+      {
+        id: 75874531,
+        access: "product_requests/index",
+        name: "درخواست موجودی",
+        route: "/new-call-center/inventory-request",
+      },
+      {
+        id: 75874532,
+        access: "product_request_logs/index",
+        name: "تاریخچه درخواست موجودی",
+        route: "/new-call-center/referral-history",
+      },
+    ],
   },
   {
     id: 18,
@@ -381,6 +404,18 @@ let mnue_tree = [
         access: "setting/index",
         route: "/setting/category-task",
       },
+      {
+        id: 89563,
+        name: "پرداخت های نمایندگی",
+        access: "setting/index",
+        route: "/setting/payment",
+      },
+      {
+        id:13731006,
+        name: "تغییر روزهای چک",
+        access: "setting/index",
+        route: "/setting/change-check-days"
+      },
     ],
   },
 ];
@@ -428,6 +463,10 @@ let status_work = [
 let status = [
   { text: "فعال", value: "active" },
   { text: "غیر فعال", value: "in_active" },
+];
+let prepaid_type = [
+  { text: "درصدی", value: "percent" },
+  { text: "مقدار", value: "amount" },
 ];
 
 let status_message = [
@@ -534,9 +573,9 @@ let bool_number_enum = [
   { text: "خیر", value: "0" },
 ];
 let send_for = [
-  {text: "همه", value:"All"},
-  {text: "کاربر", value:"User"}
-]
+  { text: "همه", value: "All" },
+  { text: "کاربر", value: "User" },
+];
 
 let person_type = [
   { text: "حقیقی", value: "real" },
@@ -675,21 +714,43 @@ let repeatation_cycle = [
 let menu_type = [
   { text: "فعال", value: "active" },
   { text: "غیرفعال", value: "hidden" },
-
 ];
 let notif_type = [
   { text: "پیامک", value: "sms" },
   { text: "اعلان", value: "notification" },
   { text: "هردو", value: "all" },
-
 ];
 let status_invitor = [
   { text: "ثبت اولیه", value: "init" },
-
-];let type_invitor = [
-  { text: "عادی ", value: "normal" },
-
-];let step_invitor = [
-  { text: "ثبت اولیه", value: "init" },
-
+  { text: "در حال برسی", value: "wait" },
+  { text: "انجام شده", value: "done" },
+  { text: "کنسل شده ", value: "cancel" },
 ];
+
+let status_payment_invitor = [
+  { text: "تعریف نشده ", value: "none" },
+  { text: "منتظر پرداخت ", value: "wait" },
+  { text: "پرداخت دشه ", value: "payed" },
+  { text: "کنسل شده ", value: "cancel" },
+];
+let type_invitor = [
+  { text: "عادی ", value: "normal" },
+  { text: "نقص موجودی", value: "deficit" }
+];
+let step_invitor = [
+  { text: "ثبت اولیه", value: "init" },
+  { text: "ارجاع به سرپرست فروش", value: "manager_to_supervisor_sale" },
+  {
+    text: " سرپرست به مدیر نمایندگی فروش",
+    value: "supervisor_to_manager_sale",
+  },
+  { text: "سرپرست فروش به کارشناس فروش", value: "supervisor_to_employee_sale" },
+  { text: "کارشناس فروش به سرپرست فروش", value: "employee_to_supervisor_sale" },
+];
+let status_transactions =[
+  { text: "منتظر پرداخت", value: "wait" },
+  { text: "پرداخت شده", value: "payed" },
+  { text: " پرداخت نشده", value: "unpayed" },
+  { text: "برگشت ", value: "reject" },
+  { text: "کنسل شده", value: "cancled" },
+]
