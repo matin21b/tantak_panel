@@ -21,6 +21,10 @@
     <Payment v-if="tab == 'payment'" :model-id="$route.params.id" />
     <Basket v-if="tab == 'Basket'" :model-id="$route.params.id" />
     <UserWallet v-if="tab == 'wallet'" :model-id="$route.params.id" />
+    <InventoryRequestUser
+      v-if="tab == 'inventory-request'"
+      :model-id="$route.params.id"
+    />
   </div>
 </template>
 
@@ -31,8 +35,17 @@ import Payment from "@/components/User/Payment.vue";
 import Comment from "@/components/User/Comment.vue";
 import Basket from "@/components/User/Basket.vue";
 import UserWallet from "~/components/User/UserWallet.vue";
+import InventoryRequestUser from "~/components/User/InventoryRequestUser.vue";
 export default {
-  components: { UserForm, AddressUser, Comment, Payment, Basket, UserWallet },
+  components: {
+    UserForm,
+    AddressUser,
+    Comment,
+    Payment,
+    Basket,
+    UserWallet,
+    InventoryRequestUser,
+  },
   data: () => ({
     tab: "edit",
     items: [
@@ -42,6 +55,7 @@ export default {
       { text: "کیف پول", value: "wallet" },
       { text: "پرداخت ها", value: "payment" },
       { text: "سبد خرید", value: "Basket" },
+      { text: "لیست درخواست موجودی", value: "inventory-request" },
     ],
     title: "ویرایش کاربر",
   }),
