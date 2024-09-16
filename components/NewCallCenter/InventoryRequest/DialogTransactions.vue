@@ -52,6 +52,7 @@
 
             <amp-button
               v-if="
+                $checkRole($store.state.auth.role.sales_expert) &&
                 !Boolean(item.show) &&
                 item.kind_set == 'demand_note' &&
                 data.step == 'supervisor_to_employee_sale' &&
@@ -67,6 +68,66 @@
               :loading="loading"
               :disabled="!valid || loading"
             />
+            <!-- <amp-button
+              v-if="
+                !Boolean(item.show) &&
+                item.kind_set == 'demand_note' &&
+                item.status == 'wait' &&
+                data.step == 'accept_employee_sale' &&
+                data.status == 'wait' &&
+                data.status_payment == 'wait'
+              "
+              text="آپلود چک"
+              width="100px"
+              height="25px"
+              @click="uploadCheck(item)"
+              color="blue"
+              :loading="loading"
+              :disabled="!valid || loading"
+            /> -->
+            <!-- <UploadReceipt
+              :overlay="overlay"
+              :getData="get_data"
+              :getItem="get_item"
+            /> -->
+            <v-row
+              no-gutters
+              class="align-end d-flex justify-center"
+              v-if="
+                $checkRole($store.state.auth.role.seal_manager) &&
+                item.kind_set == 'demand_note' &&
+                item.status == 'wait' &&
+                data.step == 'accept_employee_sale' &&
+                data.status == 'wait' &&
+                data.status_payment == 'wait' &&
+                !Boolean(item.show_img)
+              "
+            >
+              <v-col cols="9">
+                <AmpUploadFileNew v-model="item.receipt_img" />
+              </v-col>
+              <v-col cols="3">
+                <amp-button
+                
+                  text="تایید"
+                  height="40"
+                  color="success"
+                  :disabled="!valid || loading"
+                  width="70"
+                  @click="uploadImg(item)"
+                />
+              </v-col>
+            </v-row>
+            <amp-button
+              v-if="item.status == 'payed' && Boolean(item.receipt_img) && Boolean(item.show_img)"
+              text="نمایش چک"
+              height="40"
+              color="blue"
+              :disabled="!valid || loading"
+              width="70"
+              @click="showImg(item)"
+            />
+
             <v-row no-gutters v-if="Boolean(item.show)">
               <v-col cols="8">
                 <amp-jdate v-model="item.new_date"></amp-jdate>
@@ -123,23 +184,29 @@ export default {
     return {
       valid: true,
       loading: false,
+      set_item: true,
       items: [],
       show_date: null,
+      overlay: false,
+      get_data: null,
+      get_item: null,
+      change: false,
     };
   },
   mounted() {
-    if (this.data.payments) {
-      let items = [];
-      for (let index = 0; index < this.data.payments.length; index++) {
-        const element = this.data.payments[index];
-        element["show"] = false;
-        element["new_date"] = this.data.payments[index].receipt_date;
-        items.push(element);
-      }
-      this.items = items;
-    }
+    this.newData();
+    setTimeout(() => {
+      this.change = false;
+    }, 500);
   },
   methods: {
+    uploadCheck(item) {
+      this.loading = true;
+      this.overlay = true;
+      item.show = true;
+      this.get_data = this.data;
+      this.get_item = item;
+    },
     closeDialog() {
       this.$emit("closeDialog");
     },
@@ -172,6 +239,46 @@ export default {
           this.loading = false;
           item.show = true;
         });
+    },
+    uploadImg(item) {
+      this.loading = true;
+      this.$reqApi("product-request/upload-receipt", {
+        id: this.data.id,
+        payment_id: item.id,
+        receipt: item.receipt_img,
+      })
+        .then((response) => {
+          this.$toast.success("اطلاعات ویرایش شد");
+          this.$emit("reload");
+          this.dialog = true;
+          this.loading = false;
+          item.show_img = true
+          // this.closeDialog();
+        })
+        .catch((error) => {
+          this.loading = false;
+        });
+    },
+    showImg(item) {
+      console.log(11111111, item);
+      let path = this.$getImage(item.receipt_img);
+      window.open(path);
+    },
+    newData() {
+      if (this.data.payments) {
+        let items = [];
+        for (let index = 0; index < this.data.payments.length; index++) {
+          const element = this.data.payments[index];
+          element["show"] = false;
+          element["new_date"] = element.receipt_date;
+          element["show_img"] = element.receipt_img ? true : false;
+          element["get_reciept"] = "";
+          items.push(element);
+        }
+        this.items = items;
+
+        this.set_item = false;
+      }
     },
   },
 };

@@ -184,6 +184,7 @@ export default {
           { text: "ارسال لینک پرداخت", value: "send_pay_link" },
           { text: "   کارت خوان", value: "pos" },
           { text: " پرداخت درب منزل", value: "post" },
+          { text: " پرداخت با چک", value: "demand_note" },
         ],
       },
       {
