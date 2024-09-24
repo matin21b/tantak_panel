@@ -90,7 +90,12 @@ export default {
           this.filter = {};
           break;
         case "task_today":
-          this.filter = {};
+          this.filter = {
+            created_at: {
+              op: "=",
+              value: (this.now = jmoment().format("YYYY-MM-DD")),
+            },
+          };
           break;
         case "task_late":
           this.filter = {
