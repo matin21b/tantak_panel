@@ -1,10 +1,43 @@
 <template>
   <div>
+    <v-col>
+      <v-row cols="12" class="center-div mt-5">
+        <v-chip
+          dark
+          label
+          class="ma-2 px-3"
+          color="teal"
+          v-for="item in items"
+          :key="item.key"
+          @click="tab = item.key"
+          :outlined="tab != item.key"
+        >
+          {{ item.text }}
+        </v-chip>
+      </v-row>
+    </v-col>
+    <v-col v-if="tab == 'task_today'">
+      <v-row cols="12" class="center-div mt-5">
+        <v-chip
+          dark
+          label
+          class="ma-2 px-3"
+          color="green"
+          v-for="item2 in items2"
+          :key="item2.key"
+          @click="tab2 = item2.key"
+          :outlined="tab2 != item2.key"
+        >
+          {{ item2.text }}
+        </v-chip>
+      </v-row>
+    </v-col>
     <BaseTable
       url="/task"
       :BTNactions="btn_actions"
       createUrl="/tasks/insert"
       :actionsList="actions_list"
+      :filters="filter"
       :headers="headers"
       ref="TaskList"
     />
@@ -23,20 +56,151 @@
 import BaseTable from "~/components/DataTable/BaseTable";
 import Dialog from "~/components/Tsaks/Dialog.vue";
 import AmpDelete from "~/components/Base/AmpDelete.vue";
+let jmoment = require("moment");
 export default {
   components: { BaseTable, Dialog, AmpDelete },
   data: () => ({
     headers: [],
     actions_list: [],
+    filter: {},
     task: {},
     dialog_task: { items: null, show: false },
     update_url: "",
     body_id: "",
     title: " لیست  وظایف",
     value: false,
+    tab: "all",
+    tab2: "today_task",
+    items: [
+      { text: "همه", key: "all" },
+      { text: "وظایف امروز", key: "task_today" },
+      { text: "وظایف دارای تاخیر", key: "task_late" },
+      { text: "وظایف دارای زمان", key: "task_time" },
+      { text: "وظایف بدون زمان", key: "task_untime" },
+    ],
+    items2: [
+      { text: "امروز", key: "today_task" },
+      { text: "پایانی", key: "last_task" },
+    ],
   }),
+  watch: {
+    tab() {
+      switch (this.tab) {
+        case "all":
+          if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
+            this.filter = {
+              start_task: {
+                op: "<=",
+                value: jmoment().format("YYYY-MM-DD"),
+              },
+            };
+          } else {
+            this.filter = {};
+          }
+          break;
+        case "task_today":
+          this.filter = {
+            start_task: {
+              op: "=",
+              value: (this.now = jmoment().format("YYYY-MM-DD")),
+            },
+          };
+          break;
+        case "task_late":
+          this.filter = {
+            end_task: {
+              op: "<",
+              value: jmoment(this.now).add(-1, "days").format("YYYY-MM-DD"),
+            },
+          };
+          break;
+        case "task_time":
+          if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
+            this.filter = {
+              start_task: {
+                op: "<=",
+                value: jmoment().format("YYYY-MM-DD"),
+              },
+            };
+            this.filter["end_task"] = {
+              op: "!=",
+              value: null,
+            };
+          } else {
+            this.filter = {
+              start_task: {
+                op: "!=",
+                value: null,
+              },
+            };
+            this.filter = {
+              end_task: {
+                op: "!=",
+                value: null,
+              },
+            };
+          }
+
+          break;
+        case "task_untime":
+          this.filter = {
+            end_task: {
+              op: "=",
+              value: null,
+            },
+            start_task: {
+              op: "=",
+              value: null,
+            },
+          };
+          break;
+      }
+    },
+    tab2() {
+      switch (this.tab2) {
+        case "today_task":
+          this.filter = {
+            start_task: {
+              op: "=",
+              value: (this.now = jmoment().format("YYYY-MM-DD")),
+            },
+          };
+          break;
+        case "last_task":
+          this.filter = {
+            end_task: {
+              op: "=",
+              value: jmoment().format("YYYY-MM-DD"),
+            },
+          };
+      }
+    },
+  },
   beforeMount() {
+    if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
+      this.filter = {
+        start_task: {
+          op: "<=",
+          value: jmoment().format("YYYY-MM-DD"),
+        },
+      };
+    }
     this.$store.dispatch("setPageTitle", this.title);
+    if (this.$route.query.filter == "task_today") {
+      this.tab = "task_today";
+    }
+    if (this.$route.query.filter == "task_late") {
+      this.tab = "task_late";
+    }
+    if (this.$route.query.filter == "all") {
+      this.tab = "all";
+    }
+    if (this.$route.query.filter == "task_time") {
+      this.tab = "task_time";
+    }
+    if (this.$route.query.filter == "task_untime") {
+      this.tab = "task_untime";
+    }
 
     this.headers = [
       {
@@ -138,11 +302,13 @@ export default {
           this.$router.push(`/tasks/${body.id}`);
         },
         show_fun: (body) => {
-          let user_id = this.$store.state.auth.user.id;
-          if (body.user_creator_id == user_id) {
-            return true;
-          } else {
-            return false;
+          if (this.$store.state.auth.user.id) {
+            let user_id = this.$store.state.auth.user.id;
+            if (body.user_creator_id == user_id) {
+              return true;
+            } else {
+              return false;
+            }
           }
         },
       },
