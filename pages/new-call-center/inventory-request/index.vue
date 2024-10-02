@@ -180,24 +180,36 @@ export default {
       },
       {
         text: "‌بررسی روند ارجاع ",
-        color: "primary darkeb-2",
+        color: "blue darkeb-1",
         icon: "event_repeat",
         fun: (body) => {
           this.show_refral = true;
           this.basket_id = body.id;
-          this.status_payment = body.status_payment
+          this.status_payment = body.status_payment;
         },
         show_fun: (body) => {
-          let show = true;
+          let show = false;
           if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
             show = false;
           }
           if (
             Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
           ) {
-            if (body.step != "init") {
-              show = false;
+            if (
+              body.step == "init" ||
+              (body.step == "accept_employee_sale" &&
+                body.status_payment == "payed")
+            ) {
+              show = true;
             }
+          }
+          if (
+            !Boolean(
+              this.$checkRole(this.$store.state.auth.role.agency_manager)
+            ) &&
+            !Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))
+          ) {
+            show = true;
           }
           return show;
         },

@@ -739,7 +739,7 @@ let type_invitor = [
 ];
 let step_invitor = [
   { text: "ثبت اولیه", value: "init" },
-  { text: "ارجاع به سرپرست فروش", value: "manager_to_supervisor_sale" },
+  { text: "ارجاع به سرپرست انبار مرکزی", value: "manager_to_supervisor_stock" },
   {
     text: " سرپرست به مدیر نمایندگی فروش",
     value: "supervisor_to_manager_sale",
