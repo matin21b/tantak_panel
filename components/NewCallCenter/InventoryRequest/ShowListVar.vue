@@ -1,61 +1,57 @@
 <template>
   <div border="left" text>
     <v-row class="d-flex justify-center align-center">
-
       <v-col cols="12" md="12">
         <div v-for="(item, index) in variations_list" :key="index" class="mx-3">
-          <v-alert dense border="left" outlined  color="grey darken-1">
+          <v-card class="elvation-2 pa-2 mt-2 px-3">
             <v-row class="align-center">
-              <v-col cols="2" class="text-end">
+              <small class="mr-3">
                 {{ index + 1 }} -
-                <v-avatar  size="55">
-                  <img
-                    :src="$getImage(item.variation1.product.main_image)"
-                  />
-                </v-avatar>
-              </v-col>
-              <v-col cols="3" class="text-end">
-                <h1 class="mr-3">
-                 {{ item.variation1.product.name }}
-                </h1>
-              </v-col>
-              <v-col cols="4" class="text-center">
-                <h1>
-                  {{ item.variation1.value }} / {{ item.variation2.value }} /
-                  {{ item.variation3.value }}
-                </h1>
-              </v-col>
-              <v-col cols="3" md="2" class="text-center">
-                <v-row class="d-flex justify-center">
-                  <v-btn text @click="addNumber(item, true, 'list')" x-small>
-                    <h1 class="font_18 mx-1 mt-1">+</h1>
-                  </v-btn>
-                  <h1 class="font_14 mx-1">
-                    {{ item.count }}
-                  </h1>
-                  <v-btn
-                    :disabled="item.count == 1"
-                    @click="addNumber(item, false, 'list')"
-                    text
-                    x-small
-                  >
-                    <h1 class="font_20 mx-1">-</h1>
-                  </v-btn>
-                </v-row>
-              </v-col>
-              <v-col cols="1" class="text-start">
-                <v-btn @click="deletVar(index)" text icon>
-                  <v-icon color=""> cancel </v-icon>
+                {{ item.variation1.product.name }}
+              </small>
+              <v-spacer></v-spacer>
+              <small>
+                {{ item.variation1.value }} / {{ item.variation2.value }} /
+                {{ item.variation3.value }}
+              </small>
+              <v-spacer></v-spacer>
+
+              <v-row class="d-flex justify-center">
+                <v-btn text @click="addNumber(item, true, 'list')" x-small>
+                  <h1 class="font_15">+</h1>
                 </v-btn>
-              </v-col>
+                <h1 class="font_12">
+                  {{ item.count }}
+                </h1>
+                <v-btn
+                  :disabled="item.count == 1"
+                  @click="addNumber(item, false, 'list')"
+                  text
+                  x-small
+                >
+                  <h1 class="font_20">-</h1>
+                </v-btn>
+              </v-row>
+
+              <v-spacer></v-spacer>
+
+              <!-- <v-btn @click="deletVar(index)" text icon>
+                  <v-icon color=""> cancel </v-icon>
+                </v-btn> -->
+              <v-checkbox v-model="item.defect"></v-checkbox>
             </v-row>
-          </v-alert>
+          </v-card>
         </div>
       </v-col>
 
-      <v-row class="d-flex justify-center">
-        <v-col cols="12" md="10"> </v-col>
-      </v-row>
+      <v-col cols="12" md="10" class="text-center">
+        <amp-button
+          text="تایید نقص سفارش "
+          @click="callSubmit"
+          color="success"
+          icon="done"
+        ></amp-button>
+      </v-col>
     </v-row>
   </div>
 </template>
@@ -80,6 +76,7 @@ export default {
     load_form: true,
     load_item: true,
     loading: false,
+    check_box: false,
     check: false,
     show_basket_items: false,
     step_var_1: false,
@@ -211,7 +208,7 @@ export default {
     loadItems() {
       this.$reqApi("product-request/show", { id: this.basketId })
         .then((res) => {
-          this.$emit("data" ,res.data )
+          this.$emit("data", res.data);
           let data = res.data.items;
           let item = [];
           for (let index = 0; index < data.length; index++) {
@@ -222,6 +219,7 @@ export default {
               variation2: x.pro_var_com.variation2,
               variation3: x.pro_var_com.variation3,
               id: x.pro_var_com.id,
+              defect: false,
             });
           }
           this.variations_list = item;
@@ -446,37 +444,34 @@ export default {
         });
     },
     callSubmit() {
-      if (
-        this.variations_list &&
-        Array.isArray(this.variations_list) &&
-        this.variations_list.length > 0
-      ) {
-        let items = [];
-        for (let index = 0; index < this.variations_list.length; index++) {
-          const element = this.variations_list[index];
+      let items = [];
+      for (let index = 0; index < this.variations_list.length; index++) {
+        const element = this.variations_list[index];
+        if (element.defect == true) {
           items.push({
             id: element.id,
             count: element.count,
           });
         }
-        let url = this.basketId
-          ? "product-request/update"
-          : "product-request/insert";
-        let form = {};
+      }
+      if (items.length <1) {
+      this.$toast.error("محصولی انتخاب نشده")
+      }else if (items.length > 0) {
+        this.loading = true;
+      let form ={}
+      form["type"] = "defect"
+      form["id"] = this.basketId
         form["product_varcom_ids"] = items;
-        if (Boolean(this.basketId)) {
-          form["id"] = this.basketId;
-        }
-        this.$reqApi(url, form).then((res) => {
-          this.$emit("submit", true);
-          if (Boolean(this.basketId)) {
-            this.$toast.success("اطلاعات با موفقیت ویرایش شد");
-          } else {
-            this.$toast.success("درخواست با موفقیت ثبت شد");
-          }
+      this.$reqApi("product-request/deliver-order", form)
+        .then((res) => {
+            this.$toast.success("نقص سفارش با موفقیت انجام شد");
+        this.$emit("defectivBasket")
+          this.loading = false;
+        })
+        .catch((rej) => {
+          this.loading = false;
         });
-      } else {
-        this.$toast.error("محصولی انتخاب نشده");
+        
       }
     },
   },
