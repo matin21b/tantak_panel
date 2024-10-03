@@ -3,7 +3,7 @@
     <v-row dense>
       <v-col cols="12" md="12">
         <v-card max-width="380" class="elevation-0">
-          <div>مدیر هماهنگ کننده</div>
+          <div>سرپرست واحد مالی</div>
           <div class="my-1">به تن تاک خوش اومدی!</div>
           <div class="d-flex align-center">
             <v-icon size="18" color="green">circle</v-icon>
@@ -32,9 +32,9 @@
           <div class="mr-3">
             <!-- <img src="/image/default-user.jpg" width="30" class="mt-2" /> -->
             <!-- <h5>
-              {{ firstname_employee }} {{ lastname_employee }} /
-              {{ username_employee }}
-            </h5> -->
+                {{ firstname_employee }} {{ lastname_employee }} /
+                {{ username_employee }}
+              </h5> -->
             <v-tooltip bottom v-if="employee_flag">
               <template v-slot:activator="{ on }">
                 <v-btn
@@ -46,7 +46,8 @@
                 >
                   <v-avatar color="primary" size="30" small>
                     <span class="white--text text-h7">
-                      {{ firstname_employee[0] }} {{ lastname_employee[0] }}</span
+                      {{ firstname_employee[0] }}
+                      {{ lastname_employee[0] }}</span
                     ></v-avatar
                   >
                 </v-btn>
@@ -124,8 +125,8 @@ export default {
   },
   methods: {
     getApi() {
-      if (this.$checkAccess("access_cartable/coordinator_manager")) {
-        this.$reqApi("user-cartable/coordinator-manager")
+      if (this.$checkAccess("access_cartable/cartable_fiscal_supervisor")) {
+        this.$reqApi("user-cartable/fiscal-supervisor")
           .then((res) => {
             this.get_data = res;
 
@@ -135,27 +136,18 @@ export default {
             // this.sides[3].count = res.my_message;
 
             if (res.list_employee == true) {
-              this.employee_flag = true,
-              this.$reqApi("user/list-employee")
-                .then((response) => {
-                  this.firstname_employee = response.model.data[0].first_name;
-                  this.lastname_employee = response.model.data[0].last_name;
-                  this.username_employee = response.model.data[0].username;
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
+              (this.employee_flag = true),
+                this.$reqApi("user/list-employee")
+                  .then((response) => {
+                    this.firstname_employee = response.model.data[0].first_name;
+                    this.lastname_employee = response.model.data[0].last_name;
+                    this.username_employee = response.model.data[0].username;
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
             }
-            ////////////////////////////////// this function maybe add in the future
-            // if (res.count_work > 0) {
-            //   let items = [];
-            //   for (let index = 0; index < res.array_work.length; index++) {
-            //     const element = this.res.array_work[index];
 
-            //     items.push(element);
-            //   }
-            //   this.count_works = items;
-            // }
           })
 
           .catch((error) => {

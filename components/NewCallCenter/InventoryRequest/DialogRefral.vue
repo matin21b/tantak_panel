@@ -1,16 +1,16 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="450">
-      <v-card style="overflow: hidden" class="pa-3">
+      <v-card style="overflow: hidden" >
         <v-col cols="12" class="pa-0 ma-0">
-          <v-alert dense prominent icon="event_repeat" class="pa-0 ma-0">
-            <h1 class="font_18">‌برسی روند ارجاع</h1>
+          <v-alert dense prominent icon="event_repeat" class=" grey lighten-2" >
+            <h1 class="font_17">‌برسی روند ارجاع</h1>
           </v-alert>
-          <v-divider class="my-3"></v-divider>
         </v-col>
-        <v-form v-model="valid">
+        <v-form v-model="valid" class="pa-3">
           <v-col cols="12" class="pa-0 ma-0">
             <amp-select
+              :disabled="set_items.length == 1"
               text="تعیین مرحله"
               rules="require"
               :items="set_items"
@@ -78,6 +78,10 @@ export default {
       require: false,
       default: false,
     },
+    stepInvitor: {
+      require: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -102,6 +106,10 @@ export default {
           this.show_select_user = true;
           this.select_user_title = "انتخاب کارشناس";
           break;
+        case "supervisor_to_employee_stock":
+          this.show_select_user = true;
+          this.select_user_title = "انتخاب کارمند انبار مرکزی ";
+          break;
         default:
           this.show_select_user = false;
           break;
@@ -112,10 +120,27 @@ export default {
     set_items() {
       let items = [];
       if (this.$checkRole(this.$store.state.auth.role.agency_manager)) {
+<<<<<<< HEAD
         this.form.step = "manager_to_supervisor_stock";
         items = [
           { text: "ارجاع به سرپرست", value: "manager_to_supervisor_stock" },
         ];
+=======
+        if (this.statusPayment == "payed") {
+          this.form.step = "manager_to_supervisor_stock";
+          items = [
+            {
+              text: "ارجاع به سرپرست انبار مرکزی",
+              value: "manager_to_supervisor_stock",
+            },
+          ];
+        } else {
+          this.form.step = "manager_to_supervisor_sale";
+          items = [
+            { text: "ارجاع به سرپرست", value: "manager_to_supervisor_sale" },
+          ];
+        }
+>>>>>>> a1902476649e4cc699aa3b0046adb5053737d01f
       }
 
       if (this.$checkRole(this.$store.state.auth.role.sales_manager)) {
@@ -144,6 +169,43 @@ export default {
           });
         }
       }
+      if (
+        this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock)
+      ) {
+        items = [
+          {
+            text: " مرجوع کردن (ارجاع به مدیر نمایندگی )",
+            value: "supervisor_stock_to_manager",
+          },
+          {
+            text: "ارجاع به کارمند انبار مرکزی",
+            value: "supervisor_to_employee_stock",
+          },
+        ];
+      }
+      if (
+        this.$checkRole(this.$store.state.auth.role.employee_centeral_stock)
+      ) {
+        items = [
+          {
+            text: " مرجوع کردن (ارجاع به سرپرست انبار مرکزی )",
+            value: "employee_to_supervisor_stock",
+          },
+          {
+            text: " درحال بسته بندی سفارش",
+            value: "waiting_packaging",
+          },
+        ];
+        if (this.stepInvitor == "waiting_packaging") {
+          this.form.step = "pack_and_send";
+          items = [
+            {
+              text: "بسته بندی و ارسال سفارش",
+              value: "pack_and_send",
+            },
+          ];
+        }
+      }
       return items;
     },
   },
@@ -155,6 +217,10 @@ export default {
 
       switch (this.form.step) {
         case "supervisor_to_employee_sale":
+          form["user_refer_id"] = this.user[0].id;
+
+          break;
+        case "supervisor_to_employee_stock":
           form["user_refer_id"] = this.user[0].id;
 
           break;
