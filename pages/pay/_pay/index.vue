@@ -60,8 +60,8 @@ export default {
   },
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
-    if (Boolean(this.$route.query.random_id)) {
-      this.random_id = this.$route.query.random_id;
+    if (Boolean(this.$route.params.pay)) {
+      this.random_id = this.$route.query.pay;
       this.showDetails(this.random_id);
     }
   },
