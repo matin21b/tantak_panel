@@ -723,6 +723,12 @@
       :stepOrder="step_order"
       @relod="refresh"
     />
+    <OrderTransactions
+      @cloasDialog="show_transactions = false"
+      :sectionId="section_id"
+      :dialog="show_transactions"
+      v-if="show_transactions"
+    />
   </div>
 </template>
 
@@ -732,6 +738,7 @@ import Payment from "@/components/CallCenter/Payment.vue";
 import CoordinatorDialog from "@/components/CallCenter/CoordinatorDialog.vue";
 import RefralDialog from "@/components/CallCenter/RefralDialog.vue";
 import DeliveryInfo from "@/components/Product/DeliveryInfo.vue";
+import OrderTransactions from "@/components/NewCallCenter/OrderTransactions.vue";
 
 export default {
   components: {
@@ -740,6 +747,7 @@ export default {
     CoordinatorDialog,
     RefralDialog,
     DeliveryInfo,
+    OrderTransactions,
   },
   props: {
     DialogCustomer: {
@@ -787,8 +795,10 @@ export default {
     refral_basket: { show: false, items: null },
     basket_id: "",
     ref_basket_id: "",
+    section_id: "",
     step_order: "",
     overlay: false,
+    show_transactions: false,
     disabl_update: true,
     filters: {},
     steps: 1,
@@ -915,9 +925,9 @@ export default {
         value: "done",
       },
       {
-            text: "کنسل شده",
-            value: "cancel",
-          },
+        text: "کنسل شده",
+        value: "cancel",
+      },
     ],
     step_items: [],
     admin: [
@@ -997,35 +1007,19 @@ export default {
       },
     ];
     this.item_basket = [
+
       {
-        color: "success",
+        color: "grey darken-2",
         icon: "list",
-        text: "لیست پرداختی ها",
+        text: "تراکنش های سفارش",
         fun: (body) => {
           if (body.id) {
-            this.payment_list.show = true;
-            this.payment_list.item = body.id;
+            this.show_transactions = true;
+            this.section_id = body.id;
           }
         },
       },
-      {
-        text: "تاریخچه کیف پول",
-        icon: "account_balance_wallet",
-        color: "success darken-2",
-        fun: (body) => {
-          if (body.wallet_transactions.length > 0) {
-            this.wallet_transactoin.show = true;
-            this.wallet_transactoin.item = body.wallet_transactions;
-          }
-        },
-        show_fun: (body) => {
-          if (body.wallet_transactions.length > 0) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-      },
+  
       {
         color: "primary",
         icon: "list",
@@ -1180,7 +1174,7 @@ export default {
 
       {
         text: "شماره همراه مشتری",
-        type:"phone",
+        type: "phone",
         value: (body) => {
           if (body.user) {
             if (body.user.username) {

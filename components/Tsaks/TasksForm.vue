@@ -44,7 +44,6 @@
           <amp-jdate
             text="تاریخ شروع "
             :is-number="true"
-                  rules="require"
             v-model="form.start_task"
           />
         </v-col>
@@ -52,7 +51,6 @@
           <amp-jdate
             text="تاریخ پایان"
             :is-number="true"
-                  rules="require"
             v-model="form.end_task"
           />
         </v-col>

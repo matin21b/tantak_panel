@@ -62,6 +62,13 @@
         @closeDialog="show_wallet = false"
         @reload="refresh"
       />
+      <AddTransactions
+        :dialog="create_transactions"
+        :requestId="request_id"
+        v-if="create_transactions"
+        @closeDialog="create_transactions = false"
+        @reload="refresh"
+      />
     </v-col>
   </v-row>
 </template>
@@ -74,6 +81,8 @@ import DialogRefral from "@/components/NewCallCenter/InventoryRequest/DialogRefr
 import DialogTransactions from "@/components/NewCallCenter/InventoryRequest/DialogTransactions.vue";
 import HistoryWallet from "~/components/NewCallCenter/InventoryRequest/HistoryWallet.vue";
 import CheckOrder from "~/components/NewCallCenter/InventoryRequest/CheckOrder.vue";
+import AddTransactions from "~/components/NewCallCenter/InventoryRequest/AddTransactions.vue";
+
 export default {
   components: {
     Dialog,
@@ -83,19 +92,22 @@ export default {
     DialogCancel,
     HistoryWallet,
     CheckOrder,
+    AddTransactions,
   },
   data: () => ({
     title: "درخواست موجودی",
     headers: [],
     payments: [],
     all_data: [],
-    extra_btn: [],
+
     actions_list: [],
     btn_actions: [],
     show_dialog: false,
-    show_refral: false,
     add_transaction: false,
+    create_transactions: false,
+    show_refral: false,
     request: "",
+    request_id: "",
     step_invitor: "",
     show_cansel: false,
     check_order: false,
@@ -108,7 +120,7 @@ export default {
       items: null,
     },
     status_payment: "",
-    data:{}
+    data: {},
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -168,18 +180,7 @@ export default {
       },
     ];
     this.$store.dispatch("setPageTitle", this.title);
-    this.extra_btn = [
-      {
-        text: "درخواست موجودی",
-        color: "primary darkeb-2",
-        icon: "add_shopping_cart",
-        fun: (body) => {
-          this.show_dialog = true;
-          this.request = true;
-          this.basket_id = "";
-        },
-      },
-    ];
+
     this.btn_actions = [
       {
         color: "primary",
@@ -217,21 +218,26 @@ export default {
               body.step == "init" ||
               (body.step == "accept_employee_sale" &&
                 body.status_payment == "payed")
-    
             ) {
               show = true;
             }
-          } else {
-            show = true;
-          }
-          if (
-            !Boolean(
-              this.$checkRole(this.$store.state.auth.role.agency_manager)
-            ) &&
-            !Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))
+          } 
+          else if (
+            this.$checkRole(this.$store.state.auth.role.sales_expert) && body.status_payment == "wait"
           ) {
             show = true;
-          }
+          } 
+          // else {
+          //   show = true;
+          // }
+          // if (
+          //   !Boolean(
+          //     this.$checkRole(this.$store.state.auth.role.agency_manager)
+          //   ) &&
+          //   !Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))
+          // ) {
+          //   show = true;
+          // }
 
           return show;
         },
@@ -241,7 +247,8 @@ export default {
         color: "teal darkeb-2",
         icon: "post_add",
         fun: (body) => {
-          this.createPayment(body.id);
+          this.create_transactions = true;
+          this.request_id = body.id;
         },
         show_fun: (body) => {
           if (
@@ -283,12 +290,10 @@ export default {
         fun: (body) => {
           this.check_order = true;
           this.basket_id = body.id;
-          this.data = body
+          this.data = body;
         },
         show_fun: (body) => {
-          if (
-            body.step == "pack_and_send" 
-          ) {
+          if (body.step == "pack_and_send") {
             return true;
           } else {
             return false;
@@ -326,21 +331,35 @@ export default {
           }
         },
       },
-
     ];
   },
-
+  computed: {
+    extra_btn() {
+      if (
+        Boolean(
+          this.$store.state.auth.action.indexOf("product_requests/insert") > -1
+        )
+      ) {
+        return [
+          {
+            text: "درخواست موجودی",
+            color: "primary darkeb-2",
+            icon: "add_shopping_cart",
+            fun: (body) => {
+              this.show_dialog = true;
+              this.request = true;
+              this.basket_id = "";
+            },
+          },
+        ];
+      } else {
+        return [];
+      }
+    },
+  },
   methods: {
     refresh() {
       this.$refs.ProductRequest.getDataFromApi();
-    },
-    createPayment(id) {
-      this.$reqApi("product-request/insert-payment", { id: id })
-        .then((res) => {
-          this.$toast.success("تراکنش با موفقیت ایجاد شد");
-          this.refresh();
-        })
-        .catch((err) => {});
     },
   },
 };
