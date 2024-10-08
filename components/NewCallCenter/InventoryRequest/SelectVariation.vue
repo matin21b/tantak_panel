@@ -3,6 +3,7 @@
     <v-row class="d-flex justify-center align-center">
       <v-col cols="12" md="12" class="mt-8 px-4">
         <v-autocomplete
+        v-if="this.$store.state.auth.action.indexOf('product_requests/update') > -1"
           class="mx-2"
           prepend-inner-icon="search"
           v-model="product_varcomb_id"
@@ -84,7 +85,6 @@
                   !Boolean(product_varcomb_id) ||
                   loading
                 "
-                icon="add"
                 class="mt-7"
                 color="orange darken-4"
                 text="افزودن"
@@ -120,20 +120,22 @@
         </v-row>
       </v-col>
       <v-col cols="12" md="12">
-        <div v-for="(item, index) in variations_list" :key="index" class="mx-3">
-          <v-alert dense border="left" outlined  color="grey darken-1">
+        <v-card
+          v-for="(item, index) in variations_list"
+          :key="index"
+          class="mx-3"
+        >
+          <v-alert dense outlined color="grey darken-1">
             <v-row class="align-center">
               <v-col cols="2" class="text-end">
                 {{ index + 1 }} -
-                <v-avatar  size="55">
-                  <img
-                    :src="$getImage(item.variation1.product.main_image)"
-                  />
+                <v-avatar size="55">
+                  <img :src="$getImage(item.variation1.product.main_image)" />
                 </v-avatar>
               </v-col>
               <v-col cols="3" class="text-end">
                 <h1 class="mr-3">
-                 {{ item.variation1.product.name }}
+                  {{ item.variation1.product.name }}
                 </h1>
               </v-col>
               <v-col cols="4" class="text-center">
@@ -167,7 +169,7 @@
               </v-col>
             </v-row>
           </v-alert>
-        </div>
+        </v-card>
       </v-col>
 
       <v-row class="d-flex justify-center">
@@ -328,7 +330,7 @@ export default {
     loadItems() {
       this.$reqApi("product-request/show", { id: this.basketId })
         .then((res) => {
-          this.$emit("data" ,res.data )
+          this.$emit("data", res.data);
           let data = res.data.items;
           let item = [];
           for (let index = 0; index < data.length; index++) {
@@ -495,6 +497,13 @@ export default {
           this.number = 1;
 
           this.$toast.success(" محصول  اضافه شد");
+          this.var_id_1 = "";
+          this.var_id_2 = "";
+          this.var_id_3 = "";
+          this.sumb_price = "";
+          this.main_price = "";
+          this.product_varcomb_id = "";
+          this.number = 1;
         }
       }
     },

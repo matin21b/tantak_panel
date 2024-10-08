@@ -760,7 +760,6 @@ let type_invitor = [
 ];
 let step_invitor = [
   { text: "ثبت اولیه", value: "init" },
-  { text: "ارجاع به سرپرست انبار مرکزی", value: "manager_to_supervisor_stock" },
   { text: "  انجام بسته بندی و ارسال   ", value: "pack_and_send" },
   { text: " درحال بسته بندی سفارش", value: "waiting_packaging" },
   { text: " مرجوع به سرپرست انبار مرکزی", value: "employee_to_supervisor_stock" },

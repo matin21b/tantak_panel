@@ -1,13 +1,13 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="1000">
+    <v-dialog v-model="dialog" persistent max-width="750">
       <v-card style="overflow: hidden;">
         <v-card-title class="primary d-flex justify-center py-5">
       
           <span class="white--text font_20">
             {{ card_title }}
           </span>
-          <v-icon color="white" large class="mr-1"> shopping_cart </v-icon>
+          <v-icon color="white" large class="mr-1"> add_shopping_cart </v-icon>
  
         </v-card-title>
         <v-card-text>
@@ -19,7 +19,7 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-row class="d-flex justify-center pa-3">
+          <v-row class="d-flex justify-center pa-3"   v-if="this.$store.state.auth.action.indexOf('product_requests/update') > -1">
             <amp-button
               text="انصراف"
               @click="closeDialog"
