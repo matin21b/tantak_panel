@@ -76,7 +76,7 @@ export default {
         .then((res) => {
           this.$toast.success("تراکنش با موفقیت ایجاد شد");
           this.$emit("reload");
-
+this.closeDialog()
           this.loading = false;
         })
         .catch((err) => {

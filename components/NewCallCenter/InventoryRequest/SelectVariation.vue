@@ -1,9 +1,33 @@
 <template>
-  <div border="left" text>
-    <v-row class="d-flex justify-center align-center">
+  <div>
+    <v-col cols="12">
+      <v-row cols="12" class="center-div mt-1">
+        <v-chip
+          dark
+          label
+          class="ma-2 px-3"
+          color="teal"
+          v-for="item in items"
+          :key="item.key"
+          @click="tab = item.key"
+          :outlined="tab != item.key"
+        >
+          <span class="font_16">
+            {{ item.text }}
+          </span>
+          <v-icon class="mr-1">
+            {{ item.icon }}
+          </v-icon>
+        </v-chip>
+      </v-row>
+    </v-col>
+    <v-row class="d-flex justify-center align-center" v-if="tab == 'products'">
       <v-col cols="12" md="12" class="mt-8 px-4">
         <v-autocomplete
-        v-if="this.$store.state.auth.action.indexOf('product_requests/update') > -1"
+          v-if="
+            this.$store.state.auth.action.indexOf('product_requests/update') >
+            -1
+          "
           class="mx-2"
           prepend-inner-icon="search"
           v-model="product_varcomb_id"
@@ -176,6 +200,137 @@
         <v-col cols="12" md="10"> </v-col>
       </v-row>
     </v-row>
+    <v-row
+      class="d-flex justify-center align-center mt-2"
+      v-if="tab == 'packages'"
+    >
+      <v-col cols="12">
+        <v-autocomplete
+          v-if="
+            this.$store.state.auth.action.indexOf('product_requests/update') >
+            -1
+          "
+          class="mx-2"
+          prepend-inner-icon="search"
+          v-model="package_id"
+          :items="packages_list"
+          outlined
+          dense
+          :disabled="Boolean(loading_package)"
+          :loading="Boolean(loading_package)"
+          label="جستوجوی پکیج "
+          placeholder="نام پکیج مورد نظر را وارد کنید ..."
+        />
+      </v-col>
+      <v-row
+        v-if="Boolean(package_id) && Object.keys(selected_package).length > 0"
+        class="pa-4"
+      >
+        <v-col cols="12">
+          <v-card outlined class="d-flex align-center pa-3">
+            <v-col cols="12" md="6">
+              <v-row class="align-center">
+                <v-avatar size="50" class="mx-2">
+                  <img :src="$getImage(selected_package.logo)" />
+                </v-avatar>
+                <h1>
+                  {{ selected_package.text }}
+                  <br />
+                  <small v-if="Boolean(selected_package.description)">
+                    توضیحات ‌: {{ selected_package.description }}
+                  </small>
+                </h1>
+              </v-row>
+            </v-col>
+
+            <v-col
+              md="6"
+              class="text-center"
+              v-if="
+                selected_package.products &&
+                selected_package.products.length > 0
+              "
+              cols="12"
+            >
+              <h1>محصولات موجود در پکیج :</h1>
+              <div
+                v-for="(item, index) in selected_package.products"
+                :key="index"
+              >
+                <small v-if="item.product">
+                  <v-icon class="mx-1"> arrow_left </v-icon>
+                  {{ item.product.name }} :
+                  {{ item.product_variation_1.value }} /
+                  {{ item.product_variation_2.value }} /
+                  {{ item.product_variation_3.value }}
+                </small>
+                <br />
+              </div>
+            </v-col>
+          </v-card>
+          <v-col cols="12" class="text-center">
+            <amp-button text="افزودن پکیج" icon="add" @click="addPackage" />
+          </v-col>
+        </v-col>
+      </v-row>
+      <v-col
+        cols="12"
+        v-if="list_selected_packages.length > 0"
+        v-for="(pack, index) in list_selected_packages"
+        :key="index"
+      >
+      <v-card>
+        <v-alert dense outlined color="grey darken-1">
+          <v-row class="align-center">
+            <v-col cols="2" class="text-end">
+              {{ index + 1 }} -
+              <v-avatar size="55">
+                <img :src="$getImage(pack.logo)" />
+              </v-avatar>
+            </v-col>
+            <v-col cols="3" class="text-end">
+              <h1 class="mr-3">
+                {{ pack.text }}
+              </h1>
+            </v-col>
+            <v-col cols="4" class="text-center" v-if="pack.products && pack.products.length > 0">
+              <div v-for="(item, index) in pack.products" :key="index">
+                <small v-if="item.product">
+                  <v-icon class="mx-1"> arrow_left </v-icon>
+                  {{ item.product.name }}
+                </small>
+                <br />
+              </div>
+            </v-col>
+            <v-col cols="3" md="2" class="text-center">
+              <v-row class="d-flex justify-center">
+                <v-btn text @click="addNumberPack(pack, true, 'list')" x-small>
+                  <h1 class="font_18 mx-1 mt-1">+</h1>
+                </v-btn>
+                <h1 class="font_14 mx-1">
+                  {{ pack.count }}
+                </h1>
+                <v-btn
+                  :disabled="pack.count == 1"
+                  @click="addNumber(pack, false, 'list')"
+                  text
+                  x-small
+                >
+                  <h1 class="font_20 mx-1">-</h1>
+                </v-btn>
+              </v-row>
+            </v-col>
+            <v-col cols="1" class="text-start">
+              <v-btn @click="deletPack(index)" text icon>
+                <v-icon color=""> cancel </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-alert>
+      </v-card>
+     
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -194,17 +349,27 @@ export default {
       boilerplate: true,
       elevation: 2,
     },
+    tab: "products",
+    items: [
+      { text: "محصول", key: "products", icon: "local_mall" },
+      { text: "پکیج ", key: "packages", icon: "bento" },
+    ],
     number: 1,
     valid_variations: true,
     load_form: true,
     load_item: true,
     loading: false,
     check: false,
+    loading_package: false,
     show_basket_items: false,
     step_var_1: false,
     step_var_2: false,
     step_var_3: false,
+    packages_list: [],
+    package_id: "",
+
     product_sort_1: {},
+    selected_package: {},
     product_sort_2: [],
     product_sort_3: [],
     products: [],
@@ -214,6 +379,7 @@ export default {
     variations_Product: [],
     var_products: [],
     all_variatons_product: [],
+    list_selected_packages: [],
     list_basket: [],
     parent_2: "",
     parent_3: "",
@@ -234,11 +400,22 @@ export default {
   }),
   beforeMount() {
     this.loadProduct();
+    this.loadPackages();
     if (Boolean(this.basketId)) {
       this.loadItems();
     }
   },
   watch: {
+    package_id() {
+      if (Boolean(this.package_id)) {
+        let selected_package = this.packages_list.find(
+          (f) => f.value == this.package_id
+        );
+        if (Boolean(selected_package)) {
+          this.selected_package = selected_package;
+        }
+      }
+    },
     product_varcomb_id() {
       let id = "";
       this.var_id_1 = "";
@@ -330,20 +507,48 @@ export default {
     loadItems() {
       this.$reqApi("product-request/show", { id: this.basketId })
         .then((res) => {
+
           this.$emit("data", res.data);
           let data = res.data.items;
+
+          let packages = [];
           let item = [];
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
-            item.push({
+
+            if (x.section_name == "Package") {
+              let sub_product = JSON.parse(x.product_json)
+              let new_data= []
+              for (let index = 0; index < sub_product.length; index++) {
+                const element = sub_product[index];
+                element["product"] ={}
+                element.product["name"]  = element.name
+                new_data.push(element)
+              }
+
+              packages.push({
+                text: x.information,
+                value: x.section_id,
+                products: new_data,
+                logo: x.package.logo,
+                count: x.number,
+              });
+              
+            } else if (x.section_name == "ProductVariationCombination") {
+              item.push({
               count: x.number,
               variation1: x.pro_var_com.variation1,
               variation2: x.pro_var_com.variation2,
               variation3: x.pro_var_com.variation3,
               id: x.pro_var_com.id,
             });
+            }
+
           }
+
           this.variations_list = item;
+          this.list_selected_packages = packages;
+
           this.loading = false;
         })
         .catch((err) => {
@@ -482,7 +687,30 @@ export default {
           this.load_form = false;
         });
     },
-
+    loadPackages() {
+      this.loading_package = true;
+      this.$reqApi("/package", { row_number: 50000 })
+        .then((res) => {
+          let data = res.model.data;
+          let items = [];
+          for (let index = 0; index < data.length; index++) {
+            const x = data[index];
+            items.push({
+              text: x.name,
+              value: x.id,
+              products: x.product_varcoms,
+              description: x.description,
+              logo: x.logo,
+              count: 1,
+            });
+          }
+          this.packages_list = items;
+          this.loading_package = false;
+        })
+        .catch((error) => {
+          this.loading_package = false;
+        });
+    },
     addVariation() {
       if (Array.isArray(this.variations_list)) {
         let check = this.variations_list.find(
@@ -511,6 +739,11 @@ export default {
       let items = this.variations_list;
       items.splice(key, 1);
       this.variations_list = items;
+    },
+    deletPack(key) {
+      let items = this.list_selected_packages;
+      items.splice(key, 1);
+      this.list_selected_packages = items;
     },
     sendVariation() {
       let variation_array = [];
@@ -571,7 +804,37 @@ export default {
           console.log(rej);
         });
     },
+
+    addPackage() {
+      if (this.list_selected_packages.length == 0) {
+        this.list_selected_packages.push(this.selected_package);
+        this.package_id = "";
+        this.selected_package = {};
+      } else {
+        let dublicate = this.list_selected_packages.find(
+          (f) => f.value == this.selected_package.value
+        );
+        if (Boolean(dublicate)) {
+          this.$toast.info(`پکیج قبلا اضافه شده`);
+        } else {
+          this.list_selected_packages.push(this.selected_package);
+          this.$toast.success(`پکیج  اضافه  شد`);
+          this.package_id = "";
+          this.selected_package = {};
+        }
+      }
+    },
+    addNumberPack(item, add) {
+      if (Boolean(item)) {
+        if (Boolean(add)) {
+          item.count++;
+        } else {
+          item.count--;
+        }
+      }
+    },
     callSubmit() {
+      let form = {};
       if (
         this.variations_list &&
         Array.isArray(this.variations_list) &&
@@ -585,11 +848,31 @@ export default {
             count: element.count,
           });
         }
+        form["product_varcom_ids"] = items;
+      }
+      if (this.list_selected_packages.length > 0) {
+        let packages = [];
+        for (
+          let index = 0;
+          index < this.list_selected_packages.length;
+          index++
+        ) {
+          const element = this.list_selected_packages[index];
+          packages.push({
+            id: element.value,
+            count: element.count,
+          });
+        }
+        form["package_ids"] = packages;
+      }
+      if (
+        this.list_selected_packages.length > 0 ||
+        this.variations_list.length > 0
+      ) {
         let url = this.basketId
           ? "product-request/update"
           : "product-request/insert";
-        let form = {};
-        form["product_varcom_ids"] = items;
+
         if (Boolean(this.basketId)) {
           form["id"] = this.basketId;
         }
@@ -602,7 +885,7 @@ export default {
           }
         });
       } else {
-        this.$toast.error("محصولی انتخاب نشده");
+        this.$toast.error("موردی انتخواب نشده !");
       }
     },
   },
