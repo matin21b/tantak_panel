@@ -177,7 +177,7 @@ export default {
 
     data: {
       require: false,
-      default: [],
+      default: {},
     },
   },
   data() {

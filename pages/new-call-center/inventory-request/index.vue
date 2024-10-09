@@ -98,7 +98,7 @@ export default {
     title: "درخواست موجودی",
     headers: [],
     payments: [],
-    all_data: [],
+    all_data: {},
 
     actions_list: [],
     btn_actions: [],
@@ -211,7 +211,7 @@ export default {
           } else if (
             Boolean(this.$checkRole(this.$store.state.auth.role.sale_manager))
           ) {
-            show = false;
+            show = true;
           } else if (
             Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
           ) {
@@ -222,16 +222,14 @@ export default {
             ) {
               show = true;
             }
-          } 
-          else if (
-            this.$checkRole(this.$store.state.auth.role.sales_expert) && body.status_payment == "wait"
+          } else if (
+            this.$checkRole(this.$store.state.auth.role.sales_expert) &&
+            body.status_payment == "wait"
           ) {
             show = true;
-          } 
-
-
-    
-
+          } else {
+            show = true;
+          }
 
           return show;
         },
@@ -252,6 +250,22 @@ export default {
                 body.status_payment == "none"
             )
           ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "لیست تراکنش ها",
+        color: "teal darkeb-2",
+        icon: "list",
+        fun: (body) => {
+          this.add_transaction = true;
+          this.all_data = body;
+        },
+        show_fun: (body) => {
+          if (body.status_payment != "none" && body.payments.length > 0) {
             return true;
           } else {
             return false;
