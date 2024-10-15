@@ -46,7 +46,7 @@ export default {
         disableSort: true,
         value: (body) => {
           if (body.value_2) {
-            return `<i aria-hidden="true"  color="red" class="v-icon notranslate  material-icons" style="font-size: 21px; color: ${body.value_2}">bookmark</i>`;
+            return `<i aria-hidden="true"  color="red" class="v-icon notranslate  material-icons" style="font-size: 18px; color: ${body.value_2}">bookmark</i>`;
           }
 
         },

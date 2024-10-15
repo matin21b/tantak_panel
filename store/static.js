@@ -246,7 +246,6 @@ let mnue_tree = [
         route: "/basket/all-history",
         access: "basket/referral_history",
       },
-
     ],
   },
 
@@ -329,6 +328,12 @@ let mnue_tree = [
     access: "money-request/index",
     name: " درخواست وجه",
     route: "/money-request",
+  }, 
+   {
+    id: 7532,
+    access: "debts/index",
+    name: "بدهکاری ها",
+    route: "/indebtedness",
   },
   {
     id: 18,
@@ -441,8 +446,7 @@ let mnue_tree = [
         name: "تغییر روزهای چک",
         access: "setting/index",
         route: "/setting/change-check-days",
-      },    
-
+      },
     ],
   },
 ];
@@ -803,6 +807,39 @@ let step_invitor = [
   { text: "کنسل شده", value: "cancel" },
   { text: "تایید کارمند فروش", value: "accept_employee_sale" },
   { text: "تایید شده", value: "done" },
+  {
+    text: "ارجاع از مدیر نمایندگی فروش به مدیر واحد مالی",
+    value: "manager_to_fiscal_manager",
+  },
+  {
+    text: "مرجوع از مدیر واحد مالی به مدیر نمایندگی فروش",
+    value: "fiscal_manager_to_manager",
+  },
+  {
+    text: "ارجاع از مدیر واحد مالی به سرپرست واحد مالی",
+    value: "fiscal_manager_to_supervisor",
+  },
+  {
+    text: "مرجوع از سرپرست واحد مالی به مدیر واحد مالی",
+    value: "fiscal_supervisor_to_manager",
+  },
+  {
+    text: "ارجاع از سرپرست واحد مالی به واحد مالی",
+    value: "fiscal_supervisor_to_fiscal",
+  },
+  {
+    text: "مرجوع از واحد مالی به سرپرست واحد مالی",
+    value: "fiscal_to_fiscal_supervisor",
+  },
+  { text: "تایید واحد مالی", value: "accept_fiscal" },
+  {
+    text: "ارجاع از سفیر مدیر نمایندگی فروش" ,
+    value: "sefir_to_agency_manager",
+  },
+  {
+    text: "  ارجاع  از سفیر به کارمند انبار مرکزی",
+    value: "sefir_to_employee_stock",
+  },
 ];
 let status_transactions = [
   { text: "منتظر پرداخت", value: "wait" },

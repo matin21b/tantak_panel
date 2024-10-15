@@ -4,42 +4,74 @@
       <v-col cols="12" md="12" v-if="!loading">
         <div v-for="(item, index) in variations_list" :key="index">
           <v-card class="elvation-0 pa-2 mt-2 px-4 border-card">
-            <v-row class="align-center">
-              <small class="mr-3">
-                {{ index + 1 }} -
-                {{ item.variation1.product.name }}
-              </small>
-              <v-spacer></v-spacer>
-              <small>
-                {{ item.variation1.value }} / {{ item.variation2.value }} /
-                {{ item.variation3.value }}
-              </small>
-              <v-spacer></v-spacer>
-
-              <v-row class="d-flex justify-center">
-                <v-btn text @click="addNumber(item, true, 'list')" x-small>
-                  <h1 class="font_15">+</h1>
-                </v-btn>
-                <h1 class="font_12">
-                  {{ item.count }}
+            <v-col cols="12">
+              <v-row class="align-center">
+                <h1 v-if="Boolean(item.is_package)">
+                  {{ index + 1 }} - {{ item.name }}إ
                 </h1>
-                <v-btn
-                  :disabled="item.count == 1"
-                  @click="addNumber(item, false, 'list')"
-                  text
-                  x-small
-                >
-                  <h1 class="font_20">-</h1>
-                </v-btn>
-              </v-row>
 
-              <v-spacer></v-spacer>
+                <h1 class="mr-3" v-if="!Boolean(item.is_package)">
+                  {{ index + 1 }} -
+                  {{ item.variation1.product.name }}
+                </h1>
+                <v-spacer v-if="!Boolean(item.is_package)"></v-spacer>
+                <h1 v-if="!Boolean(item.is_package)">
+                  {{ item.variation1.value }} / {{ item.variation2.value }} /
+                  {{ item.variation3.value }}
+                </h1>
 
-              <!-- <v-btn @click="deletVar(index)" text icon>
+                <v-spacer></v-spacer>
+
+                <!-- <v-btn @click="deletVar(index)" text icon>
                   <v-icon color=""> cancel </v-icon>
                 </v-btn> -->
-              <v-checkbox v-model="item.defect"></v-checkbox>
-            </v-row>
+                <v-checkbox
+                  v-model="item.defect"
+                  v-if="type == 'defect'"
+                ></v-checkbox>
+                <v-col cols="12" v-if="Boolean(item.is_package)" class="mt-3">
+                <small
+                  v-for="(p, index) in item.items_product"
+                  :key="index"
+                  :class="index % 2 == 0 ? 'grey lighten-4' : 'blue lighten-4'"
+                  class="pa-2"
+                >
+                  <v-icon small> local_mall </v-icon>
+                  {{ p.name }} -- تعداد :‌ {{ p.count }} -- جمع قیمت :
+                  {{ $price(p.sum_price) }}
+                </small>
+              </v-col>
+              </v-row>
+     
+
+              <v-col cols="12" class="mt-3">
+                <v-divider></v-divider>
+                <v-row class="d-flex justify-center align-center mt-4">
+                  <small>قیمت :‌ {{ $price(item.price) }} ریال</small>
+                  <v-spacer></v-spacer>
+                  <v-row class="d-flex justify-center">
+                    <v-btn text @click="addNumber(item, true, 'list')" x-small>
+                      <h1 class="font_15">+</h1>
+                    </v-btn>
+                    <h1 class="font_12">
+                      {{ item.count }}
+                    </h1>
+                    <v-btn
+                      :disabled="item.count == 1"
+                      @click="addNumber(item, false, 'list')"
+                      text
+                      x-small
+                    >
+                      <h1 class="font_20">-</h1>
+                    </v-btn>
+                  </v-row>
+                  <v-spacer></v-spacer>
+                  <small>
+                    جمع کل : {{ $price(item.price * item.count) }}
+                  </small>
+                </v-row>
+              </v-col>
+            </v-col>
           </v-card>
         </div>
       </v-col>
@@ -50,7 +82,12 @@
           height="40"
         ></v-skeleton-loader>
       </v-col>
-      <v-col cols="12" md="12" class="text-center mt-3" v-if="!loading">
+      <v-col
+        cols="12"
+        md="12"
+        class="text-center mt-3"
+        v-if="!loading && type == 'defect'"
+      >
         <v-card-text
           class="pa-2 text-center elevation-3 btn-submit"
           @click="callSubmit"
@@ -76,6 +113,10 @@ export default {
     basketId: {
       require: false,
       default: false,
+    },
+    type: {
+      type: String,
+      default: "",
     },
   },
   data: () => ({
@@ -225,20 +266,40 @@ export default {
         .then((res) => {
           this.$emit("data", res.data);
           let data = res.data.items;
-          let item = [];
+          let packages = [];
+          let products = [];
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
-            item.push({
-              count: x.number,
-              variation1: x.pro_var_com.variation1,
-              variation2: x.pro_var_com.variation2,
-              variation3: x.pro_var_com.variation3,
-              id: x.pro_var_com.id,
-              img: x.pro_var_com.variation1.product.main_image,
-              defect: false,
-            });
+
+            if (x.section_name == "Package") {
+              let product = JSON.parse(x.product_json);
+
+              packages.push({
+                name: x.information,
+                count: x.number,
+                items_product: product,
+                price: x.package.price,
+                img: x.package.logo,
+                id: x.id,
+                defect: false,
+                is_package: true,
+              });
+
+            } else {
+              products.push({
+                count: x.number,
+                variation1: x.pro_var_com.variation1,
+                variation2: x.pro_var_com.variation2,
+                variation3: x.pro_var_com.variation3,
+                price: x.price,
+                id: x.pro_var_com.id,
+                img: x.pro_var_com.variation1.product.main_image,
+                defect: false,
+                false: true,
+              });
+            }
           }
-          this.variations_list = item;
+          this.variations_list = [...products, ...packages];
           this.loading = false;
         })
         .catch((err) => {
@@ -504,5 +565,4 @@ export default {
   color: #ffffff;
   cursor: pointer;
 }
-
 </style>
