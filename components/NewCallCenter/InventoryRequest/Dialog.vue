@@ -19,7 +19,7 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-row class="d-flex justify-center pa-3"   v-if="this.$store.state.auth.action.indexOf('product_requests/update') > -1">
+          <v-row class="d-flex justify-center pa-3"   >
             <amp-button
               text="انصراف"
               @click="closeDialog"
