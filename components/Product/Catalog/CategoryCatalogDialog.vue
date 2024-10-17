@@ -79,6 +79,7 @@
               class="elevation-0 mx-1 mb-2 pa-2 "
               width="48%"
               v-for="i in 4"
+              :key="`skeleton-${i}`"
             >
               <v-skeleton-loader
                 class="mx-auto"

@@ -39,7 +39,7 @@
                   :key="index"
                 >
                   <v-img
-                  class="ma-1"
+                    class="ma-1"
                     width="180"
                     height="100"
                     contain
@@ -80,22 +80,21 @@
         </v-card>
       </v-card>
       <v-card v-if="loading" class="elevation-0 mx-1 mb-2 pa-8">
-        <v-row >
-          <v-col cols="12" v-for="i in 2">
+        <v-row>
+          <v-col cols="12" v-for="i in 2" :key="i">
             <v-skeleton-loader
               class="mx-auto"
               height="100"
               type="card"
             ></v-skeleton-loader>
-
-          </v-col> 
-             <v-col cols="12" >
+          </v-col>
+          <v-col cols="12">
             <v-skeleton-loader
-            v-for="i in 4"
+              v-for="t in 4"
               height="30"
               type="text@2"
+              :key="`skeleton-${t}`"
             ></v-skeleton-loader>
-
           </v-col>
         </v-row>
       </v-card>
@@ -152,7 +151,6 @@ export default {
     },
     closeDialog() {
       this.$emit("closeDialog");
-      
     },
   },
 };
