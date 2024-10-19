@@ -107,14 +107,14 @@
             :disabled="citis.length > 0 ? false : true"
           />
         </v-col> -->
-        <v-col cols="12" md="3" v-if="cheke_branch">
+        <!-- <v-col cols="12" md="3" v-if="cheke_branch">
           <UserSelectForm
             text=" کاربر ناظر"
             v-model="parent_id"
             url="user"
             :role-id="[$store.state.auth.role.admin_id]"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="3" v-if="sales_manager">
           <amp-select
             text="ناحیه"
@@ -303,6 +303,7 @@ export default {
   //   // },
   // },
   mounted() {
+    this.$store.dispatch("setting/getRoleServer");
     if (this.form.role_id.indexOf(this.$store.state.auth.role.user_id) > -1) {
       this.is_user = true;
     }
