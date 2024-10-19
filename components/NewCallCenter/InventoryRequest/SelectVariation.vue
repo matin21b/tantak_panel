@@ -23,7 +23,7 @@
     </v-col>
     <v-window v-model="step">
       <v-window-item :value="1">
-        <products :basketId="basketId" @data="getData($event, 'product')" />
+        <Products :basketId="basketId" @data="getData($event, 'product')" />
       </v-window-item>
 
       <v-window-item :value="2">
@@ -35,12 +35,12 @@
 
 <script>
 import Packages from "@/components/NewCallCenter/AddToBasket/Packages.vue";
-import products from "@/components/NewCallCenter/AddToBasket/products.vue";
+import Products from "@/components/NewCallCenter/AddToBasket/Products.vue";
 
 export default {
   components: {
     Packages,
-    products,
+    Products,
   },
   props: {
     basketId: {

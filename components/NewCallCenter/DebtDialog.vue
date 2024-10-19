@@ -16,7 +16,7 @@
           v-for="(item, index) in items"
           :key="index"
         >
-          <h1 class="font_17"> {{ index+1 }} - {{ item.name }}</h1>
+          <h1 class="font_15"> {{ index+1 }} - {{ item.name }}</h1>
           <div class="d-flex mt-3">
             <h1>قیمت : {{ $price(item.base_price) }} ریال</h1>
             <v-spacer />

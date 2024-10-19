@@ -1,6 +1,12 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent width="1200" :fullscreen="$vuetify.breakpoint.mdAndUp ? false : true">
+    <v-dialog
+      v-model="dialog"
+      persistent
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
       <v-card>
         <v-card-title class="primary mb-10">
           <span class="font_20 white--text">موجودی انبار</span>
@@ -11,28 +17,61 @@
           <v-window v-model="step">
             <v-window-item :value="1">
               <v-row class="d-flex justify-center">
-                <v-col cols="12" md="10">
-                  <v-expansion-panels v-model="panel">
+                <v-col cols="12" md="6">
+                  <v-expansion-panels v-model="panel" class="card-style">
                     <v-expansion-panel>
-                      <v-expansion-panel-header class="primary lighten-1">
-                        <span class="white--text font_18">
+                      <v-expansion-panel-header >
+                        <span class=" font_18">
                           تعریف موجودی
                           <small v-if="update">
-                            *** ( {{ product_var_info }} )
+                            *** ( {{ set_title_card }} )
                           </small>
                         </span>
                       </v-expansion-panel-header>
+
                       <v-expansion-panel-content>
+                        <v-col cols="12">
+                          <v-divider></v-divider>
+                          <v-divider></v-divider>
+                          <v-divider></v-divider>
+                          <v-row cols="12" class=" mt-1 pr-2 justify-center">
+                            <v-chip
+                              dark
+                              label
+                              class="ma-2"
+                              color="primary"
+                              v-for="item in items"
+                              :key="item.key"
+                              @click="tab = item.key"
+                              :outlined="tab != item.key"
+                            >
+                              <span class="font_16">
+                                {{ item.text }}
+                              </span>
+                              <v-icon class="mr-1">
+                                {{ item.icon }}
+                              </v-icon>
+                            </v-chip>
+                          </v-row>
+                        </v-col>
                         <v-form
                           v-model="valid"
                           @submit.prevent="submit()"
                           class="mt-4 pa-5"
                           v-if="!loading"
                         >
-                          <SelectVariation
+                          <Products
                             @validVariations="continue_form = $event"
-                            v-if="!update"
-                            @productId="form.product_var_id = $event"
+                            v-if="!update && tab == 'products'"
+                            @section="setSections($event)"
+                            :productInfo="product"
+                            :response="response"
+                            :clear_vaue="continue_form"
+                          />
+                          <Packages
+                            @validVariations="continue_form = $event"
+                            v-if="!update && tab == 'packages'"
+                            @section="setSections($event)"
                             :productInfo="product"
                             :response="response"
                             :clear_vaue="continue_form"
@@ -69,7 +108,9 @@
                                 color="green darken-1"
                                 @click="submit"
                                 :loading="loading"
-                                :disabled="!Boolean(check_continue) || !valid || loading"
+                                :disabled="
+                                  !Boolean(check_continue) || !valid || loading
+                                "
                               />
                             </v-col>
                             <v-col cols="6" md="2">
@@ -109,7 +150,13 @@
             </v-window-item>
 
             <v-window-item :value="2">
-              <History :branchId="branchId" v-if="show_history"  :productVarId="product_var_id" :productVarInfo="send_prop" @backStep="step--"/>
+              <History
+                :branchId="branchId"
+                v-if="show_history"
+                :productVarId="product_var_id"
+                :productVarInfo="send_prop"
+                @backStep="step--"
+              />
             </v-window-item>
           </v-window>
         </v-card-text>
@@ -118,11 +165,13 @@
   </v-row>
 </template>
 <script>
-import SelectVariation from "@/components/Product/Representative/SelectVariation.vue";
+import Packages from "@/components/Product/Representative/AddToBasket/Packages.vue";
+import Products from "@/components/Product/Representative/AddToBasket/Products.vue";
 import History from "@/components/Product/Representative/History.vue";
 export default {
   components: {
-    SelectVariation,
+    Products,
+    Packages,
     History,
   },
   props: {
@@ -137,6 +186,11 @@ export default {
   },
   data() {
     return {
+      tab: "products",
+      items: [
+        { text: "محصول", key: "products", icon: "local_mall" },
+        { text: "پکیج ", key: "packages", icon: "bento" },
+      ],
       panel: 1,
       step: 1,
       continue_form: false,
@@ -151,7 +205,7 @@ export default {
       send_prop: "",
       url: "",
       product_var_id: "",
-      product_var_info: "",
+      set_title_card: "",
       valid: true,
       update: false,
       form: {
@@ -159,7 +213,8 @@ export default {
         description: "",
         save_skock: "",
         sale_agency_id: "",
-        product_var_id: "",
+        section_id: "",
+        section_name: "",
       },
     };
   },
@@ -172,6 +227,11 @@ export default {
         check = true;
       }
       return check;
+    },
+  },
+  watch: {
+    tab() {
+      this.continue_form = false;
     },
   },
   mounted() {
@@ -189,7 +249,17 @@ export default {
         },
       },
       {
-        text: "محصول",
+        text: "نوع ",
+        value: (body) => {
+          if (body.section_name == "ProductVariationCombination") {
+            return "محصول";
+          } else {
+            return "پکیج";
+          }
+        },
+      },
+      {
+        text: "اطلاعات",
         filtrabel: false,
         value: (body) => {
           let text = "";
@@ -197,20 +267,27 @@ export default {
           let var_1 = "";
           let var_2 = "";
           let var_3 = "";
-          if (body.product_var && body.product_var.product) {
-            product_name = body.product_var.product.name;
+
+          if (body.section_name == "ProductVariationCombination") {
+            if (body.product_var && body.product_var.product) {
+              product_name = body.product_var.product.name;
+            }
+            if (body.product_var.variation1) {
+              var_1 = body.product_var.variation1.value;
+            }
+            if (body.product_var.variation2) {
+              var_2 = body.product_var.variation2.value;
+            }
+            if (body.product_var.variation3) {
+              var_3 = body.product_var.variation3.value;
+            }
+            text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
+            return text;
+          } else if (body.section_name == "Package") {
+            return body.package.name;
           }
-          if (body.product_var.variation1) {
-            var_1 = body.product_var.variation1.value;
+          {
           }
-          if (body.product_var.variation2) {
-            var_2 = body.product_var.variation2.value;
-          }
-          if (body.product_var.variation3) {
-            var_3 = body.product_var.variation3.value;
-          }
-          text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
-          return text;
         },
       },
       {
@@ -220,9 +297,9 @@ export default {
           let items = [];
           items.push(
             `<span class="teal--text font_11"> موجودی  : ${body.skock.toLocaleString()} </span>`
-          )
-  
-             items.push(
+          );
+
+          items.push(
             `<span class="primary--text font_11">موجودی  انبار   : ${body.save_skock.toLocaleString()} </span>`
           );
           return items.join("<br>");
@@ -254,6 +331,12 @@ export default {
       {
         text: "بروزرسانی",
         fun: (body) => {
+
+          if (body.section_name == "ProductVariationCombination") {
+            this.tab = "products";
+          } else if (body.section_name == "Package") {
+            this.tab = "packages";
+          }
           this.loadData(body.id);
         },
       },
@@ -266,7 +349,7 @@ export default {
         fun: (body) => {
           this.step++;
           this.show_history = true;
-          this.product_var_id = body.product_var_id
+          this.product_var_id = body.product_var_id;
           let text = "";
           let product_name = "";
           let var_1 = "";
@@ -285,7 +368,7 @@ export default {
             var_3 = body.product_var.variation3.value;
           }
           text = `${product_name} ( ${var_1} - ${var_2} - ${var_3} )`;
-         this.send_prop = text
+          this.send_prop = text;
         },
       },
     ];
@@ -307,10 +390,11 @@ export default {
           this.$toast.success("عملیات با موفقیت انجام شده");
           this.loading = false;
           this.$refs.Refresh.getDataFromApi();
-          this.canceld()
+          this.canceld();
         })
         .catch((err) => {
           this.loading = false;
+          this.continue_form = false;
         });
     },
     canceld() {
@@ -329,32 +413,34 @@ export default {
       this.$reqApi("sale-agency-stock/show", { id: id })
         .then((response) => {
           let data = response.data;
-          this.response = data;
-          for (let key in data) {
-            this.form[key] = data[key];
-          }
-          this.product.product_id = data.product_var.product_id;
-
           let text = "";
           let product_name = "";
           let var_1 = "";
           let var_2 = "";
           let var_3 = "";
-          if (data.product_var) {
-            product_name = data.product_var.product.name;
+          this.response = data;
+          for (let key in data) {
+            this.form[key] = data[key];
           }
-          if (data.product_var.variation1) {
-            var_1 = data.product_var.variation1.value;
+          if (data.section_name == "ProductVariationCombination") {
+            this.product.product_id = data.product_var.product_id;
+            if (data.product_var) {
+              product_name = data.product_var.product.name;
+            }
+            if (data.product_var.variation1) {
+              var_1 = data.product_var.variation1.value;
+            }
+            if (data.product_var.variation2) {
+              var_2 = data.product_var.variation2.value;
+            }
+            if (data.product_var.variation3) {
+              var_3 = data.product_var.variation3.value;
+            }
+            text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
+          } else {
+            text = data.package.name;
           }
-          if (data.product_var.variation2) {
-            var_2 = data.product_var.variation2.value;
-          }
-          if (data.product_var.variation3) {
-            var_3 = data.product_var.variation3.value;
-          }
-          text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
-          this.product_var_info = text;
-
+          this.set_title_card = text;
           this.panel = 0;
           this.loading = false;
         })
@@ -363,6 +449,15 @@ export default {
           this.loading = false;
         });
     },
+    setSections(data) {
+      this.form.section_id = data.id;
+      this.form.section_name = data.section_name;
+    },
   },
 };
 </script>
+<style>
+.card-style{
+  border: 2px solid #00000057;
+}
+</style>

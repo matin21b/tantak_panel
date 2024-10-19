@@ -133,7 +133,7 @@ let mnue_tree = [
       {
         id: 6185145,
         name: "نمایندگی های فروش",
-        access: "center_stocks/index",
+        access: "sale_agencies/index",
         route: "/product/sale-agency",
       },
       {
