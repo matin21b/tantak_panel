@@ -106,7 +106,7 @@ export default {
     ];
     this.btn_actions = [
       {
-        text: "موجودی",
+        text: "جزییات ",
         color: "red",
         fun: (body) => {
           let data = JSON.parse(body.data);

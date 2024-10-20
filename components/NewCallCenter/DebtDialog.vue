@@ -1,34 +1,32 @@
 <template>
   <v-row>
     <v-dialog v-model="dialog" persistent max-width="500">
-      <v-card class="elevation-0 pa-6" style="overflow: hidden !important">
-        <v-card class="d-flex align-center pa-3 mb-7 border-card">
-          <v-spacer></v-spacer>
-          <strong class="font_18"> موجودی های سفارش </strong>
+      <v-card class="elevation-0 pa-4" style="overflow: hidden !important">
+        <v-row class="mx-2 mt-1 align-center mb-4">
+          <h1 class="font_15 mr-2">بدهکاری های سفارش</h1>
           <v-spacer></v-spacer>
           <v-btn icon text @click="cloasDialog">
-            <v-icon> close </v-icon>
+            <v-icon class="mr-3"> cancel </v-icon>
           </v-btn>
-        </v-card>
-
+        </v-row>
         <v-card
-          class="elevation-1 pa-4  border-card mt-3"
           v-for="(item, index) in items"
           :key="index"
+          class="ma-2 mx-4 pa-3 border-card elevation-0"
         >
-          <h1 class="font_15"> {{ index+1 }} - {{ item.name }}</h1>
-          <div class="d-flex mt-3">
-            <h1>قیمت : {{ $price(item.base_price) }} ریال</h1>
+          <h1 class="font_14">{{ index + 1 }} - {{ item.name }}</h1>
+          <div class="d-flex my-2">
+            <small>قیمت : {{ $price(item.base_price) }} ریال</small>
             <v-spacer />
-            <h1>
+            <small>
               تعداد :‌
               {{ item.count }}
-            </h1>
+            </small>
             <v-spacer />
-            <h1>
+            <small>
               قیمت کل :‌
               {{ $price(item.base_price) }} ریال
-            </h1>
+            </small>
           </div>
         </v-card>
       </v-card>
@@ -71,7 +69,7 @@ strong {
 h1 {
   font-size: 12px;
 }
-.border-card{
-    border: 1px solid #0000006b;
+.border-card {
+  border: 4px double #00000042 !important;
 }
 </style>

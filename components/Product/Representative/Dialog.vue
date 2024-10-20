@@ -18,10 +18,14 @@
             <v-window-item :value="1">
               <v-row class="d-flex justify-center">
                 <v-col cols="12" md="6">
-                  <v-expansion-panels v-model="panel" class="card-style">
+                  <v-expansion-panels
+                    v-model="panel"
+                    class="card-style elevation-0"
+                    focusable
+                  >
                     <v-expansion-panel>
-                      <v-expansion-panel-header >
-                        <span class=" font_18">
+                      <v-expansion-panel-header expand-icon="add_circle">
+                        <span class="font_18">
                           تعریف موجودی
                           <small v-if="update">
                             *** ( {{ set_title_card }} )
@@ -31,15 +35,13 @@
 
                       <v-expansion-panel-content>
                         <v-col cols="12">
-                          <v-divider></v-divider>
-                          <v-divider></v-divider>
-                          <v-divider></v-divider>
-                          <v-row cols="12" class=" mt-1 pr-2 justify-center">
+                          <v-row cols="12" class="mt-3 justify-center">
                             <v-chip
+                              :disabled="update"
                               dark
                               label
                               class="ma-2"
-                              color="primary"
+                              color="grey darken-1"
                               v-for="item in items"
                               :key="item.key"
                               @click="tab = item.key"
@@ -126,10 +128,10 @@
                         </v-form>
                         <div class="text-center my-10" v-else>
                           <v-progress-circular
-                            :size="50"
-                            :width="6"
+                            :size="30"
+                            :width="4"
                             indeterminate
-                            color="primary"
+                            color="grey"
                           />
                         </div>
                       </v-expansion-panel-content>
@@ -152,9 +154,10 @@
             <v-window-item :value="2">
               <History
                 :branchId="branchId"
-                v-if="show_history"
+                v-if="show_history && step == 2"
                 :productVarId="product_var_id"
                 :productVarInfo="send_prop"
+                :sectionId="section_id"
                 @backStep="step--"
               />
             </v-window-item>
@@ -206,6 +209,7 @@ export default {
       url: "",
       product_var_id: "",
       set_title_card: "",
+      section_id: "",
       valid: true,
       update: false,
       form: {
@@ -331,7 +335,6 @@ export default {
       {
         text: "بروزرسانی",
         fun: (body) => {
-
           if (body.section_name == "ProductVariationCombination") {
             this.tab = "products";
           } else if (body.section_name == "Package") {
@@ -355,20 +358,25 @@ export default {
           let var_1 = "";
           let var_2 = "";
           let var_3 = "";
-          if (body.product_var) {
-            product_name = body.product_var.product.name;
+          if (body.section_name == "ProductVariationCombination") {
+            if (body.product_var && body.product_var.product) {
+              product_name = body.product_var.product.name;
+            }
+            if (body.product_var.variation1) {
+              var_1 = body.product_var.variation1.value;
+            }
+            if (body.product_var.variation2) {
+              var_2 = body.product_var.variation2.value;
+            }
+            if (body.product_var.variation3) {
+              var_3 = body.product_var.variation3.value;
+            }
+            text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
+            this.send_prop = text;
+          } else if (body.section_name == "Package") {
+            this.send_prop = body.package.name;
           }
-          if (body.product_var.variation1) {
-            var_1 = body.product_var.variation1.value;
-          }
-          if (body.product_var.variation2) {
-            var_2 = body.product_var.variation2.value;
-          }
-          if (body.product_var.variation3) {
-            var_3 = body.product_var.variation3.value;
-          }
-          text = `${product_name} ( ${var_1} - ${var_2} - ${var_3} )`;
-          this.send_prop = text;
+          this.section_id = body.section_id
         },
       },
     ];
@@ -389,11 +397,14 @@ export default {
           this.step == 1;
           this.$toast.success("عملیات با موفقیت انجام شده");
           this.loading = false;
+          this.update = false;
           this.$refs.Refresh.getDataFromApi();
           this.canceld();
         })
         .catch((err) => {
           this.loading = false;
+          this.update = false;
+          this.canceld();
           this.continue_form = false;
         });
     },
@@ -445,7 +456,7 @@ export default {
           this.loading = false;
         })
         .catch((err) => {
-          this.loader = false;
+          this.update = false;
           this.loading = false;
         });
     },
@@ -457,7 +468,8 @@ export default {
 };
 </script>
 <style>
-.card-style{
-  border: 2px solid #00000057;
+.card-style {
+  border: 2px solid #00000031;
+  border-radius: 7px;
 }
 </style>

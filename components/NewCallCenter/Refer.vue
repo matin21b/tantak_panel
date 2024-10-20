@@ -46,7 +46,9 @@
             >
               بعدی
             </v-btn>
-            <v-btn class="mt-10 ml-4" color="info" @click="clearAll()"> انصراف </v-btn>
+            <v-btn class="mt-10 ml-4" color="info" @click="clearAll()">
+              انصراف
+            </v-btn>
           </v-row>
         </v-form>
       </v-stepper-content>
@@ -57,10 +59,14 @@
       >
         انتخاب پیام
         <small class="pt-1">
-          پیام هایی را که قصد تخصیص یا بستن آن را دارید از لیست پایین انتخاب کنید
+          پیام هایی را که قصد تخصیص یا بستن آن را دارید از لیست پایین انتخاب
+          کنید
         </small>
       </v-stepper-step>
-      <v-stepper-content step="2" v-if="Boolean(check_steps || !chek_number_step)">
+      <v-stepper-content
+        step="2"
+        v-if="Boolean(check_steps || !chek_number_step)"
+      >
         <v-col cols="12">
           <v-row>
             <span class="primary--text font_15">
@@ -69,7 +75,11 @@
             </span>
             <v-spacer></v-spacer>
             <v-col cols="12" md="4" v-if="!Boolean(back_ref)">
-              <v-btn color="primary" :disabled="selected_item.length < 1" @click="e1 = 3">
+              <v-btn
+                color="primary"
+                :disabled="selected_item.length < 1"
+                @click="e1 = 3"
+              >
                 بعدی
               </v-btn>
 
@@ -100,7 +110,9 @@
         <v-row>
           <v-col cols="12" md="6">
             <UserSelectForm
-              :text="is_admin_call_center ? ' انتخاب مرکز تماس' : 'انتخاب فروشنده'"
+              :text="
+                is_admin_call_center ? ' انتخاب مرکز تماس' : 'انتخاب فروشنده'
+              "
               v-model="user"
               :url="url_list"
               rules="require"
@@ -110,7 +122,11 @@
           <v-spacer></v-spacer>
           <div class="mt-10 mx-5">
             <v-btn color="primary" @click="submit()"> تایید </v-btn>
-            <v-btn color="info" v-if="Boolean(chek_number_step)" @click="e1 = 1">
+            <v-btn
+              color="info"
+              v-if="Boolean(chek_number_step)"
+              @click="e1 = 1"
+            >
               برگشت
             </v-btn>
             <v-btn color="info" v-else @click="e1 = 2"> برگشت </v-btn>
@@ -145,8 +161,8 @@ export default {
   data: () => ({
     select_type_send: [],
     step_items: [],
-    superviser_list: "call-center/superviser-list",
-    oprator_list: "call-center/operator-list",
+    superviser_list: "user/list-employee",
+    oprator_list: "user/list-employe",
     type_send: "",
     step_ref: "",
     valid_step1: true,
@@ -180,7 +196,10 @@ export default {
     if (this.$checkRole(this.$store.state.auth.role.oprator_id)) {
       this.is_oprator = true;
       this.step_items = [
-        { text: "ارجاع  به مرکز تماس (مرجوع کردن)", value: "operator_to_supervisor" },
+        {
+          text: "ارجاع  به مرکز تماس (مرجوع کردن)",
+          value: "operator_to_supervisor",
+        },
       ];
     }
     if (
@@ -297,7 +316,10 @@ export default {
       ) {
         check = true;
       }
-      if (this.is_superviser && (this.type_send == "auto" || this.type_send == "sale")) {
+      if (
+        this.is_superviser &&
+        (this.type_send == "auto" || this.type_send == "sale")
+      ) {
         check = true;
       }
       return check;
@@ -321,7 +343,8 @@ export default {
       }
       if (this.is_superviser) {
         if (
-          (this.step_ref == "supervisor_to_operator" && this.type_send == "multi") 
+          this.step_ref == "supervisor_to_operator" &&
+          this.type_send == "multi"
         ) {
           show_step = true;
         }

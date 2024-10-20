@@ -18,7 +18,6 @@ export default {
     modelId: { default: null },
   },
   data: () => ({
-    title: "درخواست موجودی",
     headers: [],
     payments: [],
     root_body: {},

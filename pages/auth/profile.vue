@@ -1,7 +1,7 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-container fluid class="px-8">
-      <v-row dens >
+      <v-row dens>
         <v-col cols="12" md="3">
           <amp-input
             readonly
@@ -31,8 +31,8 @@
           <amp-upload-file v-model="form.avatar" />
         </v-col>
         <v-col v-if="Boolean(cheke_role)" cols="12" md="12">
-        <MyWallet  />
-      </v-col>
+          <MyWallet />
+        </v-col>
       </v-row>
 
       <v-row dense>
@@ -83,13 +83,10 @@ export default {
   },
   computed: {
     cheke_role() {
-      if (
-        this.$checkRole(this.$store.state.auth.role.courier) ||
-        this.$checkRole(this.$store.state.auth.role.seal_manager)
-      ) {
-        return true;
-      } else {
+      if (this.$checkRole(this.$store.state.auth.role.admin_id)) {
         return false;
+      } else {
+        return true;
       }
     },
   },
@@ -133,7 +130,6 @@ export default {
       }
     },
   },
-
 };
 </script>
 <style scoped>

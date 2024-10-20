@@ -6,94 +6,67 @@
       :model-id="dialogTask.items"
       width="850"
     >
-      <v-card class="card-dialog pa-5 pb-0">
-        <v-col
-          cols="12"
-          class="mr-2 mb-1"
-          style="border-bottom: 1px solid grey"
-        >
-          <v-row class="mb-1 align-center">
-            <v-badge class="ml-3" :color="color_task" v-if="!loading" />
-            <h1 class="font_11 mr-3">
-              عنوان :‌
-              {{ task.title }}
-              <br />
-              <h1 class="font_10">دسته بندی : {{ task.category }}</h1>
-            </h1>
+      <v-card class="pa-5">
+        <v-card class="card-dialog pa-5 pb-0 elevation-0 pb-8">
+          <v-col
+            cols="12"
+            class="mr-2 mb-1"
+            style="border-bottom: 1px solid grey"
+          >
+            <v-row class="mb-1 align-center">
+              <v-badge class="ml-3" :color="color_task" v-if="!loading" />
+              <h1 class="font_11 mr-3">
+                عنوان :‌
+                {{ task.title }}
+                <br />
+                <h1 class="font_10">دسته بندی : {{ task.category }}</h1>
+              </h1>
 
-            <v-spacer></v-spacer>
-            <v-btn text @click="closeDialog">
-              <v-icon>close</v-icon>
-            </v-btn>
-          </v-row>
-        </v-col>
-        <v-row>
-          <v-col cols="10">
-            <v-window v-model="step">
-              <v-window-item :value="1">
-                <v-card-text>
-                  <v-card-text v-if="!loading_data">
-                    <!-- <v-row class="align-center py-4 mr-1">
-                <h1 class="font_12 mx-1">گیرنده :</h1>
-                <h1 class="font_12 mx-1">
-                  {{ geter }}
+              <v-spacer></v-spacer>
+
+              <v-row class="align-center">
+                <v-row
+                  v-if="Boolean(task.start_task) && Boolean(task.end_task)"
+                  class="mr-2"
+                >
+                  <small> شروع از تاریخ </small>
+                  <h1 class="font_11 mx-1" v-if="task.start_task">
+                    {{
+                      $toJalali(task.start_task, "YYYY-MM-DD", "jYYYY/jMM/jDD")
+                    }}
+                  </h1>
+                  <small> تا </small>
+
+                  <h1 class="font_11 mx-1" v-if="task.end_task">
+                    {{
+                      $toJalali(task.end_task, "YYYY-MM-DD", "jYYYY/jMM/jDD")
+                    }}
+                  </h1>
+                </v-row>
+
+                <v-spacer></v-spacer>
+                <h1 class="font_10 mr-6">
+                  ایجاد شده توسط :
+                  {{ creator }}
+                  در
+                  {{
+                    $toJalali(task.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD")
+                  }}
                 </h1>
-              </v-row> -->
-                    <h1 class="font_14 mt-2">
-                      <v-icon small>arrow_left</v-icon>
-                      بازه زمانی
-                    </h1>
-                    <v-col cols="12">
-                      <v-row class="align-center">
-                        <v-row
-                          v-if="
-                            Boolean(task.start_task) && Boolean(task.end_task)
-                          "
-                          class="mr-2"
-                        >
-                          <small> شروع از تاریخ </small>
-                          <h1 class="font_11 mx-1" v-if="task.start_task">
-                            {{
-                              $toJalali(
-                                task.start_task,
-                                "YYYY-MM-DD",
-                                "jYYYY/jMM/jDD"
-                              )
-                            }}
-                          </h1>
-                          <small> تا </small>
-
-                          <h1 class="font_11 mx-1" v-if="task.end_task">
-                            {{
-                              $toJalali(
-                                task.end_task,
-                                "YYYY-MM-DD",
-                                "jYYYY/jMM/jDD"
-                              )
-                            }}
-                          </h1>
-                        </v-row>
-                        <h1 class="font_10 mr-6" v-else>
-                          بازه زمانی مشخص نشده
-                        </h1>
-
-                        <v-spacer></v-spacer>
-                        <h1 class="font_10 mr-6">
-                          ایجاد شده توسط :
-                          {{ creator }}
-                          در
-                          {{
-                            $toJalali(
-                              task.created_at,
-                              "YYYY-MM-DD",
-                              "jYYYY/jMM/jDD"
-                            )
-                          }}
-                        </h1>
-                      </v-row>
-                    </v-col>
+              </v-row>
+              <v-spacer></v-spacer>
+              <v-btn text @click="closeDialog">
+                <v-icon>close</v-icon>
+              </v-btn>
+            </v-row>
+          </v-col>
+          <v-row>
+            <v-col cols="10">
+              <v-window v-model="step">
+                <v-window-item :value="1">
+                  <v-card v-if="!loading_data">
                     <v-col
-                      v-if="is_creator && Boolean(check_see)"
+                      v-if="is_creator && Boolean(check_see) && check_see.length > 0"
                       class="mt-4 mr-0 pr-0"
                       cols="12"
                     >
@@ -111,22 +84,7 @@
                         {{ name }}
                       </h1>
                     </v-col>
-                    <v-col
-                      v-if="is_creator && !Boolean(check_see)"
-                      class="mt-4 mr-0 pr-0"
-                      cols="12"
-                    >
-                      <v-row class="text-center mt-4">
-                        <h1 class="font_14">
-                          <v-icon small>arrow_left</v-icon>
-                          آمار بازدید:
-                        </h1>
-                        <h1 class="font_10 mr-6">
-                          بازدیدی وجود ندارد
-                          <v-icon small>visibility_off</v-icon>
-                        </h1>
-                      </v-row>
-                    </v-col>
+                
                     <v-row v-if="task.file" class="align-center">
                       <h1 class="font_14">
                         <v-icon small>arrow_left</v-icon>
@@ -293,7 +251,7 @@
                         </v-col>
                       </div>
                     </div>
-                  </v-card-text>
+                  </v-card>
                   <div v-else calss="text-center my-15">
                     <v-row
                       class="d-felx justify-center py-15 my-15 align-center"
@@ -306,106 +264,108 @@
                       />
                     </v-row>
                   </div>
-                </v-card-text>
-              </v-window-item>
+                </v-window-item>
 
-              <v-window-item :value="2">
-                <v-card-text>
-                  <v-row class="align-center d-felx justify-center">
+                <v-window-item :value="2">
+                  <v-card-text>
+                    <v-row class="align-center d-felx justify-center">
+                      <v-col
+                        cols="12"
+                        class="text-center mb-5"
+                        style="border-bottom: 1px dashed gray"
+                      >
+                        <h1>موجودی سبد</h1>
+                      </v-col>
+                    </v-row>
                     <v-col
                       cols="12"
-                      class="text-center mb-5"
-                      style="border-bottom: 1px dashed gray"
+                      v-for="(item, index) in basket_items"
+                      :key="index"
                     >
-                      <h1>موجودی سبد</h1>
+                      <v-row class="py-4">
+                        <h1 class="font_11">
+                          {{ index + 1 }} - {{ item.type }}
+                        </h1>
+                        <v-spacer></v-spacer>
+                        <h1 class="font_11">
+                          {{ item.name }}
+                        </h1>
+                        <v-spacer v-if="item.type == 'محصول'"></v-spacer>
+                        <h1 class="font_11" v-if="item.type == 'محصول'">
+                          {{ item.information }}
+                        </h1>
+                        <v-spacer></v-spacer>
+                        <h1 class="font_11">{{ item.count }} عدد</h1>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          small
+                          outlined
+                          class="white--text"
+                          color="teal"
+                          @click="getImage(item.main_image)"
+                        >
+                          <small> مشاهده </small>
+
+                          <v-icon small> image </v-icon>
+                        </v-btn>
+                      </v-row>
+                      <v-col cols="12">
+                        <v-divider></v-divider>
+                      </v-col>
                     </v-col>
-                  </v-row>
-                  <v-col
-                    cols="12"
-                    v-for="(item, index) in basket_items"
-                    :key="index"
-                  >
-                    <v-row class="py-4">
-                      <h1 class="font_11">{{ index + 1 }} - {{ item.type }}</h1>
-                      <v-spacer></v-spacer>
-                      <h1 class="font_11">
-                        {{ item.name }}
+                    <v-row class="align-center py-3 px-4 grey lighten-3 mb-3">
+                      <h1>قیمت کل سبد</h1>
+                      <v-spacer> </v-spacer>
+                      <h1>
+                        {{ $price(base_price) }}
                       </h1>
-                      <v-spacer v-if="item.type == 'محصول'"></v-spacer>
-                      <h1 class="font_11" v-if="item.type == 'محصول'">
-                        {{ item.information }}
-                      </h1>
-                      <v-spacer></v-spacer>
-                      <h1 class="font_11">{{ item.count }} عدد</h1>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        small
-                        outlined
-                        class="white--text"
-                        color="teal"
-                        @click="getImage(item.main_image)"
-                      >
-                      <small>
-                        مشاهده
-                      </small>
-                 
-                        <v-icon small> image </v-icon>
-                      </v-btn>
                     </v-row>
-                    <v-col cols="12">
-                      <v-divider></v-divider>
-                    </v-col>
-                  </v-col>
-                  <v-row class="align-center py-3 px-4 grey lighten-3 mb-3">
-                    <h1>قیمت کل سبد</h1>
-                    <v-spacer> </v-spacer>
-                    <h1>
-                      {{ $price(base_price) }}
-                    </h1>
-                  </v-row>
-                </v-card-text>
-              </v-window-item>
-            </v-window>
-          </v-col>
+                  </v-card-text>
+                </v-window-item>
+              </v-window>
+            </v-col>
 
-          <v-col cols="2" class="set-color mt-2">
-            <v-autocomplete
-              :disabled="!is_creator"
-              class="mt-2"
-              color="black"
-              label="تعیین فوریت"
-              dense
-              :items="set_color_items"
-              v-model="get_color_task"
-            >
-            </v-autocomplete>
+            <v-col cols="2" class="set-color mt-2">
+              <v-autocomplete
+                :disabled="!is_creator"
+                class="mt-2"
+                color="black"
+                label="تعیین فوریت"
+                dense
+                :items="set_color_items"
+                v-model="get_color_task"
+              >
+              </v-autocomplete>
 
-            <div
-              v-if="section_name == 'Basket' && section_id"
-              class="text-center my-2"
-            >
-              <div v-if="step == 1">
-                <v-btn @click="step++" text>
-                  <v-icon class="mx-1" large color="grey">
-                    shopping_basket
-                  </v-icon>
-                </v-btn>
+              <div
+                v-if="section_name == 'Basket' && section_id"
+                class="text-center my-2"
+              >
+                <div v-if="step == 1">
+                  <v-btn @click="step++" text>
+                    <v-icon class="mx-1" large color="grey">
+                      shopping_basket
+                    </v-icon>
+                  </v-btn>
 
-                <v-btn @click="step++" text>
-                  <h1 class="font_12">مشاهده سبد</h1>
-                </v-btn>
+                  <v-btn @click="step++" text>
+                    <h1 class="font_12">مشاهده سبد</h1>
+                  </v-btn>
+                </div>
+                <div v-if="step == 2">
+                  <v-btn @click="step--" text small>
+                    <v-icon class="mx-1" color="grey">
+                      arrow_circle_left</v-icon
+                    >
+                  </v-btn>
+                  <v-btn @click="step--" text small>
+                    <h1 class="font_12">برگشت</h1>
+                  </v-btn>
+                </div>
               </div>
-              <div v-if="step == 2">
-                <v-btn @click="step--" text small>
-                  <v-icon class="mx-1" color="grey"> arrow_circle_left</v-icon>
-                </v-btn>
-                <v-btn @click="step--" text small>
-                  <h1 class="font_12">برگشت</h1>
-                </v-btn>
-              </div>
-            </div>
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
       </v-card>
     </v-dialog>
   </div>
@@ -458,7 +418,20 @@ export default {
       { text: "عادی", value: "green" },
     ];
     this.loadGeter();
-    this.loadData();
+    if (Boolean(Object.keys(this.task).length > 0 && this.task.id)) {
+      this.loadData(this.task.id);
+      if (
+        this.task.user_creator &&
+        Object.keys(this.task.user_creator).length != 0
+      ) {
+        if (
+          Boolean(this.task.user_creator.id) &&
+          this.$store.state.auth.user.id == this.task.user_creator.id
+        ) {
+          this.is_creator = true;
+        }
+      }
+    }
     if (this.task.user_creator) {
       if (
         this.task.user_creator.first_name &&
@@ -472,14 +445,12 @@ export default {
         this.task.user_creator.username;
       }
     }
-    if (this.$store.state.auth.user.id == this.task.user_creator.id) {
-      this.is_creator = true;
-    }
   },
   watch: {
     get_color_task() {
       if (Boolean(this.get_color_task)) {
         this.changeColorTask();
+  
       }
     },
   },
@@ -586,8 +557,8 @@ export default {
           return err;
         });
     },
-    loadData() {
-      this.$reqApi("task/show", { id: this.task.id })
+    loadData(id) {
+      this.$reqApi("task/show", { id: id })
         .then((res) => {
           let items = [];
           this.users_see = res.data.sees;
@@ -675,6 +646,7 @@ export default {
 .card-dialog {
   overflow-x: hidden !important;
   overflow-y: hidden !important;
+  border: 8px double #00000088;
 }
 .link {
   cursor: pointer !important;

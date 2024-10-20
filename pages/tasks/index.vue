@@ -287,6 +287,7 @@ export default {
         fun: (body) => {
           this.dialog_task.show = true;
           this.task = body;
+          
         },
       },
     ];

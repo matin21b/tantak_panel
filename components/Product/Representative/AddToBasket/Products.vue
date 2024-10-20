@@ -4,14 +4,14 @@
       <v-col cols="12" md="12">
         <v-autocomplete
           class="mx-2"
-          prepend-inner-icon="shopping_basket"
+          prepend-inner-icon="search"
           v-model="product_varcomb_id"
           :items="products"
           outlined
           dense
           :disabled="Boolean(load_item)"
           :loading="Boolean(load_item)"
-          label="انتخاب محصول"
+          label="جستوجوی محصول"
           placeholder="نام محصول مورد نظر را وارد کنید ..."
         />
         <v-col

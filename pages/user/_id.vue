@@ -52,7 +52,7 @@ export default {
       { text: "ویرایش اطلاعات", value: "edit" },
       { text: "آدرس", value: "address" },
       { text: "نظرات در مورد کاربر", value: "comment" },
-      { text: "کیف پول", value: "wallet" },
+      { text: "تراکنش های  کیف پول ", value: "wallet" },
       { text: "پرداخت ها", value: "payment" },
       { text: "سبد خرید", value: "Basket" },
       { text: "لیست درخواست موجودی", value: "inventory-request" },

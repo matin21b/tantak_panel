@@ -61,7 +61,7 @@ export default {
   }),
   computed: {
     items() {
-      return [...this.$store.state.static.mnue_tree]
+      return [...this.$store.state.menu.mnue_tree]
         .map(x => {
           return this.filterImtes(x);
         })
@@ -111,7 +111,7 @@ export default {
     }
   },
   beforeMount() {
-    this.getAllItem(this.$store.state.static.mnue_tree);
+    this.getAllItem(this.$store.state.menu.mnue_tree);
   },
   methods: {
     handelClick(items) {
