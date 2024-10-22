@@ -8,11 +8,15 @@
           <v-btn icon text @click="cloasDialog">
             <v-icon class="mr-3"> cancel </v-icon>
           </v-btn>
+          <v-col cols="12">
+          <v-divider v-for="i in 3" :key="i"></v-divider>
+        </v-col>
         </v-row>
+    
         <v-card
           v-for="(item, index) in items"
           :key="index"
-          class="ma-2 mx-4 pa-3 border-card elevation-0"
+          class="ma-2 mx-4 pa-4 elevation-1" outlined
         >
           <h1 class="font_14">{{ index + 1 }} - {{ item.name }}</h1>
           <div class="d-flex my-2">
@@ -69,7 +73,5 @@ strong {
 h1 {
   font-size: 12px;
 }
-.border-card {
-  border: 4px double #00000042 !important;
-}
+
 </style>

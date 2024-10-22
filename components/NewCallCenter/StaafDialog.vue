@@ -120,7 +120,7 @@ export default {
           this.$store.state.auth.role.supervisor_coordinator
         );
       }
-      if (this.$checkRole(this.$store.state.auth.role.store_head)) {
+      if (this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock)) {
         dialog_title = "ایجاد کارمند انبار";
         this.form.role_id.push(this.$store.state.auth.role.store_employee);
       }

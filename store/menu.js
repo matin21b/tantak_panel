@@ -293,6 +293,11 @@ let mnue_tree = [
     access: "debts/index",
     name: "بدهکاری ها",
     route: "/indebtedness",
+  },  {
+    id: 75365742,
+    access: "debts/logs",
+    name: "تاریخچه فعالیت های بدهکاری",
+    route: "/indebtedness/all-history",
   },
   {
     id: 18,

@@ -71,7 +71,7 @@ export default {
     settings: [],
     selected: {},
     form: {
-      key: "product_colors ",
+      key: "product_colors",
       value: "",
       value_2: "",
       value_json: "",

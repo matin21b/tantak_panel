@@ -45,8 +45,8 @@ export const state = () => ({
   status_payment_invitor,
   status_transactions,
   status_req_money,
+  step_debts,
 });
-
 
 let status_type = [
   { text: "شارژ", value: "charg" },
@@ -115,6 +115,21 @@ let step_message = [
   { text: "از مرکز تماس به مدیر", value: "supervisor_to_manager" },
   { text: "از مرکز تماس به فروشنده", value: "supervisor_to_operator" },
   { text: "از فروشنده به مرکز تماس", value: "operator_to_supervisor" },
+  { text: "انجام شده", value: "done" },
+];
+let step_debts = [
+  { text: "ثیت اولیه", value: "init" },
+  { text: "بسته شده", value: "cancel" },
+  { text: "ارجاع از بدهکار به برسی کننده", value: "debtor_to_reviewer" },
+  { text: "ارجاع از برسی کننده به بدهکار", value: "reviewer_to_debtor" },
+  { text: "تایید برسی کننده بدهکاری", value: "accept_reviewer" },
+  { text: " عدم تایید برسی کننده بدهکاری ", value: "not_accept_reviewer" },
+  { text: "از بدهکار به مدیر واحد مالی", value: "debtor_to_fiscal_manager" },
+  { text: "از مدیر واحد مالی به بدهکار", value: "fiscal_manager_to_debtor" },
+  { text: "ارجاع از مدیر واحد مالی به سرپرست واحد مالی", value: "fiscal_manager_to_supervisor" },
+  { text: "ارجاع از سرپرست واحد مالی به مدیر واحد مالی", value: "fiscal_supervisor_to_manager" },
+  { text: "ارجاع از سرپرست واحد مالی به واحد مالی", value: "fiscal_supervisor_to_fiscal" },
+  { text: "ارجاع از واحد مالی به سرپرست واحد مالی", value: "fiscal_to_fiscal_supervisor" },
   { text: "انجام شده", value: "done" },
 ];
 let type_message = [
@@ -431,7 +446,7 @@ let step_invitor = [
   },
   { text: "تایید واحد مالی", value: "accept_fiscal" },
   {
-    text: "ارجاع از سفیر مدیر نمایندگی فروش" ,
+    text: "ارجاع از سفیر مدیر نمایندگی فروش",
     value: "sefir_to_agency_manager",
   },
   {

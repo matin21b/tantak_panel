@@ -18,7 +18,6 @@ export const state = () => ({
     warehouseman_id: "1deb3b9b-a4bb-46cd-8c20-592767aa1d22", //انبار گردان
     writers_id: "79b26146-1c0b-4562-b968-21d0e8b5a575",
     store_employee: "dbcbc932-552a-4f3b-ad81-5b3a5734b803", //کارمند انبار
-    store_head: "023b91d1-392b-4f46-8921-94d87316ddb4", //سرپرست انبار
     admin_id: "791d1b02-3610-4177-9051-eb7ae6b72def",
     admin_call_center_id: "495c61df-0a45-4d3d-9153-8fc614c65361",
     superviser_id: "9154bce8-a24c-4841-8d00-77bedf0ae90e",

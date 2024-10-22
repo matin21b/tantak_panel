@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-col>
-      <v-row cols="12" class="center-div mt-5">
+    <v-col cols="12">
+      <v-row class="center-div mt-5">
         <v-chip
           dark
           label

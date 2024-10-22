@@ -167,18 +167,9 @@ export default {
         type: "phone",
         value: (body) => {
           if (body.user) {
-            if (
-              this.$checkRole(this.$store.state.auth.role.admin_id) ||
-              this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
-            ) {
+    
               return body.user.username;
-            } else {
-              let start = body.user.username.slice(0, 3);
-              let end = body.user.username.slice(-4);
 
-              let phone_number = end + "****" + start;
-              return phone_number;
-            }
           }
         },
       },

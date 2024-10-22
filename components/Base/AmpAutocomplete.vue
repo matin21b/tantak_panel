@@ -1,35 +1,12 @@
 <template>
   <div v-if="end_render" class="px-md-3">
-    <amp-labale
-      :text="text"
-      :color="color"
-      test-tag="labale"
-      :disabled="disabled"
-      :required="required"
-      :help_text="help_text"
-      :starRight="starRight"
-      v-if="text && show_lable"
-    />
-    <v-autocomplete
-      dense
-      eager
-      outlined
-      :error="error"
-      :chips="chips"
-      :items="items"
-      :prefix="prefix"
-      test-tag="input"
-      :rules="ruleItem"
-      :loading="loading"
-      v-model="inp_value"
-      :readonly="readonly"
-      :disabled="disabled"
-      :multiple="multiple"
-      :item-text="itemText"
-      placeholder="انتخاب کنید..."
+    <amp-labale :text="text" :color="color" test-tag="labale" :disabled="disabled" :required="required"
+      :help_text="help_text" :starRight="starRight" v-if="text && show_lable" />
+    <v-autocomplete dense eager outlined :error="error" :chips="chips" :items="items" :prefix="prefix" test-tag="input"
+      :rules="ruleItem" :loading="loading" v-model="inp_value" :readonly="readonly" :disabled="disabled"
+      :multiple="multiple" :item-text="itemText" :open-text="open_text" :placeholder="placeholder"
       @click:append="$emit('click:append', $event)"
-      :class="[disabled || readonly ? 'opacity_input' : '', classC]"
-    ></v-autocomplete>
+      :class="[disabled || readonly ? 'opacity_input' : '', classC]"></v-autocomplete>
   </div>
 </template>
 
@@ -46,12 +23,21 @@ export default {
       type: String,
       required: false,
     },
+    placeholder: {
+      type: String,
+      required: false,
+      default: "انتخاب کنید...",
+    },
     classC: {
       type: String,
-      default: '',
+      default: "",
+    },
+    open_text: {
+      type: String,
+      default: "",
     },
     rules: {
-      default: '',
+      default: "",
     },
     disabled: {
       type: Boolean,
@@ -79,10 +65,10 @@ export default {
     },
     prefix: {
       type: String,
-      default: '',
+      default: "",
     },
     value_inp: {
-      default: '',
+      default: "",
     },
     starRight: {
       type: Boolean,
@@ -90,7 +76,7 @@ export default {
     },
     help_text: {
       type: String,
-      default: '',
+      default: "",
     },
     multiple: {
       type: Boolean,
@@ -100,56 +86,57 @@ export default {
       type: Boolean,
       default: false,
     },
-    itemText: { require: false, default: 'text' },
+    itemText: { require: false, default: "text" },
   },
   data: () => ({
     ruleItem: [],
     inpRules: {},
-    inp_value: '',
+    inp_value: "",
     required: false,
     end_render: false,
   }),
   watch: {
     value() {
-      this.inp_value = this.value
+      this.inp_value = this.value;
     },
     inp_value() {
-      this.$emit('input', this.inp_value)
+      this.$emit("input", this.inp_value);
+      this.$emit('chang', this.inp_value)
     },
     value_inp() {
-      this.inp_value = this.value_inp
+      this.inp_value = this.value_inp;
     },
     rules() {
-      this.setRules()
+      this.setRules();
     },
   },
   mounted() {
-    this.setRules()
+    this.setRules();
     if (this.value_inp) {
-      this.inp_value = this.value_inp
+      this.inp_value = this.value_inp;
     }
     if (this.value) {
-      this.inp_value = this.value
+      this.inp_value = this.value;
     }
-    this.end_render = true
+    this.end_render = true;
   },
   methods: {
     setRules() {
-      this.ruleItem = []
-      let inpRules = this.$inpRules()
-      if (typeof this.rules == 'string') {
-        this.rules.split(',').forEach((element) => {
-          if (typeof inpRules[element] != 'undefined') {
-            if (element == 'require' || element == 'min_1') {
-              this.required = true
+      this.ruleItem = [];
+      let inpRules = this.$inpRules();
+      if (typeof this.rules == "string") {
+        this.rules.split(",").forEach((element) => {
+          if (typeof inpRules[element] != "undefined") {
+            if (element == "require" || element == "min_1") {
+              this.required = true;
             }
-            this.ruleItem.push(inpRules[element])
+            this.ruleItem.push(inpRules[element]);
           }
-        })
-      } else if (typeof this.rules == 'function') {
-        this.ruleItem.push(this.rules)
+        });
+      } else if (typeof this.rules == "function") {
+        this.ruleItem.push(this.rules);
       }
     },
   },
-}
+};
 </script>

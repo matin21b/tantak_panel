@@ -114,6 +114,8 @@ export default ({ redirect, store, $toast }, inject) => {
     return new_form;
   });
   inject("showUsername", (username) => {
+    console.log("usernamesdsdsd" , username);
+    
     let show = "";
     if (store.state.auth.action.indexOf("users/show_username") > -1) {
       show = username;
