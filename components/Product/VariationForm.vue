@@ -1,14 +1,14 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
-    <v-expansion-panels variant="popout" class="my-4 elevation-5">
+    <v-expansion-panels variant="popout" class="my-4 elevation-0 style-class">
       <v-expansion-panel>
-        <v-expansion-panel-header
-          expand-icon="webhook"
-          class="primary lighten-4"
-        >
+        <v-expansion-panel-header expand-icon="webhook">
           ویژگی ها
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="primary lighten-5">
+        <v-expansion-panel-content>
+          <v-col cols="12">
+            <v-divider v-for="i in 4" :key="i"></v-divider>
+          </v-col>
           <v-row>
             <template v-if="showAddVairiation">
               <v-col cols="12" md="3">
@@ -107,44 +107,44 @@
             </v-col>
           </v-row>
 
-          <v-row class="pa-2 mt-1">
-            <v-col cols="12" md="3" class="text-center"> ویژگی </v-col>
-            <v-col cols="12" md="3" class="text-center"> مقدار </v-col>
-            <!-- <v-col cols="12" md="2" class="text-center"> بارکد </v-col> -->
-            <v-col cols="12" md="1" class="text-center"> ترتیب </v-col>
-            <v-col cols="12" md="2" class="text-center"> گالری</v-col>
-            <v-col cols="12" md="3" class="text-center"> عملیات </v-col>
-          </v-row>
-   
-            <v-row
-              v-for="(v, index) in variations"
-              :key="'v' + index"
-              :class="index % 2 == 0 ? 'odd-row' : ''"
-            >
-            
-              <v-col cols="12" md="3" class="text-center">
-                {{ v.variation_type.value }}
+          <div v-for="(v, index) in variations" :key="'v' + index">
+            <v-card class="d-flex align-center elevation-2" outlined>
+              <v-col
+                cols="12"
+                md="2"
+                class="text-center"
+                v-if="
+                  v.variation_type &&
+                  v.variation_type.value_2 == 'product_colors'
+                "
+                v-for="i in 3"
+                :key="i"
+              >
+                <amp-input v-model="v.value" :text="v.variation_type.value" />
               </v-col>
-              <v-col cols="12" md="3" class="text-center"
-                ><amp-input v-model="v.value" />
+              <v-col cols="12" md="2" class="text-center"     v-if="
+                  v.variation_type &&
+                  v.variation_type.value_2 != 'product_colors'
+                ">
+                <amp-input v-model="v.value" :text="v.variation_type.value" />
               </v-col>
-              <!-- <v-col cols="12" md="2" class="text-center"
-        ><amp-input v-model="v.barcode"
-      /></v-col> -->
+
               <v-col cols="12" md="1" class="text-center"
-                ><amp-input v-model="v.sort" rules="number" />
+                ><amp-input v-model="v.sort" text="ترتیب" rules="number" />
               </v-col>
               <v-col
                 cols="12"
                 md="2"
                 class="d-flex justify-center"
-                v-if="v.variation_type && v.variation_type.value == 'رنگ'"
+                v-if="
+                  v.variation_type &&
+                  v.variation_type.value_2 == 'product_colors'
+                "
               >
                 <v-btn color="primary" @click="GalleryDialog(true, v, index)">
                   <v-icon>image</v-icon>
                 </v-btn>
               </v-col>
-              <v-col cols="12" md="2" v-else></v-col>
               <v-col cols="12" md="3" class="text-center">
                 <amp-button
                   small
@@ -163,8 +163,8 @@
                 >
                 </amp-button>
               </v-col>
-            </v-row>
-
+            </v-card>
+          </div>
 
           <v-dialog
             v-model="deleteDiaolog"
@@ -236,6 +236,9 @@ export default {
   }),
 
   mounted() {
+    console.log("c");
+    console.log("c");
+
     this.loadData();
     this.getCategories();
     this.getProducts();
@@ -263,21 +266,30 @@ export default {
       this.$reqApi("/product-variation", {
         filters: { product_id: this.$route.params.id },
       })
-        .then(async (response) => {
+        .then((response) => {
           this.variations = [];
-          response = response.model.data;
-          for (let i = 0; response.length; i++) {
-            this.variations.push({
-              id: response[i].id,
-              value: response[i].value,
-              variation_type: response[i].variation_type,
-              product_id: response[i].product_id,
-              sort: response[i].sort,
-              code: response[i].code,
-              variation_type_id: response[i].variation_type_id,
-              images: response[i].product_images,
+          console.log("response.model.data", response.model.data);
+
+          let data = response.model.data;
+          let items = [];
+          console.log("1111");
+          console.log("1111");
+          for (let index = 0; index < data.length; index++) {
+            const x = data[index];
+            items.push({
+              id: x.id,
+              value: x.value,
+              variation_type: x.variation_type,
+              product_id: x.product_id,
+              sort: x.sort,
+              code: x.code,
+              variation_type_id: x.variation_type_id,
+              images: x.product_images,
             });
           }
+          console.log("      items.items  >> ", items);
+          this.variations = items;
+
           this.loading = false;
         })
         .catch((error) => {
@@ -425,5 +437,14 @@ export default {
 .senced_dialog {
   position: relative;
   z-index: 300;
+}
+.style-class {
+  border: 9px double #00000048;
+  border-radius: 10px !important;
+}
+
+.card-style {
+  border: 1px solid #00000023 !important;
+  border-radius: 10px !important;
 }
 </style>
