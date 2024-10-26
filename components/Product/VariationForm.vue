@@ -1,32 +1,35 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
-    <v-expansion-panels variant="popout" class="my-4 elevation-0 style-class">
-      <v-expansion-panel class="primary lighten-4">
-        <v-expansion-panel-header expand-icon="webhook">
-          ویژگی ها
+    <v-expansion-panels
+      variant="popout"
+      class="my-4 elevation-0 style-class"
+      focusable
+    >
+      <v-expansion-panel class="">
+        <v-expansion-panel-header
+          expand-icon="tune"
+          class="text-center primary lighten-4"
+        >
+          <strong class="font_17"> ویژگی ها</strong>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <v-col cols="12">
-            <v-divider v-for="i in 4" :key="i"></v-divider>
-          </v-col>
-
-          <v-row class="">
+          <v-row class="mt-4 center-div">
             <v-chip
               dark
               label
               class="ma-2 mr-7 mt-4"
-              color="red"
+              color="primary lighten-1"
               v-for="item in items"
               :key="item.key"
               @click="tab = item.key"
               :outlined="tab != item.key"
             >
-              <strong>
+              <span>
                 {{ item.text }}
                 <v-icon small class="mr-1">
                   {{ item.icon }}
                 </v-icon>
-              </strong>
+              </span>
             </v-chip>
           </v-row>
           <v-row>
@@ -119,7 +122,10 @@
           </v-row>
 
           <div v-for="(v, index) in variations" :key="'v' + index">
-            <v-card class="d-flex align-center style-card my-3 elevation-3">
+            <v-card
+              class="d-flex align-center style-card my-3 elevation-1"
+              outlined
+            >
               <v-btn icon class="grey lighten-3 white--black mr-2" small>
                 <h1>{{ index + 1 }}</h1>
               </v-btn>
@@ -136,7 +142,7 @@
                 :key="i"
               >
                 <amp-autocomplete
-                  v-model="v.value[i]"
+                  v-model="v.value[i - 1]"
                   :items="colors"
                   :text="`${v.variation_type.value} ${i}`"
                   :rules="i == 1 ? 'require' : ''"
@@ -162,36 +168,34 @@
                 v-if="v.codes && v.codes.length > 0"
                 class="text-center"
               >
-   
+                <v-progress-circular
+                  v-if="v.codes.length > 0"
+                  :value="v.percent"
+                  :rotate="120"
+                  class="pa-2"
+                  :size="25"
+                  :width="13"
+                  :color="v.codes[0]"
+                >
                   <v-progress-circular
-                    v-if="v.codes[0]"
-                    value="33"
-                    :rotate="360"
-                    class="pa-2"
+                    v-if="v.codes.length > 1"
+                    :value="v.percent"
+                    :rotate="240"
                     :size="25"
                     :width="13"
-                    :color="v.codes[0]"
+                    :color="v.codes[2]"
                   >
                     <v-progress-circular
-                      v-if="v.codes[1]"
-                      value="33"
-                      :rotate="240"
+                      v-if="v.codes.length > 2"
+                      :value="v.percent"
+                      :rotate="360"
                       :size="25"
                       :width="13"
-                      :color="v.codes[2]"
+                      :color="v.codes[3]"
                     >
-                      <v-progress-circular
-                        v-if="v.codes[3]"
-                        value="33"
-                        :rotate="120"
-                        :size="25"
-                        :width="13"
-                        :color="v.codes[3]"
-                      >
-                      </v-progress-circular>
                     </v-progress-circular>
                   </v-progress-circular>
-         
+                </v-progress-circular>
               </v-col>
               <v-col
                 cols="12"
@@ -207,27 +211,26 @@
                 </v-btn>
               </v-col>
               <v-spacer></v-spacer>
-              <v-col cols="12" md="3" class="text-center">
-                <amp-button
+              <v-col cols="12" md="2" class="text-center">
+                <v-btn
                   small
-                  text="بروز رسانی"
                   color="success"
                   :loading="loading"
                   @click="update(index)"
                 >
-                </amp-button>
-                <amp-button
+                  بروز رسانی
+                </v-btn>
+                <v-btn
                   small
-                  text="حذف"
                   color="error"
                   :loading="loading"
                   @click="deleteDialog(true, index)"
                 >
-                </amp-button>
+                  حذف
+                </v-btn>
               </v-col>
             </v-card>
           </div>
-          <v-col cols="12" class="mt-3"></v-col>
 
           <v-dialog
             v-model="deleteDiaolog"
@@ -310,15 +313,12 @@ export default {
   }),
 
   mounted() {
-    console.log("c");
-    console.log("c");
-    console.log("c");
-    console.log("c");
     this.loadData();
     this.getCategories();
     this.getProducts();
     this.getColors();
   },
+
   watch: {
     "form.category_id"() {
       if (this.form.category_id) {
@@ -335,6 +335,7 @@ export default {
         });
       }
     },
+
     tab() {
       let data = JSON.parse(JSON.stringify(this.total_variations));
       let items = [];
@@ -363,25 +364,29 @@ export default {
       })
         .then((response) => {
           this.variations = [];
-          console.log("response.model.data", response.model.data);
 
           let data = response.model.data;
           let items = [];
           let color_ids = [];
           let color_codes = [];
+          let percent = "100";
 
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
             if (x.variation_type.value_2 == "product_colors") {
               if (x.value.startsWith("[")) {
-                console.log("x", x);
                 color_ids = JSON.parse(x.value);
-
                 if (Boolean(x.codes)) {
                   color_codes = x.codes;
-                  console.log("");
+                  if (color_codes.length > 2) {
+                    percent = "33.333";
+                  } else if (color_codes.length == 2) {
+                    percent = "50";
+                  } else if (color_codes.length == 1) {
+                    percent = "100";
+                  }
                 }
-                console.log("sSS", x);
+                console.log("ssa");
 
                 items.push({
                   id: x.id,
@@ -393,11 +398,9 @@ export default {
                   variation_type_id: x.variation_type_id,
                   images: x.product_images,
                   codes: color_codes,
+                  percent: percent,
                 });
               }
-              // else {
-              //   console.log("ssssss");
-              // }
             } else {
               items.push({
                 id: x.id,
@@ -411,7 +414,6 @@ export default {
               });
             }
           }
-          console.log(" >>> ", items);
 
           this.variations = items;
           this.total_variations = items;
@@ -557,6 +559,7 @@ export default {
       }
     },
     getColors() {
+      console.log("sss");
       let filter = {
         op: "=",
         key: "product_colors",
@@ -586,7 +589,6 @@ export default {
   z-index: 300;
 }
 .style-class {
-  border: 4px double #0000005d;
   border-radius: 10px !important;
 }
 .style-card {
