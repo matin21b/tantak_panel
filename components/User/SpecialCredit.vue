@@ -2,11 +2,11 @@
     <div>
   
       <BaseTable
-        url="/wallet"
+        url="/special-amount"
         :headers="headers"
         :filters="{ user_id: modelId }"
         autoDelete="/special-amount/delete"
-        autoUpdate="/user/special-credit/update"
+        autoUpdate="/user/special-credit"
         :createUrl="'/user/special-credit/insert?id=' + modelId"
       >
       </BaseTable>
@@ -37,37 +37,36 @@
             return "";
           },
         },
-        { text: "مقدار", value: "amount", filterCol: "amount", type: "price" },
-        {
-          text: "نوع",
-          filterType: "select",
-          filterCol: "kind",
-          value: "kind",
-          items: this.$store.state.static.wallet_kind,
-        },
-        {
-          text: "وضعیت",
-          filterType: "select",
-          filterCol: "type",
-          value: "type",
-          items: this.$store.state.static.wallet_type,
-        },
-        {
-          text: "بابت",
-  
-          value: "pay_text",
-    
-        },
+        { text: "مقدار", value: "price", filterCol: "price", type: "price" },
+        { text: "بابت", value: "reason", filterCol: "reason" },
+
+
         {
             filterable: false,
             disableSort: true,
             filterType: "date",
             filterCol: "birth_date",
-            text: "تاریخ پرداخت ",
+            text: "تاریخ شروع ",
             value: (body) => {
-              if (body.paid_date) {
+              if (body.start_at) {
                 return this.$toJalali(
-                  body.paid_date,
+                  body.start_at,
+                  "YYYY-MM-DD",
+                  "jYYYY/jMM/jDD"
+                );
+              }
+              return "";
+            },
+          },     {
+            filterable: false,
+            disableSort: true,
+            filterType: "date",
+            filterCol: "birth_date",
+            text: "مهلت استفاده",
+            value: (body) => {
+              if (body.end_at) {
+                return this.$toJalali(
+                  body.end_at,
                   "YYYY-MM-DD",
                   "jYYYY/jMM/jDD"
                 );

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import SpecialCreditForm from '@/components/User/SpecialCreditForm.vue'
+  import SpecialCreditForm from '~/components/User/SpecialCredit/SpecialCreditForm.vue'
 export default {
   components: { SpecialCreditForm },
   data: () => ({
