@@ -23,7 +23,7 @@
         class="ltr-item small-input"
       />
     </div>
-    <div class="d-flex justify-center mb-5">
+    <div class="d-flex justify-center mb-5" v-if="show_captcha">
       <amp-captcha v-model="captcha" ref="captchaLogin" />
     </div>
     <div class="px-3 mt-4 mb-4">
@@ -67,6 +67,7 @@ export default {
       code: "",
       username: "",
     },
+    show_captcha: true,
   }),
   computed: {
     activeLogin() {
@@ -86,20 +87,14 @@ export default {
       let form = {
         code: this.$FarsiToEnglishNumber(this.form.code),
         username: this.$FarsiToEnglishNumber(this.form.username),
-        is_panel: true,
+        // is_panel: true,
       };
-      form.captcha_code = this.captcha.captcha_code;
-      form.captcha_value = this.$FarsiToEnglishNumber(
-        this.captcha.captcha_value
-      );
       this.$reqApi("/auth/otp/login", form)
         .then((response) => {
           this.$store.dispatch("auth/login", response).then((data) => {
             this.stopTime();
             if (this.redirect) {
               this.$router.push("/panel");
-            } else {
-              this.$refs.captchaLogin.loadCaptcha();
             }
           });
         })
@@ -113,8 +108,13 @@ export default {
         section: "panel",
         username: this.$FarsiToEnglishNumber(this.form.username),
       };
+      form.captcha_code = this.captcha.captcha_code;
+      form.captcha_value = this.$FarsiToEnglishNumber(
+        this.captcha.captcha_value
+      );
       this.$reqApi("/auth/otp/send", form)
         .then((response) => {
+          this.show_captcha = false;
           this.stopTime();
           this.verify_time = 3 * 60;
           this.timeInterval = setInterval(() => {
@@ -128,6 +128,7 @@ export default {
         })
         .catch((error) => {
           this.loading = false;
+          this.$refs.captchaLogin.loadCaptcha();
         });
     },
     stopTime() {

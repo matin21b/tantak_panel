@@ -71,7 +71,8 @@ export default {
         })
         .catch((error) => {
           this.loading = false;
-          this.$refs.captchaLogin.loadCaptcha();s
+          this.$refs.captchaLogin.loadCaptcha();
+          s;
         });
     },
   },
