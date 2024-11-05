@@ -23,6 +23,9 @@
       prepend-inner-icon="lock"
       cClass="ltr-item small-input success"
     />
+    <div class="d-flex justify-center mb-5">
+      <amp-captcha v-model="captcha" ref="captchaLogin" />
+    </div>
     <div class="px-3 mt-6 mb-4">
       <amp-button
         block
@@ -47,6 +50,7 @@ export default {
       username: "",
       password: "",
     },
+    captcha: {},
   }),
   methods: {
     submit() {
@@ -55,6 +59,10 @@ export default {
         password: this.form.password,
         username: this.$FarsiToEnglishNumber(this.form.username),
       };
+      form.captcha_code = this.captcha.captcha_code;
+      form.captcha_value = this.$FarsiToEnglishNumber(
+        this.captcha.captcha_value
+      );
       this.$reqApi("/auth/login", form)
         .then((response) => {
           this.$store.dispatch("auth/login", response).then((data) => {
@@ -63,6 +71,8 @@ export default {
         })
         .catch((error) => {
           this.loading = false;
+          this.$refs.captchaLogin.loadCaptcha();
+          s;
         });
     },
   },

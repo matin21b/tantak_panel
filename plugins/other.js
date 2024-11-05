@@ -24,6 +24,7 @@ import AmpNewDatePicker from "~/components/Base/AmpNewDatePicker.vue";
 import AmpEditor from '~/components/Base/AmpEditor.vue'
 import AmpJsonInput from '~/components/Base/AmpJsonInput.vue'
 import AmpInlineUpload from "~/components/Base/AmpInlineUpload.vue";
+import AmpCaptcha from '~/components/Base/AmpCaptcha'
 import BaseTable from '~/components/DataTable/BaseTable'
 
 Vue.component('persian-date-picker', VuePersianDatetimePicker)
@@ -51,3 +52,4 @@ Vue.component('AmpAutocomplete', AmpAutocomplete)
 Vue.component('AmpRatingCircle', AmpRatingCircle)
 Vue.component("amp-new-date-picker", AmpNewDatePicker)
 Vue.component("amp-inline-upload", AmpInlineUpload)
+Vue.component('AmpCaptcha', AmpCaptcha)
