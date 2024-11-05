@@ -1,25 +1,13 @@
 <template>
   <v-row class="d-flex justify-center align-center pa-5">
     <v-col cols="12">
-      <v-autocomplete
-        v-if="
-          this.$store.state.auth.action.indexOf('product_requests/update') > -1
-        "
-        class="mx-2"
-        prepend-inner-icon="search"
-        v-model="package_id"
-        :items="packages_list"
-        outlined
-        dense
-        :disabled="Boolean(loading_package)"
-        :loading="Boolean(loading_package)"
-        label="جستوجوی پکیج "
-        placeholder="نام پکیج مورد نظر را وارد کنید ..."
-      />
+      <v-autocomplete v-if="
+        this.$store.state.auth.action.indexOf('product_requests/update') > -1
+      " class="mx-2" prepend-inner-icon="search" v-model="package_id" :items="packages_list" outlined dense
+        :disabled="Boolean(loading_package)" :loading="Boolean(loading_package)" label="جستوجوی پکیج "
+        placeholder="نام پکیج مورد نظر را وارد کنید ..." />
     </v-col>
-    <v-row
-      v-if="Boolean(package_id) && Object.keys(selected_package).length > 0"
-    >
+    <v-row v-if="Boolean(package_id) && Object.keys(selected_package).length > 0">
       <v-col cols="12" class="">
         <v-card class="elevation-0 card-style">
           <v-card class="align-center pa-3 elevation-0">
@@ -56,28 +44,23 @@
                 </h1>
               </v-row>
             </v-col>
-            <v-col
-              md="12"
-              cols="12"
-              class="text-end"
-              v-if="
-                selected_package.products &&
-                selected_package.products.length > 0
-              "
-            >
+            <v-col md="12" cols="12" class="text-end" v-if="
+              selected_package.products &&
+              selected_package.products.length > 0
+            ">
               <v-divider></v-divider>
               <v-divider></v-divider>
               <v-divider></v-divider>
 
               <h1 class="mt-2">محصولات موجود در پکیج :</h1>
-              <div
-                v-for="(item, index) in selected_package.products"
-                :key="index"
-              >
+              <div v-for="(item, index) in selected_package.products" :key="index">
                 <small v-if="item.product">
                   <v-icon class="mx-1"> arrow_left </v-icon>
                   {{ item.product.name }} :
-                  {{ item.product_variation_1.value }} /
+                  <span v-if="Boolean(item.product_variation_1.colors)">
+                    {{ item.product_variation_1.colors }}</span>
+                  <span v-else> {{ item.product_variation_1.value }}</span>
+                  /
                   {{ item.product_variation_2.value }} /
                   {{ item.product_variation_3.value }}
                 </small>
@@ -186,7 +169,13 @@ export default {
 
     loadPackages() {
       this.loading_package = true;
-      this.$reqApi("/package", { row_number: 50000 })
+      let filters = {
+        type: {
+          op: "=",
+          value: "Package"
+        }
+      }
+      this.$reqApi("/package", { filters: filters, row_number: 50000 })
         .then((res) => {
           let data = res.model.data;
           let items = [];

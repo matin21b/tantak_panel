@@ -143,8 +143,6 @@ export default {
       })
         .then((res) => {
           this.variations = res.model.data;
-          console.log("variations >>>>", this.variations);
-
           if (res.model.data.length > 0) {
             this.product = res.model.data[0].product;
             this.images = res.model.data[0].var1.product_images;

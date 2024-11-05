@@ -1,81 +1,39 @@
 <template>
-  <v-card style="overflow: hidden; border-radius: 10px" class="elevation-5">
+  <v-card style="overflow: hidden; border-radius: 7px" class="elevation-1">
     <v-col cols="12" class="primary">
-      <span class="white--text font_20 mr-3"> محصولات پکیچ </span>
+      <span class="white--text font_20 mr-3"> محصولات </span>
     </v-col>
     <v-row class="d-flex justify-center mx-8 pb-8">
-      <v-col
-        cols="12"
-        md="4"
-        class="mt-8 px-4"
-        style="border-left: 1px solid grey"
-      >
-        <v-autocomplete
-          class="mx-2"
-          prepend-inner-icon="shopping_basket"
-          v-model="product_varcomb_id"
-          :items="products"
-          outlined
-          dense
-          :disabled="Boolean(load_item)"
-          :loading="Boolean(load_item)"
-          label="انتخاب محصول"
-          placeholder="نام محصول مورد نظر را وارد کنید ..."
-        />
-        <v-col
-          v-if="Boolean(check) && !loading"
-          class="justify-center text-center"
-          cols="12"
-        >
+      <v-col cols="12" md="4" class="mt-8 px-4" style="border-left: 1px solid grey">
+        <v-autocomplete class="mx-2" prepend-inner-icon="shopping_basket" v-model="product_varcomb_id" :items="products"
+          outlined dense :disabled="Boolean(load_item)" :loading="Boolean(load_item)" label="انتخاب محصول"
+          placeholder="نام محصول مورد نظر را وارد کنید ..." />
+        <v-col v-if="Boolean(check) && !loading" class="justify-center text-center " cols="12">
           <v-icon color="red" size="80"> production_quantity_limits </v-icon>
           <br />
           <small class="red--text"> عدم موجودی محصول </small>
         </v-col>
         <v-form v-model="valid_variations" v-if="!loading">
-          <v-row>
+          <v-row v-if="Boolean(step_var_1)">
             <v-col cols="12" md="4">
-              <amp-select
-                v-if="Boolean(step_var_1) && Boolean(product_sort_1)"
-                :text="product_sort_1.title"
-                rules="require"
-                v-model="var_id_1"
-                :items="product_sort_1.items"
-                :loading="loading"
-                :disabled="
-                  loading && !Boolean(step_var_1) && !Boolean(product_sort_1)
-                "
-            /></v-col>
+              <amp-select v-if="Boolean(step_var_1) && Boolean(product_sort_1)" :text="product_sort_1.title"
+                rules="require" v-model="var_id_1" :items="product_sort_1.items" :loading="loading" :disabled="loading && !Boolean(step_var_1) && !Boolean(product_sort_1)
+                  " /></v-col>
             <v-col cols="12" md="4">
-              <amp-select
-                v-if="Boolean(step_var_2) && Boolean(product_sort_2)"
-                :text="product_sort_2.title"
-                rules="require"
-                v-model="var_id_2"
-                :items="available_items_2"
-                :loading="loading"
-                :disabled="!Boolean(var_id_1) || loading"
-            /></v-col>
+              <amp-select v-if="Boolean(step_var_2) && Boolean(product_sort_2)" :text="product_sort_2.title"
+                rules="require" v-model="var_id_2" :items="available_items_2" :loading="loading"
+                :disabled="!Boolean(var_id_1) || loading" /></v-col>
             <v-col cols="12" md="4">
-              <amp-select
-                v-if="Boolean(step_var_3) && Boolean(product_sort_3)"
-                :text="product_sort_3.title"
-                rules="require"
-                v-model="var_id_3"
-                :items="available_items_3"
-                :loading="loading"
-                :disabled="!Boolean(var_id_2) || loading"
-              />
+              <amp-select v-if="Boolean(step_var_3) && Boolean(product_sort_3)" :text="product_sort_3.title"
+                rules="require" v-model="var_id_3" :items="available_items_3" :loading="loading"
+                :disabled="!Boolean(var_id_2) || loading" />
             </v-col>
           </v-row>
-          <v-col
-            class="text-center"
-            cols="12"
-            v-if="
-              Boolean(valid_variations) &&
-              Boolean(product_varcomb_id) &&
-              !loading
-            "
-          >
+          <v-col class="text-center" cols="12" v-if="
+            Boolean(valid_variations) &&
+            Boolean(product_varcomb_id) &&
+            !loading
+          ">
             <v-row class="d-flex justify-center px-5">
               <span class="font_15 primary--text"> تعداد محصول : </span>
               <v-spacer></v-spacer>
@@ -83,13 +41,7 @@
                 <h1 class="font_18 primary--text mt-2 mx-1">+</h1>
               </v-btn>
               <h1 class="font_14 primary--text mt-1 mx-1">{{ number }}</h1>
-              <v-btn
-                color="primary"
-                :disabled="number == 1"
-                @click="addNumber(number, false, 'main')"
-                text
-                x-small
-              >
+              <v-btn color="primary" :disabled="number == 1" @click="addNumber(number, false, 'main')" text x-small>
                 <h1 class="font_20 primary--text mb-2 mx-1">_</h1>
               </v-btn>
             </v-row>
@@ -97,24 +49,11 @@
           </v-col>
         </v-form>
 
-        <v-col
-          cols="12"
-          v-if="!loading && Boolean(step_var_1) && Boolean(product_sort_1)"
-        >
-          <amp-button
-            block
-            height="40"
-            :disabled="
-              !Boolean(valid_variations) ||
-              !Boolean(product_varcomb_id) ||
-              loading
-            "
-            icon="add"
-            class="my-1"
-            color="orange darken-4"
-            text="افزودن"
-            @click="addVariation()"
-          />
+        <v-col cols="12" v-if="!loading && Boolean(step_var_1) && Boolean(product_sort_1)">
+          <amp-button block height="40" :disabled="!Boolean(valid_variations) ||
+            !Boolean(product_varcomb_id) ||
+            loading
+            " icon="add" class="my-1" color="orange darken-4" text="افزودن" @click="addVariation()" />
         </v-col>
         <v-row class="mt-8" v-if="loading">
           <v-col cols="12" md="4">
@@ -133,45 +72,68 @@
       </v-col>
 
       <v-col cols="12" md="8" class="mt-8">
-        <v-card
-          v-for="(item, index) in variations_list"
-          :key="index"
-          outlined
-          class="pa-3 ma-5 grey lighten-2 elevation-0"
-        >
-          <v-row class="px-5 py-4 mr-3 align-center">
-            <h1>{{ index + 1 }} - {{ item.variation1.product.name }}</h1>
-            <v-spacer></v-spacer>
-            <h1 v-if="Boolean(item.variation1.colors)">
-              {{ item.variation1.colors }}
+        <v-card-text v-for="(item, index) in variations_list" :key="index" outlined
+          class="pa-3 ma-4 elevation-1 card-style d-flex align-center">
+
+          <div v-if="Boolean(item.variation1) && Boolean(item.variation2)">
+            <v-img class="ma-1" width="60" height="65" contain :src="$getImage(item.variation1.product.main_image)" />
+          </div>
+          <v-row class="px-5 py-4 mr-3 align-center" v-if="Boolean(item.variation1) && Boolean(item.variation2)">
+            <h1 v-if="Boolean(item.variation1) && Boolean(item.variation1.product)">
+              {{ item.variation1.product.name }}
             </h1>
-            <h1 v-else>{{ item.variation1.value }}</h1>
-            <h1 class="mx-2">{{ item.variation2.value }}</h1>
-            <h1>{{ item.variation3.value }}</h1>
             <v-spacer></v-spacer>
-            <v-row class="d-flex justify-center mt-1">
-              <v-btn text @click="addNumber(item, true, 'list')" x-small>
-                <h1 class="font_18 primary--text mt-2 mx-1">+</h1>
-              </v-btn>
-              <h1 class="font_14 primary--text mt-1 mx-1">{{ item.count }}</h1>
-              <v-btn
-                color="primary"
-                :disabled="item.count == 1"
-                @click="addNumber(item, false, 'list')"
-                text
-                x-small
-              >
-                <h1 class="font_20 primary--text mb-2 mx-1">_</h1>
-              </v-btn>
-            </v-row>
+            <div
+              v-if="Boolean(item.variation1) && Object.keys(item.variation1).length > 0 && Boolean(item.variation1.variation_type)">
+              <h1 v-if="Boolean(item.variation1.colors)">
+                {{ item.variation1.variation_type.value }}
+                {{ item.variation1.colors }}
+              </h1>
+              <h1 v-else>
+                {{ item.variation1.variation_type.value }}
+                {{ item.variation1.value }}
+              </h1>
+            </div>
+
+            <v-spacer></v-spacer>
+
+            <h1>
+              {{ item.variation2.variation_type.value }}
+              {{ item.variation2.value }}
+            </h1>
+            <v-spacer></v-spacer>
+
+            <h1>
+              {{ item.variation3.variation_type.value }}
+              {{ item.variation3.value }}
+            </h1>
+
             <v-spacer></v-spacer>
             <v-btn @click="deletVar(index)" small icon>
-              <v-icon small> close </v-icon>
+              <v-icon small> delete </v-icon>
             </v-btn>
-          </v-row>
+            <v-col cols="12" class="ma-0 pa-0 my-2">
+              <v-divider></v-divider>
+              <v-divider></v-divider>
+            </v-col>
+            <v-col cols="12" class="d-flex justify-center align-center pa-0 ma-0 mt-3">
+              <h1>قیمت محصول {{ $price(item.price) }}ریال</h1>
+              <v-spacer></v-spacer>
+              <v-chip small @click="addNumber(item, true, 'list')">
+                <h1 class="font_17">+</h1>
+              </v-chip>
+              <h1 class="font_18 mx-3">
+                {{ item.count }}
+              </h1>
+              <v-chip small :disabled="item.count == 1" @click="addNumber(item, false, 'list')">
+                <h1 class="font_17">-</h1>
+              </v-chip>
+              <v-spacer></v-spacer>
 
-          <div></div>
-        </v-card>
+              <h1>جمع کل : {{ $price(item.price * item.count) }} ریال</h1>
+            </v-col>
+          </v-row>
+        </v-card-text>
       </v-col>
 
       <v-row class="d-flex justify-center">
@@ -336,7 +298,6 @@ export default {
         } else {
           item--;
         }
-
         this.number = item;
       }
       if (key == "list") {
@@ -472,6 +433,7 @@ export default {
 
     loadVariationsCombinations() {
       let items = [];
+      
       for (let index = 0; index < this.productVarcoms.length; index++) {
         const e = this.productVarcoms[index];
         let obj = {};
@@ -505,6 +467,9 @@ export default {
         this.selected_product["count"] = this.number;
         this.variations_list.push(this.selected_product);
         this.number = 1;
+        this.step_var_1 = false
+        this.step_var_2 = false
+        this.step_var_3 = false
         this.product_varcomb_id = "";
         this.$toast.success(" محصول  اضافه شد");
       }
@@ -569,11 +534,19 @@ export default {
           this.main_price = res.price ? res.price : res.product.base_price;
           this.sumb_price = this.main_price;
         })
-        .catch((rej) => {
-        });
+        .catch((rej) => { });
     },
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+h1 {
+  font-size: 13px !important;
+}
+
+.card-style {
+  border: 1px solid #0000002d;
+  border-radius: 7px;
+}
+</style>

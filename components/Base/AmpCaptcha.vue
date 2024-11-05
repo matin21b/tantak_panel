@@ -15,6 +15,7 @@
         color="white--text"
         background-color="#fff"
         append-icon="refresh"
+        
         @click:append="loadCaptcha()"
       />
     </v-col>

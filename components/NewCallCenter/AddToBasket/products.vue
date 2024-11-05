@@ -1,26 +1,12 @@
 <template>
   <v-row class="d-flex justify-center align-center">
     <v-col cols="12" md="12" class="mt-8 px-4">
-      <v-autocomplete
-        v-if="
-          this.$store.state.auth.action.indexOf('product_requests/update') > -1
-        "
-        class="mx-2"
-        prepend-inner-icon="search"
-        v-model="product_varcomb_id"
-        :items="products"
-        outlined
-        dense
-        :disabled="Boolean(load_item)"
-        :loading="Boolean(load_item)"
-        label="جستوجوی سریع محصول"
-        placeholder="نام محصول مورد نظر را وارد کنید ..."
-      />
-      <v-col
-        v-if="Boolean(check) && !loading"
-        class="justify-center text-center"
-        cols="12"
-      >
+      <v-autocomplete v-if="
+        this.$store.state.auth.action.indexOf('product_requests/update') > -1
+      " class="mx-2" prepend-inner-icon="search" v-model="product_varcomb_id" :items="products" outlined dense
+        :disabled="Boolean(load_item)" :loading="Boolean(load_item)" label="جستوجوی سریع محصول"
+        placeholder="نام محصول مورد نظر را وارد کنید ..." />
+      <v-col v-if="Boolean(check) && !loading" class="justify-center text-center" cols="12">
         <v-icon color="red" size="80"> production_quantity_limits </v-icon>
         <br />
         <small class="red--text"> عدم موجودی محصول </small>
@@ -28,61 +14,35 @@
       <v-form v-model="valid_variations" v-if="!loading">
         <v-row>
           <v-col cols="12" md="4">
-            <amp-select
-              v-if="
-                Boolean(step_var_1) &&
-                Boolean(product_sort_1) &&
-                Boolean(product_varcomb_id)
-              "
-              :text="product_sort_1.title"
-              rules="require"
-              v-model="var_id_1"
-              :items="product_sort_1.items"
-              :loading="loading"
-              :disabled="
-                loading && !Boolean(step_var_1) && !Boolean(product_sort_1)
-              "
-          /></v-col>
+            <amp-select v-if="
+              Boolean(step_var_1) &&
+              Boolean(product_sort_1) &&
+              Boolean(product_varcomb_id)
+            " :text="product_sort_1.title" rules="require" v-model="var_id_1" :items="product_sort_1.items"
+              :loading="loading" :disabled="loading && !Boolean(step_var_1) && !Boolean(product_sort_1)
+                " /></v-col>
           <v-col cols="12" md="4">
-            <amp-select
-              v-if="
-                Boolean(step_var_2) &&
-                Boolean(product_sort_2) &&
-                Boolean(product_varcomb_id)
-              "
-              :text="product_sort_2.title"
-              rules="require"
-              v-model="var_id_2"
-              :items="available_items_2"
-              :loading="loading"
-              :disabled="!Boolean(var_id_1) || loading"
-          /></v-col>
+            <amp-select v-if="
+              Boolean(step_var_2) &&
+              Boolean(product_sort_2) &&
+              Boolean(product_varcomb_id)
+            " :text="product_sort_2.title" rules="require" v-model="var_id_2" :items="available_items_2"
+              :loading="loading" :disabled="!Boolean(var_id_1) || loading" /></v-col>
           <v-col cols="12" md="4">
-            <amp-select
-              v-if="
-                Boolean(step_var_3) &&
-                Boolean(product_sort_3) &&
-                Boolean(product_varcomb_id)
-              "
-              :text="product_sort_3.title"
-              rules="require"
-              v-model="var_id_3"
-              :items="available_items_3"
-              :loading="loading"
-              :disabled="!Boolean(var_id_2) || loading"
-            />
+            <amp-select v-if="
+              Boolean(step_var_3) &&
+              Boolean(product_sort_3) &&
+              Boolean(product_varcomb_id)
+            " :text="product_sort_3.title" rules="require" v-model="var_id_3" :items="available_items_3"
+              :loading="loading" :disabled="!Boolean(var_id_2) || loading" />
           </v-col>
 
-          <v-row
-            class="align-center align-center"
-            cols="12"
-            v-if="
-              Boolean(valid_variations) &&
-              Boolean(step_var_1) &&
-              Boolean(product_varcomb_id) &&
-              !loading
-            "
-          >
+          <v-row class="align-center align-center" cols="12" v-if="
+            Boolean(valid_variations) &&
+            Boolean(step_var_1) &&
+            Boolean(product_varcomb_id) &&
+            !loading
+          ">
             <v-spacer></v-spacer>
             <v-avatar size="80" class="mx-2">
               <img :src="$getImage(selected_product.img)" />
@@ -93,23 +53,14 @@
               {{ $price(selected_product.product_price) }} ریال
             </h1>
             <v-spacer></v-spacer>
-            <amp-button
-              :block="$vuetify.breakpoint.mdAndUp ? false : true"
-              v-if="
-                Boolean(step_var_1) &&
-                Boolean(product_sort_1) &&
-                Boolean(product_varcomb_id)
-              "
-              height="40"
-              :disabled="
-                !Boolean(valid_variations) ||
-                !Boolean(product_varcomb_id) ||
-                loading_add
-              "
-              color="orange darken-4"
-              text="افزودن"
-              @click="addVariation()"
-            />
+            <amp-button :block="$vuetify.breakpoint.mdAndUp ? false : true" v-if="
+              Boolean(step_var_1) &&
+              Boolean(product_sort_1) &&
+              Boolean(product_varcomb_id)
+            " height="40" :disabled="!Boolean(valid_variations) ||
+              !Boolean(product_varcomb_id) ||
+              loading_add
+              " color="orange darken-4" text="افزودن" @click="addVariation()" />
             <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
           </v-row>
         </v-row>
@@ -138,22 +89,14 @@
       </v-card>
     </v-col>
     <v-col cols="12" md="12">
-      <v-card
-        outlined
-        class="pa-5 my-4 card-style"
-        v-for="(item, index) in variations_list"
-        :key="index"
-      >
+      <v-card outlined class="pa-5 my-4 card-style" v-for="(item, index) in variations_list" :key="index">
         <v-row class="align-center">
           <v-avatar size="55">
             <img :src="$getImage(item.variation1.product.main_image)" />
           </v-avatar>
           <v-spacer></v-spacer>
 
-          <h1
-            :class="$vuetify.breakpoint.mdAndUp ? '' : 'font_11'"
-            class="mr-3"
-          >
+          <h1 :class="$vuetify.breakpoint.mdAndUp ? '' : 'font_11'" class="mr-3">
             {{ item.variation1.product.name }}
           </h1>
           <v-spacer></v-spacer>
@@ -190,12 +133,7 @@
                 <h1 class="font_18 mx-5">
                   {{ item.count }}
                 </h1>
-                <v-btn
-                  :disabled="item.count == 1"
-                  @click="addNumber(item, false, 'list')"
-                  icon
-                  x-small
-                >
+                <v-btn :disabled="item.count == 1" @click="addNumber(item, false, 'list')" icon x-small>
                   <v-chip>
                     <h1 class="font_20 mx-1">-</h1>
                   </v-chip>
@@ -222,12 +160,7 @@
                 <h1 class="font_18 mx-5">
                   {{ item.count }}
                 </h1>
-                <v-btn
-                  :disabled="item.count == 1"
-                  @click="addNumber(item, false, 'list')"
-                  icon
-                  x-small
-                >
+                <v-btn :disabled="item.count == 1" @click="addNumber(item, false, 'list')" icon x-small>
                   <v-chip>
                     <h1 class="font_20 mx-1">-</h1>
                   </v-chip>
@@ -392,16 +325,17 @@ export default {
             this.selected_product["product_price"] = "";
             this.selected_product["img"] =
               product.variation1.product.main_image;
-            if (
-              Boolean(product.variation1) &&
-              Boolean(product.variation1.product) &&
-              Boolean(product.variation1.product.base_price)
-            ) {
-              this.selected_product.product_price =
-                product.variation1.product.base_price;
-            } else {
-              this.selected_product.product_price = product.price;
-            }
+            this.selected_product.product_price = product.price ? product.price : product.product_price
+            // if (
+            //   Boolean(product.variation1) &&
+            //   Boolean(product.variation1.product) &&
+            //   Boolean(product.variation1.product.base_price)
+            // ) {
+            //   this.selected_product.product_price =
+            //     product.variation1.product.base_price;
+            // } else {
+            //   this.selected_product.product_price = product.price;
+            // }
           }
         });
       }
@@ -427,7 +361,7 @@ export default {
               ) {
                 price = x.variation1.product.base_price;
               } else {
-                price = x.price;
+                price = x.base_price;
               }
 
               item.push({

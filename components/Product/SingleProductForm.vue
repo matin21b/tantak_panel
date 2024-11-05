@@ -2,22 +2,13 @@
   <div>
     <v-row class="justify-center">
       <v-col cols="12" md="9">
-        <CombinationForm
-          :product_id="product.id"
-          @closeAddCombination="closeAddCombination()"
-          @reloadCombinations="getCombinations"
-          @reloadVaritoinsForm="reloadVriations()"
-          :dataItems="product.category_ids"
-          ref="combinationForm"
-        />
+        <CombinationForm :product_id="product.id" @closeAddCombination="closeAddCombination()"
+          @reloadCombinations="getCombinations" @reloadVaritoinsForm="reloadVriations()"
+          :dataItems="product.category_ids" ref="combinationForm" />
       </v-col>
       <v-col cols="12" md="9">
-        <VariationForm
-          :product_id="product.id"
-          @closeVariationForm="closeVariationForm()"
-          ref="variationsFormSingleSeal"
-          :dataItems="product.category_ids"
-        />
+        <VariationForm :product_id="product.id" @closeVariationForm="closeVariationForm()"
+          ref="variationsFormSingleSeal" :dataItems="product.category_ids" />
       </v-col>
     </v-row>
 
@@ -47,25 +38,26 @@
           </v-col>
           <v-col cols="12" md="1" class="text-center">
             <h1>
-                نقطه سفارش
-                <br />
-                در نمایندگی
+              نقطه سفارش
+              <br />
+              در نمایندگی
             </h1>
           </v-col>
           <v-col cols="12" md="1" class="text-center">
             <h1>
-                نقطه سفارش
-                <br />
-                در انبار مرکزی
+              نقطه سفارش
+              <br />
+              در انبار مرکزی
+            </h1>
+          </v-col>
+          <v-col cols="12" md="1" class="text-center">
+            <h1>
+              گارانتی
+
             </h1>
           </v-col>
         </v-card-title>
-        <v-card-text
-          v-if="!loading"
-          v-for="(item, index) in variations"
-          :key="index"
-          class="card-style pa-0 ma-0"
-        >
+        <v-card-text v-if="!loading" v-for="(item, index) in variations" :key="index" class="card-style pa-0 ma-0">
           <v-row class="align-center">
             <v-col cols="2" class="d-flex align-center">
               <v-btn icon class="grey lighten-3 white--black mr-3" small>
@@ -99,60 +91,39 @@
               <amp-input is-price v-model="item.discount" class="mt-8" />
             </v-col>
             <v-col cols="12" md="1" class="text-center">
-              <amp-input
-                cClass="ltr-item"
-                rules="number"
-                v-model="item.maximum"
-                class="mt-8"
-              />
+              <amp-input cClass="ltr-item" rules="number" v-model="item.maximum" class="mt-8" />
             </v-col>
             <v-col cols="12" md="1" class="text-center">
-              <amp-input
-                cClass="ltr-item"
-                v-model="item.minimum"
-                class="mt-8"
-                rules="number"
-              />
+              <amp-input cClass="ltr-item" v-model="item.minimum" class="mt-8" rules="number" />
             </v-col>
             <v-col cols="12" md="1" class="text-center">
-              <amp-input
-                cClass="ltr-item"
-                v-model="item.order_point_agency"
-                class="mt-8"
-                rules="number"
-              />
+              <amp-input cClass="ltr-item" v-model="item.order_point_agency" class="mt-8" rules="number" />
             </v-col>
 
             <v-col cols="12" md="1" class="text-center">
-              <amp-input
-                cClass="ltr-item"
-                v-model="item.order_point_center"
-                class="mt-8"
-                rules="number"
-              />
+              <amp-input cClass="ltr-item" v-model="item.order_point_center" class="mt-8" rules="number" />
+            </v-col>
+            <v-col cols="12" md="1" class="text-center">
+              <h1 v-if="Boolean(item.warranty)">
+                <v-icon color="green darken-2">
+                  task_alt
+                </v-icon>
+                <br>
+                  {{ $toJalali(item.date_warranty, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
+              </h1>
+              <v-icon v-else color="red darken-2">
+                close
+              </v-icon>
             </v-col>
 
             <v-spacer></v-spacer>
 
             <v-col cols="12" md="1" class="text-center">
-              <amp-button
-                block
-                height="36"
-                text="به روز رسانی"
-                color="green darken-1"
-                :loading="loading"
-                @click="update(item.id)"
-              >
+              <amp-button block height="36" text="به روز رسانی" color="green darken-1" :loading="loading"
+                @click="update(item.id)">
               </amp-button>
-              <amp-button
-                block
-                height="36"
-                class="mt-2"
-                text="حذف"
-                color="red darken-1"
-                :loading="loading"
-                @click="deleteDialog(true, index)"
-              >
+              <amp-button block height="36" class="mt-2" text="حذف" color="red darken-1" :loading="loading"
+                @click="deleteDialog(true, index)">
               </amp-button>
             </v-col>
             <v-spacer></v-spacer>
@@ -160,52 +131,27 @@
         </v-card-text>
         <div v-if="loading">
           <v-col cols="12" v-for="i in 4" :key="i">
-            <v-skeleton-loader
-              class="mx-auto"
-              height="100"
-              type="card"
-            ></v-skeleton-loader
-          ></v-col>
+            <v-skeleton-loader class="mx-auto" height="100" type="card"></v-skeleton-loader></v-col>
         </div>
       </v-card>
     </v-col>
 
     <v-col cols="12" v-if="variations.length == 0 && !loading">
-      <v-alert
-        outlined
-        type="warning"
-        prominent
-        border="left"
-        class="text-center"
-      >
+      <v-alert outlined type="warning" prominent border="left" class="text-center">
         هنوز برنامه فروشی برای این محصول درج نشده است.
       </v-alert>
     </v-col>
 
-    <v-dialog
-      v-model="deleteDiaolog"
-      :width="$vuetify.breakpoint.mdAndUp ? 380 : 470"
-    >
+    <v-dialog v-model="deleteDiaolog" :width="$vuetify.breakpoint.mdAndUp ? 380 : 470">
       <v-card class="pa-5">
         <span class="mb-2 font_xxxl font_bold">ویژگی انتخابی حذف شود؟</span>
         <v-row class="pa-3">
           <v-col cols="6">
-            <amp-button
-              text="بله، حذف شود"
-              class="w-max"
-              color="error"
-              @click="deleteItem()"
-              :disabled="loading"
-            />
+            <amp-button text="بله، حذف شود" class="w-max" color="error" @click="deleteItem()" :disabled="loading" />
           </v-col>
           <v-col cols="6">
-            <amp-button
-              text="منصرف شدم"
-              color="accent"
-              class="w-max"
-              @click="deleteDialog(false)"
-              :disabled="loading"
-            />
+            <amp-button text="منصرف شدم" color="accent" class="w-max" @click="deleteDialog(false)"
+              :disabled="loading" />
           </v-col>
         </v-row>
       </v-card>
@@ -264,12 +210,7 @@ export default {
     },
   }),
   mounted() {
-    console.log("sss");
-    console.log("sss");
-    console.log("sss");
-    console.log("sss");
-    console.log("sss");
-    console.log("sss");
+  
 
     this.getCombinations();
   },
@@ -400,9 +341,11 @@ export default {
                 sort: x.sort,
                 order_point_agency: x.order_point_agency,
                 order_point_center: x.order_point_center,
+                warranty: x.warranty,
+                date_warranty: x.date_warranty,
               });
             }
-          } catch (error) {}
+          } catch (error) { }
 
           this.variations = items.sort((a, b) => {
             return a.sort - b.sort;
@@ -425,6 +368,7 @@ export default {
 .card-style {
   border: 1px solid #1d1c1c13 !important;
 }
+
 .card-style:hover {
   background-color: #ffcb776b;
   cursor: pointer;
