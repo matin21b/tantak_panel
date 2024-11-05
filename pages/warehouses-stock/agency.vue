@@ -1,10 +1,10 @@
 <template>
-  <v-col cols="12"  class="mt-5">
+  <v-col cols="12" class="mt-5">
     <v-window v-model="step">
       <v-window-item :value="1">
         <v-row class="d-flex justify-center">
           <v-col cols="12" md="6">
-            <v-expansion-panels
+            <!-- <v-expansion-panels
               v-model="panel"
               class="card-style elevation-0"
               focusable
@@ -120,29 +120,17 @@
                   </div>
                 </v-expansion-panel-content>
               </v-expansion-panel>
-            </v-expansion-panels>
+            </v-expansion-panels> -->
           </v-col>
         </v-row>
-
-        <BaseTable
-          ref="Refresh"
-          url="/sale-agency-stock/manager-list"
-          :headers="headers"
-          autoDelete="sale-agency-stock/delete"
-          :actionsList="actions_list"
-          :BTNactions="btn_actions"
-        />
+        <!-- autoDelete="sale-agency-stock/delete" -->
+        <BaseTable ref="Refresh" url="/sale-agency-stock/manager-list" :headers="headers" :actionsList="actions_list"
+          :BTNactions="btn_actions" />
       </v-window-item>
 
       <v-window-item :value="2">
-        <History
-          :branchId="branchId"
-          v-if="show_history && step == 2"
-          :productVarId="product_var_id"
-          :productVarInfo="send_prop"
-          :sectionId="section_id"
-          @backStep="step--"
-        />
+        <History :branchId="branchId" v-if="show_history && step == 2" :productVarId="product_var_id"
+          :productVarInfo="send_prop" :sectionId="section_id" @backStep="step--" />
       </v-window-item>
     </v-window>
   </v-col>
@@ -293,7 +281,6 @@ export default {
           return items.join("<br>");
         },
       },
-
       {
         text: "توضیحات",
         filterCol: "description",
@@ -316,17 +303,17 @@ export default {
       },
     ];
     this.actions_list = [
-      {
-        text: "بروزرسانی",
-        fun: (body) => {
-          if (body.section_name == "ProductVariationCombination") {
-            this.tab = "products";
-          } else if (body.section_name == "Package") {
-            this.tab = "packages";
-          }
-          this.loadData(body.id);
-        },
-      },
+      // {
+      //   text: "بروزرسانی",
+      //   fun: (body) => {
+      //     if (body.section_name == "ProductVariationCombination") {
+      //       this.tab = "products";
+      //     } else if (body.section_name == "Package") {
+      //       this.tab = "packages";
+      //     }
+      //     this.loadData(body.id);
+      //   },
+      // },
     ];
     this.btn_actions = [
       {
@@ -423,7 +410,7 @@ export default {
               product_name = data.product_var.product.name;
             }
             if (data.product_var.variation1) {
-              var_1 =data.product_var.variation1.codes ?   data.product_var.variation1.colors : data.product_var.variation1.value;
+              var_1 = data.product_var.variation1.codes ? data.product_var.variation1.colors : data.product_var.variation1.value;
             }
             if (data.product_var.variation2) {
               var_2 = data.product_var.variation2.value;

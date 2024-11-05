@@ -2,33 +2,18 @@
   <v-card class="pa-1 ma-0 elevation-0">
     <v-expansion-panels class="my-4 elevation-0 style-class">
       <v-expansion-panel>
-        <v-expansion-panel-header
-          expand-icon="add_circle"
-          class="primary lighten-4 text-center"
-        >
+        <v-expansion-panel-header expand-icon="add_circle" class="primary lighten-4 text-center">
           <strong class="font_17"> ایجاد ترکیب جدید</strong>
         </v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-content eager>
           <v-form v-model="valid" @submit.prevent="submit()">
             <v-card class="elevation-0 mt-4" :disabled="loading">
               <v-row v-if="!loading">
                 <v-col cols="12">
-                  <amp-title
-                    text="افزودن تنوع فروش جدید برای این محصول"
-                  ></amp-title>
+                  <amp-title text="افزودن تنوع فروش جدید برای این محصول"></amp-title>
                 </v-col>
-                <v-col
-                  cols="12"
-                  md="3"
-                  v-for="(v, index) in variations"
-                  :key="v.index"
-                >
-                  <amp-select
-                    multiple
-                    v-if="v.sort == 1"
-                    :text="v.title"
-                    :items="v.items"
-                    v-model="variation_1_ids"
+                <v-col cols="12" md="3" v-for="(v, index) in variations" :key="v.index">
+                  <amp-select multiple v-if="v.sort == 1" :text="v.title" :items="v.items" v-model="variation_1_ids"
                     @change="
                       setVariationId(
                         variation_1_ids,
@@ -36,15 +21,8 @@
                         v.variation_type_id,
                         v
                       )
-                    "
-                    rules="require"
-                  />
-                  <amp-select
-                    multiple
-                    v-if="v.sort == 2"
-                    :text="v.title"
-                    :items="v.items"
-                    v-model="variation_2_ids"
+                      " rules="require" />
+                  <amp-select multiple v-if="v.sort == 2" :text="v.title" :items="v.items" v-model="variation_2_ids"
                     @change="
                       setVariationId(
                         variation_2_ids,
@@ -52,109 +30,61 @@
                         v.variation_type_id,
                         v
                       )
-                    "
-                    rules="require"
-                  />
-                  <amp-select
-                    v-if="v.sort == 3"
-                    :text="v.title"
-                    :items="v.items"
-                    v-model="variation_3_id"
-                    @change="
-                      setVariationId(
-                        variation_3_id,
-                        v.sort,
-                        v.variation_type_id,
-                        v
-                      )
-                    "
-                    rules="require"
-                  />
+                      " rules="require" />
+                  <amp-select v-if="v.sort == 3" :text="v.title" :items="v.items" v-model="variation_3_id" @change="
+                    setVariationId(
+                      variation_3_id,
+                      v.sort,
+                      v.variation_type_id,
+                      v
+                    )
+                    " rules="require" />
                 </v-col>
                 <v-col cols="12" md="3">
-                  <amp-input
-                    is-price
-                    text="قیمت تومان"
-                    v-model="form.price"
-                    rules="require"
-                  />
+                  <amp-input is-price text="قیمت تومان" v-model="form.price" rules="require" />
                 </v-col>
 
                 <v-col cols="12" md="3">
-                  <amp-input
-                    is-price
-                    text="تخفیف"
-                    v-model="form.discount"
-                    rules="percent"
-                  />
-                </v-col>             
-                   <v-col cols="12" md="3">
-                  <amp-input
-                  cClass="ltr-item"
-                    text="نقطه سفارش در نمایندگی"
-                    v-model="form.order_point_agency"
-                    rules="number"
-                  />
-                </v-col>             
-                    <v-col cols="12" md="3">
-                  <amp-input
-                  cClass="ltr-item"
+                  <amp-input is-price text="تخفیف" v-model="form.discount" rules="percent" />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <amp-input cClass="ltr-item" text="نقطه سفارش در نمایندگی" v-model="form.order_point_agency"
+                    rules="number" />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <amp-input cClass="ltr-item" text="نقطه سفارش در انبار مرکزی" v-model="form.order_point_center"
+                    rules="number" />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <amp-input is-price text="حداقل" v-model="form.minimum"
+                    :rules="sellType == 'single' ? '' : 'require'" />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <amp-input is-price text="حداکثر" v-model="form.maximum"
+                    :rules="sellType == 'single' ? '' : 'require'" />
+                </v-col>
 
-                    text="نقطه سفارش در انبار مرکزی"
-                    v-model="form.order_point_center"
-                    rules="number"
-                  />
+                <v-col cols="3">
+                  <amp-select text="شامل گارانتی میشود  ؟‌" v-model="form.warranty"
+                    :items="$store.state.static.bool_en" />
                 </v-col>
-                <v-col cols="12" md="3">
-                  <amp-input
-                    is-price
-                    text="حداقل"
-                    v-model="form.minimum"
-                    :rules="sellType == 'single' ? '' : 'require'"
-                  />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <amp-input
-                    is-price
-                    text="حداکثر"
-                    v-model="form.maximum"
-                    :rules="sellType == 'single' ? '' : 'require'"
-                  />
+                <v-col cols="3" v-if="form.warranty == 'yes'">
+                  <amp-jdate text="تاریخ اقضای گارانتی" v-model="form.date_warranty" rules="require" />
                 </v-col>
                 <v-col cols="1">
-                  <amp-input
-                    is-number
-                    text="ترتیب "
-                    v-model="form.sort"
-                    rules="number,require"
-                  />
+                  <amp-input is-number text="ترتیب " v-model="form.sort" rules="number,require" />
                 </v-col>
                 <v-col cols="12" md="1" class="text-center mt-8">
-                  <amp-button
-                    :disabled="!valid || loading"
-                    small
-                    text="افزودن"
-                    color="success"
-                    :loading="loading"
-                    @click="createVariatoin_1()"
-                  >
+                  <amp-button :disabled="!valid || loading" small text="افزودن" color="success" :loading="loading"
+                    @click="createVariatoin_1()">
                   </amp-button>
                 </v-col>
               </v-row>
             </v-card>
           </v-form>
-          <v-card
-            :disabled="loading"
-            class="elevation-0 primary lighten-5 mt-4"
-            v-if="loading"
-          >
+          <v-card :disabled="loading" class="elevation-0 primary lighten-5 mt-4" v-if="loading">
             <v-col cols="12" class="text-center py-10">
-              <v-progress-circular
-                :width="5"
-                :size="45"
-                color="grey"
-                indeterminate
-              ></v-progress-circular>
+              <v-progress-circular :width="5" :size="45" color="grey" indeterminate></v-progress-circular>
             </v-col>
           </v-card>
         </v-expansion-panel-content>
@@ -175,6 +105,7 @@ export default {
   data: () => ({
     valid: false,
     loading: false,
+    render: false,
     variations: [],
     selected_variations: [],
     variations_ids: [],
@@ -193,6 +124,8 @@ export default {
       id: "",
       sort: 1,
       price: "",
+      warranty: "no",
+      date_warranty: "",
       order_point_agency: "",
       order_point_center: "",
       weight: "",
@@ -207,6 +140,7 @@ export default {
   mounted() {
     this.form.sell_type = this.sellType;
     this.loadVariationItems();
+    this.render = true
   },
 
   methods: {
@@ -234,6 +168,16 @@ export default {
       let form = { ...this.form };
       form["product_id"] = this.product_id;
       form["type"] = this.sellType;
+      switch (form.warranty) {
+        case "yes":
+          form.warranty = true;
+          break;
+
+        default:
+          form.warranty = false;
+
+          break;
+      }
       this.$reqApi("/product-variation-combination/insert", form)
         .then((response) => {
           this.$toast.success("اطلاعات ثبت شد");
@@ -355,7 +299,12 @@ export default {
       return ids;
     },
     setVariationId(value, sort, variation_type_id, v) {
-      
+      if (
+        !Boolean(value) ||
+        (Array.isArray(value) && value.length == 0)
+      ) {
+        return
+      }
       let items = {};
       if (Boolean(v)) {
         if (typeof value == "object") {
@@ -455,7 +404,7 @@ export default {
         let variations = this.selected_variations.filter((x) => x.sort == 2);
         for (let i = 0; i < variations.length; i++) {
           const variation = variations[i];
-          
+
           if (Boolean(variation)) {
             form = {
               variation_type_id: variation.variation_type_id,

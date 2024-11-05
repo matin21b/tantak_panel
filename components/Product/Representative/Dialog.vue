@@ -171,6 +171,7 @@
 import Packages from "@/components/Product/Representative/AddToBasket/Packages.vue";
 import Products from "@/components/Product/Representative/AddToBasket/Products.vue";
 import History from "@/components/Product/Representative/History.vue";
+
 export default {
   components: {
     Products,

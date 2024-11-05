@@ -1,74 +1,25 @@
 <template>
   <v-row class="d-flex justify-center mt-5">
     <v-col cols="12">
-      <BaseTable
-        url="/product-request"
-        :headers="headers"
-        :extraBtn="extra_btn"
-        :BTNactions="btn_actions"
-        :actionsList="actions_list"
-        ref="ProductRequest"
-      />
+      <BaseTable url="/product-request" :headers="headers" :extraBtn="extra_btn" :BTNactions="btn_actions"
+        :actionsList="actions_list" ref="ProductRequest" />
     </v-col>
     <v-col cols="12" md="8">
-      <Dialog
-        :dialog="show_dialog"
-        :request="request"
-        :basketId="basket_id"
-        v-if="show_dialog"
-        @closeDialog="show_dialog = false"
-        @reload="refresh"
-      />
-      <CheckOrder
-        :dialog="check_order"
-        :data="data"
-        :basketId="basket_id"
-        v-if="check_order"
-        @closeDialog="check_order = false"
-        @reload="refresh"
-      />
-      <HistoryInventoryRequest
-        v-if="dialog_history.show"
-        :dialogHistory="dialog_history"
-        :messageId="id_message"
-      />
-      <DialogRefral
-        :dialog="show_refral"
-        :basketId="basket_id"
-        :stepInvitor="step_invitor"
-        :statusPayment="status_payment"
-        v-if="show_refral"
-        @closeDialog="show_refral = false"
-        @reload="refresh"
-      />
-      <DialogTransactions
-        :dialog="add_transaction"
-        :data="all_data"
-        v-if="add_transaction"
-        @closeDialog="add_transaction = false"
-        @reload="refresh"
-      />
-      <DialogCancel
-        :dialog="show_cansel"
-        :getApi="get_api"
-        v-if="show_cansel"
-        @closeDialog="show_cansel = false"
-        @reload="refresh"
-      />
-      <HistoryWallet
-        :walletDialog="show_wallet"
-        :walletData="wallet_data"
-        v-if="show_wallet"
-        @closeDialog="show_wallet = false"
-        @reload="refresh"
-      />
-      <AddTransactions
-        :dialog="create_transactions"
-        :requestId="request_id"
-        v-if="create_transactions"
-        @closeDialog="create_transactions = false"
-        @reload="refresh"
-      />
+      <Dialog :dialog="show_dialog" :request="request" :basketId="basket_id" v-if="show_dialog"
+        @closeDialog="show_dialog = false" @reload="refresh"  :total-price="total_price" />
+      <CheckOrder :dialog="check_order" :data="data" :basketId="basket_id" v-if="check_order"
+        @closeDialog="check_order = false" @reload="refresh" />
+      <HistoryInventoryRequest v-if="dialog_history.show" :dialogHistory="dialog_history" :messageId="id_message" />
+      <DialogRefral :dialog="show_refral" :basketId="basket_id" :stepInvitor="step_invitor"
+        :statusPayment="status_payment" v-if="show_refral" @closeDialog="show_refral = false" @reload="refresh" />
+      <DialogTransactions :dialog="add_transaction" :data="all_data" v-if="add_transaction"
+        @closeDialog="add_transaction = false" @reload="refresh" />
+      <DialogCancel :dialog="show_cansel" :getApi="get_api" v-if="show_cansel" @closeDialog="show_cansel = false"
+        @reload="refresh" />
+      <HistoryWallet :walletDialog="show_wallet" :walletData="wallet_data" v-if="show_wallet"
+        @closeDialog="show_wallet = false" @reload="refresh" />
+      <AddTransactions :dialog="create_transactions" :requestId="request_id" v-if="create_transactions"
+        @closeDialog="create_transactions = false" @reload="refresh" />
     </v-col>
   </v-row>
 </template>
@@ -99,7 +50,6 @@ export default {
     headers: [],
     payments: [],
     all_data: {},
-
     actions_list: [],
     btn_actions: [],
     show_dialog: false,
@@ -113,6 +63,7 @@ export default {
     check_order: false,
     get_api: "",
     basket_id: "",
+    total_price: "",
     show_wallet: false,
     wallet_data: null,
     dialog_history: {
@@ -137,7 +88,7 @@ export default {
         },
       },
       {
-        text: " قیمت (ریال)",
+        text: "مجموع  قیمت (ریال)  ",
         type: "price",
         value: "total_price",
       },
@@ -205,12 +156,6 @@ export default {
           this.step_invitor = body.step;
         },
         show_fun: (body) => {
-          console.log(
-            "sss",
-            body,
-            Boolean(this.$checkRole(this.$store.state.auth.role.seal_manager))
-          );
-
           if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
             return false;
           } else if (
@@ -222,7 +167,7 @@ export default {
           ) {
             if (
               body.step == "init" ||
-              ((body.step == "accept_employee_sale" ||body.step == "fiscal_manager_to_manager" )  &&
+              ((body.step == "accept_employee_sale" || body.step == "fiscal_manager_to_manager") &&
                 body.status_payment == "payed")
             ) {
               return true;
@@ -249,8 +194,8 @@ export default {
           if (
             Boolean(
               this.$checkRole(this.$store.state.auth.role.sales_expert) &&
-                body.step == "supervisor_to_employee_sale" &&
-                body.status_payment == "none"
+              body.step == "supervisor_to_employee_sale" &&
+              body.status_payment == "none"
             )
           ) {
             return true;
@@ -323,6 +268,7 @@ export default {
           this.show_dialog = true;
           this.request = false;
           this.basket_id = body.id;
+          this.total_price = body.total_price
         },
       },
       {
@@ -335,8 +281,8 @@ export default {
           if (
             Boolean(
               (body.status == "init" || body.status == "wait") &&
-                (this.$checkAccess("product_requests/root") ||
-                  this.$checkRole(this.$store.state.auth.role.seal_manager))
+              (this.$checkAccess("product_requests/root") ||
+                this.$checkRole(this.$store.state.auth.role.seal_manager))
             )
           ) {
             return true;

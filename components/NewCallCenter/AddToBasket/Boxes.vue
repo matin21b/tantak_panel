@@ -4,8 +4,8 @@
       <v-autocomplete v-if="
         this.$store.state.auth.action.indexOf('product_requests/update') > -1
       " class="mx-2" prepend-inner-icon="search" v-model="package_id" :items="packages_list" outlined dense
-        :disabled="Boolean(loading_package)" :loading="Boolean(loading_package)" label="جستوجوی پکیج "
-        placeholder="نام پکیج مورد نظر را وارد کنید ..." />
+        :disabled="Boolean(loading_package)" :loading="Boolean(loading_package)" label="جستوجوی جعبه "
+        placeholder="نام جعبه مورد نظر را وارد کنید ..." />
     </v-col>
     <v-row v-if="Boolean(package_id) && Object.keys(selected_package).length > 0">
       <v-col cols="12" class="">
@@ -248,9 +248,8 @@ export default {
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
 
-            if (x.section_name == "Package") {
+            if (x.section_name == "Box") {
               let sub_product = JSON.parse(x.product_json);
-
               let new_data = [];
               for (let index = 0; index < sub_product.length; index++) {
                 const element = sub_product[index];
@@ -263,10 +262,10 @@ export default {
                 text: x.information,
                 value: x.section_id,
                 products: new_data,
-                logo: x.package.logo,
+                logo: x.box.logo,
                 count: x.number,
-                price: x.price,
-                discount_value: x.base_price,
+                price: x.box.price,
+                discount_value: x.price,
               });
             }
           }
@@ -285,11 +284,11 @@ export default {
       let filter = {
         type: {
           op: "=",
-          value: "Package",
+          value: "Box",
         },
       };
       this.$reqApi("/package", { filters: filter, row_number: 50000 })
-        .then((res) => {
+      .then((res) => {
           let data = res.model.data;
           let items = [];
           for (let index = 0; index < data.length; index++) {
