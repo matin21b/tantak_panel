@@ -436,8 +436,11 @@ export default {
       
       for (let index = 0; index < this.productVarcoms.length; index++) {
         const e = this.productVarcoms[index];
+        console.log("#" ,e);
+        
         let obj = {};
         obj["id"] = e.id;
+        obj["price"] = e.price;
         obj["count"] = e.count_product;
         if (Boolean(e.variation1)) {
           obj["variation1"] = {
@@ -451,9 +454,13 @@ export default {
         if (Boolean(e.variation3)) {
           obj["variation3"] = e.variation3;
         }
+        console.log("obj >>>> " , obj);
+        
         items.push(obj);
       }
       this.variations_list = items;
+      console.log("variations_list >>>> " , this.variations_list);
+      
     },
 
     addVariation() {
