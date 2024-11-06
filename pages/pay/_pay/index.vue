@@ -1,5 +1,6 @@
 <template>
   <v-row class="justify-center">
+
     <v-col cols="12" md="4" class="pa-0 ma-0 ma-5">
       <v-card class="elevation-3 card-style">
         <v-alert icon="account_circle" class="primary lighten-1" dark prominent>
@@ -20,12 +21,7 @@
           <h1>شماره تراکنش : {{ data.transaction_number }}</h1>
           <h1>
             وضعیت تراکنش :
-            {{
-              $getItemEnum(
-                $store.state.static.status_payment_invitor,
-                data.status
-              )
-            }}
+            {{ $getItemEnum($store.state.static.status_payment_invitor, data.status) }}
           </h1>
           <v-row class="mt-1 justify-center" v-if="this.status == 'wait'">
             <amp-button
@@ -48,6 +44,7 @@
 </template>
 <script>
 export default {
+  layout: "empty",
   data() {
     return {
       data: {},
@@ -72,11 +69,8 @@ export default {
         .then((res) => {
           this.data = res.data;
           if (Object.keys(this.data.user).length > 0) {
-            if (
-              Boolean(this.data.user.first_name && this.data.user.last_name)
-            ) {
-              this.user =
-                this.data.user.first_name + " " + this.data.user.last_name;
+            if (Boolean(this.data.user.first_name && this.data.user.last_name)) {
+              this.user = this.data.user.first_name + " " + this.data.user.last_name;
             } else {
               this.user = this.data.user.username;
             }

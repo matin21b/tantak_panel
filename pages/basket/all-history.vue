@@ -75,7 +75,7 @@ export default {
         value: "factor_number"
 
       },
- 
+
 
 
       {

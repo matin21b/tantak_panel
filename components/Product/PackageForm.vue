@@ -5,9 +5,7 @@
       <v-row dense>
         <v-col cols="12" md="3">
           <amp-input
-            :text="
-              this.$route.query.type == 'Package' ? 'عنوان پکیج' : 'عنوان جعبه'
-            "
+            :text="this.$route.query.type == 'Package' ? 'عنوان پکیج' : 'عنوان جعبه'"
             v-model="form.name"
             rules="require"
           />
@@ -112,18 +110,10 @@
           />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input
-            text="ترتیب"
-            v-model="form.sort"
-            cClass="ltr-item"
-            rules="number"
-          />
+          <amp-input text="ترتیب" v-model="form.sort" cClass="ltr-item" rules="number" />
         </v-col>
         <v-col cols>
-          <amp-textarea
-            text="توضیحات"
-            v-model="form.description"
-          ></amp-textarea>
+          <amp-textarea text="توضیحات" v-model="form.description"></amp-textarea>
         </v-col>
       </v-row>
       <v-row dense>
@@ -323,10 +313,7 @@ export default {
               this.discount_value = response.discount_amount;
             }
 
-            if (
-              response.product_varcoms &&
-              response.product_varcoms.length > 0
-            ) {
+            if (response.product_varcoms && response.product_varcoms.length > 0) {
               this.product_varcoms = response.product_varcoms;
             }
             if (Boolean(response.sale_online)) {
