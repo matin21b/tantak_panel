@@ -3,53 +3,21 @@
     <div class="center-div mt-n5">
       <span class="white--text">ورود با کد یکبار مصرف</span>
     </div>
-    <amp-input
-      text="تلفن همراه"
-      color="white--text"
-      rules="require,phone"
-      v-model="form.username"
-      background-color="#fff"
-      prepend-inner-icon="person"
-      cClass="ltr-item small-input"
-    />
+    <amp-input text="تلفن همراه" color="white--text" rules="require,phone" v-model="form.username"
+      background-color="#fff" prepend-inner-icon="person" cClass="ltr-item small-input" />
     <div class="px-3">
       <amp-labale text="کد ورود" color="white--text" />
-      <v-otp-input
-        plain
-        length="4"
-        v-model="form.code"
-        :dark="!activeLogin"
-        :disabled="!activeLogin"
-        class="ltr-item small-input"
-      />
+      <v-otp-input plain length="4" v-model="form.code" :dark="!activeLogin" :disabled="!activeLogin"
+        class="ltr-item small-input" />
     </div>
     <div class="d-flex justify-center mb-5" v-if="show_captcha">
       <amp-captcha v-model="captcha" ref="captchaLogin" />
     </div>
     <div class="px-3 mt-4 mb-4">
-      <amp-button
-        block
-        height="40"
-        text="ورود"
-        icon="login"
-        type="submit"
-        color="success"
-        :loading="loading"
-        v-if="activeLogin"
-        :disabled="!valid || loading"
-      />
-      <amp-button
-        block
-        v-else
-        icon="sms"
-        height="40"
-        type="submit"
-        color="success"
-        text="ارسال کد"
-        :loading="loading"
-        @click="sendCode()"
-        :disabled="!valid || loading"
-      />
+      <amp-button block height="40" text="ورود" icon="login" type="submit" color="success" :loading="loading"
+        v-if="activeLogin" :disabled="!valid || loading" />
+      <amp-button block v-else icon="sms" height="40" type="submit" color="success" text="ارسال کد" :loading="loading"
+        @click="sendCode()" :disabled="!valid || loading" />
     </div>
   </v-form>
 </template>
@@ -87,7 +55,7 @@ export default {
       let form = {
         code: this.$FarsiToEnglishNumber(this.form.code),
         username: this.$FarsiToEnglishNumber(this.form.username),
-        // is_panel: true,
+        is_admin: true,
       };
       this.$reqApi("/auth/otp/login", form)
         .then((response) => {
@@ -106,6 +74,7 @@ export default {
       this.loading = true;
       let form = {
         section: "panel",
+        is_admin: true,
         username: this.$FarsiToEnglishNumber(this.form.username),
       };
       form.captcha_code = this.captcha.captcha_code;

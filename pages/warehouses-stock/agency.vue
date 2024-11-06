@@ -129,7 +129,7 @@
       </v-window-item>
 
       <v-window-item :value="2">
-        <History :branchId="branchId" v-if="show_history && step == 2" :productVarId="product_var_id"
+        <History :branchId="branch_id" v-if="show_history && step == 2" :productVarId="product_var_id"
           :productVarInfo="send_prop" :sectionId="section_id" @backStep="step--" />
       </v-window-item>
     </v-window>
@@ -323,6 +323,9 @@ export default {
         fun: (body) => {
           this.show_history = true;
           this.product_var_id = body.product_var_id;
+          this.section_id = body.section_id;
+          this.branch_id = body.sale_agency_id;
+
           let text = "";
           let product_name = "";
           let var_1 = "";
@@ -346,7 +349,6 @@ export default {
           } else if (body.section_name == "Package") {
             this.send_prop = body.package.name;
           }
-          this.section_id = body.section_id;
           this.step++;
 
         },
