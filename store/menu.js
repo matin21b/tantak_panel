@@ -439,4 +439,10 @@ let mnue_tree = [
       },
     ],
   },
+  {
+    id: 618564558145,
+    name: "گزارشات تماس",
+    access: "messages/issabel_request_call/history",
+    route: "/call-reports",
+  },
 ];

@@ -3,16 +3,13 @@
     <v-row class="d-flex justify-center">
       <v-col cols="12" md="12">
         <v-autocomplete
-          :filter="advanceSearch"
           clearable
           outlined
-          autofocus
           dense
           prepend-inner-icon="outgoing_mail"
           v-model="sender"
           :items="sender_list"
           label=" ارجاع دهنده"
-          placeholder="نام یا شماره همراه مورد نظر را وارد کنید"
         >
           <template v-slot:item="data">
             <v-list-item-content>
@@ -34,14 +31,12 @@
 
         <v-autocomplete
           clearable
-          :filter="advanceSearch"
           v-model="gater"
           :items="geter_list"
           prepend-inner-icon="mark_email_read"
           dense
           outlined
           label="گیرنده"
-          placeholder="نام یا شماره همراه مورد نظر را وارد کنید"
         >
           <template v-slot:item="data">
             <v-list-item-content>
@@ -130,8 +125,6 @@
   </div>
 </template>
 <script>
-import { log } from "@chenfengyuan/vue-qrcode";
-
 export default {
   props: {
     totalData: {
@@ -141,7 +134,6 @@ export default {
   },
   data() {
     return {
-      searchInput: "",
       factor_number: "",
       sender: "",
       gater: "",
@@ -173,6 +165,7 @@ export default {
           });
         }
       }
+
       return items;
     },
     geter_list() {
@@ -204,13 +197,9 @@ export default {
 
       for (let i = 0; i < data.length; i++) {
         const x = data[i];
-        let step = this.$getItemEnum(
-          this.$store.state.static.step_status_baskets,
-          x.step
-        );
         items.push({
           text: x.factor_number,
-          user: ` ${step}`,
+          user: `ثبت در ${this.$toJalali(x.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD")}`,
           value: x.factor_number,
         });
       }
@@ -261,13 +250,6 @@ export default {
       };
 
       this.$emit("setFilters", filters);
-    },
-
-    advanceSearch(items, search, item) {
-      return (
-        Boolean(items.text.indexOf(search) > -1) ||
-        Boolean(items.username.indexOf(search) > -1)
-      );
     },
   },
 };
