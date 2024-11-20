@@ -23,7 +23,7 @@
   </v-card>
 </template>
 <script>
-import WorkDialog from "@/components/Dashboard/WorkDialog.vue";
+import WorkDialog from "@/components/DashboardPanel/WorkDialog.vue";
 export default {
   components: {
     WorkDialog,
