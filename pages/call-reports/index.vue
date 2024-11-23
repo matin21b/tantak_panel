@@ -95,7 +95,7 @@ export default {
           } else {
             if (body.personal.length == 12) {
             let phone_slice = body.personal.slice(1);
-            let phone = phone_slice.replace(/(\d{4})(\d{3})(\d{4})/, "$3$2$1");
+            let phone = phone_slice.replace(/(\d{4})(\d{3})(\d{4})/, "$1$2$3");
             return phone;
           } else{
             return body.personal
@@ -132,7 +132,7 @@ export default {
 
           if (body.dst.length == 12) {
             let phone_slice = body.dst.slice(1);
-            let phone = phone_slice.replace(/(\d{4})(\d{3})(\d{4})/, "$3$2$1");
+            let phone = phone_slice.replace(/(\d{4})(\d{3})(\d{4})/, "$1$2$3");
             return phone;
           } 
           else {

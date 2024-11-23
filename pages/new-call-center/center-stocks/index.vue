@@ -23,6 +23,7 @@
       <VarComExcel
       :dialog="varcome_excel"
       v-if="varcome_excel"
+      url-list="/center-stock"
       @closeDialog="closeDialog"
     />
   </v-row>

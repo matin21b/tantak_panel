@@ -120,7 +120,8 @@ export default {
       }
     ];
     if (this.showRole) {
-      this.headers.push({
+      this.headers.push(
+        {
         text: "نقش",
         filterCol: "name",
         value: body => {
@@ -129,7 +130,8 @@ export default {
           }
           return "";
         }
-      });
+      }
+    );
     }
 
     this.actions = [

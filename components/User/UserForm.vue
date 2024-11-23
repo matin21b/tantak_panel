@@ -332,7 +332,10 @@ export default {
       if (this.modelId) {
         url = this.updateUrl;
         form["id"] = this.modelId;
+      }else{
+        form["manual"] = "manual"
       }
+
       form.username = this.$FarsiToEnglishNumber(form.username);
       this.$reqApi(url, form)
         .then((response) => {

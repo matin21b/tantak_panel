@@ -124,26 +124,48 @@
           </v-col>
         </v-row>
         <!-- autoDelete="sale-agency-stock/delete" -->
-        <BaseTable ref="Refresh" url="/sale-agency-stock/manager-list" :headers="headers" :actionsList="actions_list"
-          :BTNactions="btn_actions" />
+        <BaseTable
+          ref="Refresh"
+          :url="url_list"
+          :headers="headers"
+          :actionsList="actions_list"
+          :BTNactions="btn_actions"
+        :extraBtn="extra_btn"
+
+        />
       </v-window-item>
 
       <v-window-item :value="2">
-        <History :branchId="branch_id" v-if="show_history && step == 2" :productVarId="product_var_id"
-          :productVarInfo="send_prop" :sectionId="section_id" @backStep="step--" />
+        <History
+          :branchId="branch_id"
+          v-if="show_history && step == 2"
+          :productVarId="product_var_id"
+          :productVarInfo="send_prop"
+          :sectionId="section_id"
+          @backStep="step--"
+        />
       </v-window-item>
     </v-window>
+    <VarComExcel
+      :dialog="varcome_excel"
+      :url-list="url_list"
+      v-if="varcome_excel"
+      @closeDialog="varcome_excel = false"
+    />
   </v-col>
 </template>
 <script>
 import Packages from "@/components/Product/Representative/AddToBasket/Packages.vue";
 import Products from "@/components/Product/Representative/AddToBasket/Products.vue";
 import History from "@/components/Product/Representative/History.vue";
+import VarComExcel from "@/components/Product/VarComExcel.vue";
+
 export default {
   components: {
     Products,
     Packages,
     History,
+    VarComExcel,
   },
   props: {
     branchId: {
@@ -178,9 +200,11 @@ export default {
       url: "",
       product_var_id: "",
       set_title_card: "",
+      url_list:"",
       section_id: "",
       valid: true,
       update: false,
+      varcome_excel: false,
       form: {
         skock: "",
         description: "",
@@ -208,8 +232,18 @@ export default {
     },
   },
   beforeMount() {
+    this.url_list  = "/sale-agency-stock/manager-list"
     this.$store.dispatch("setPageTitle", this.title);
-
+    this.extra_btn = [
+      {
+        text: "ترکیبات محصول",
+        icon: "backup",
+        color: "teal darken-2",
+        fun: (body) => {
+          this.varcome_excel = true;
+        },
+      },
+    ];
     this.headers = [
       {
         text: "زمان ثبت",
@@ -336,7 +370,9 @@ export default {
               product_name = body.product_var.product.name;
             }
             if (body.product_var.variation1) {
-              var_1 = body.product_var.variation1.colors ? body.product_var.variation1.colors :body.product_var.variation1.value;
+              var_1 = body.product_var.variation1.colors
+                ? body.product_var.variation1.colors
+                : body.product_var.variation1.value;
             }
             if (body.product_var.variation2) {
               var_2 = body.product_var.variation2.value;
@@ -350,7 +386,6 @@ export default {
             this.send_prop = body.package.name;
           }
           this.step++;
-
         },
       },
     ];
@@ -413,7 +448,9 @@ export default {
               product_name = data.product_var.product.name;
             }
             if (data.product_var.variation1) {
-              var_1 = data.product_var.variation1.codes ? data.product_var.variation1.colors : data.product_var.variation1.value;
+              var_1 = data.product_var.variation1.codes
+                ? data.product_var.variation1.colors
+                : data.product_var.variation1.value;
             }
             if (data.product_var.variation2) {
               var_2 = data.product_var.variation2.value;
@@ -434,7 +471,6 @@ export default {
           this.loading = false;
         });
     },
-
   },
 };
 </script>
