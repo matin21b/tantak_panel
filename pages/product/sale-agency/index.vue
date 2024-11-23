@@ -19,6 +19,7 @@
     <VarComExcel
       :dialog="varcome_excel"
       v-if="varcome_excel"
+      url-list="/sale-agency"
       @closeDialog="closeDialog"
     />
   </div>
@@ -169,8 +170,7 @@ export default {
           this.id = body.id;
           this.show_dialog = true;
         },
-      },    
-
+      },
     ];
     this.extra_btn = [
       {

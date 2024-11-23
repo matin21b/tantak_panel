@@ -97,6 +97,16 @@ export default {
         },
       },
       {
+        text: "نقش",
+        filterCol: "name",
+        value: body => {
+          if (Array.isArray(body.roles)) {
+            return body.roles.map(x => x.name).join(" | ");
+          }
+          return "";
+        }
+      },
+      {
         text: "توضیحات",
         filterCol: "description",
         type: "tooltip",

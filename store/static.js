@@ -48,6 +48,7 @@ export const state = () => ({
   step_debts,
   step_status_baskets,
   access_request_product,
+  origin_of_entry,
 });
 
 let status_type = [
@@ -582,9 +583,15 @@ let step_status_baskets = [
   },
 ];
 let access_request_product = [
-
   { text: " بدون دسترسی تعریف موجودی", value: "no_access" },
   { text: " تعریف موجودی به صورت دستی", value: "add_manual" },
   { text: " تعریف موجودی با فایل اکسل", value: "add_excel" },
   { text: "تعریف موجودی با اکسل و دستی ", value: "both" },
+
+];
+let origin_of_entry = [
+  { text: "آنلاین", value: "login_source" },
+  { text: "فروش تلفنی", value: "sale_phone" },
+  { text: "  ورود با اکسل یا کاوه نگار", value: "excel_sale_phone" },
+  { text: " افزودن در پنل", value: "manual" },
 ];

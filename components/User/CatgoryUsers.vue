@@ -46,6 +46,14 @@
                   {{ x.new }}
                 </small>
               </h1>
+              <h1>
+                <small
+                class="green--text"
+                  > {{ x.text }}
+                  فعال
+                  {{ x.active }}
+                </small>
+              </h1>
             </div>
           </v-col>
           <v-spacer></v-spacer>
@@ -67,9 +75,12 @@
                     </small>
                   </h1>
                   <v-icon v-if="x.new != 0"> trending_up </v-icon>
-                  <h1 class="font_16 ml-3">
+                  <v-chip small>
+                    <h1 >
                     {{ x.count }}
                   </h1>
+                  </v-chip>
+             
                 </v-row>
                 <v-row class="align-center">
                   <v-col cols>
@@ -113,8 +124,8 @@
       </v-card>
     </v-col>
     <v-col v-if="loading" cols="12" md="4" v-for="i in 2" :key="i">
-      <v-card >
-        <v-skeleton-loader type="card" height="180" ></v-skeleton-loader>
+      <v-card>
+        <v-skeleton-loader type="card" height="180"></v-skeleton-loader>
       </v-card>
     </v-col>
   </v-row>
@@ -153,6 +164,7 @@ export default {
         icon: "groups",
         count: "",
         new: "0",
+        active: "0",
         week: [],
         labels: [],
       },
@@ -162,6 +174,7 @@ export default {
         icon: "engineering",
         count: "",
         new: "0",
+        active: "0",
         week: [],
         labels: [],
       },
@@ -218,7 +231,13 @@ export default {
         .then((res) => {
           this.pesonal_list = res.model.data;
           this.catgory_users[1].count = res.model.total;
-          let new_personal = res.model.data.filter(
+          let data = JSON.parse(JSON.stringify(res.model.data));
+
+          let active_personal = data.filter((y) => y.status == "active");
+          if (Boolean(active_personal) && active_personal.length > 0) {
+            this.catgory_users[1].active = active_personal.length;
+          }
+          let new_personal = data.filter(
             (x) =>
               this.$toJalali(x.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD") ==
               this.now
@@ -238,8 +257,16 @@ export default {
         row_number: 30000,
       })
         .then((res) => {
-          this.customer_list = res.model.data;
+          this.customer_list = JSON.parse(JSON.stringify(res.model.data));
           this.catgory_users[0].count = res.model.total;
+
+
+          let active_customer = this.customer_list.filter(
+            (y) => y.status == "active"
+          );
+          if (Boolean(active_customer) && active_customer.length > 0) {
+            this.catgory_users[0].active = active_customer.length;
+          }
           let new_customer = res.model.data.filter(
             (x) =>
               this.$toJalali(x.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD") ==
