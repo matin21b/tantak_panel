@@ -29,7 +29,7 @@
 
             <v-spacer></v-spacer>
             <v-btn
-              :disabled="!valid_step1"
+              :disabled="!valid_step1 || loading"
               class="mt-10 ml-4"
               v-if="Boolean(back_ref) && Boolean(check_steps)"
               color="primary"
@@ -86,7 +86,9 @@
               <v-btn color="info" @click="e1 = 1"> برگشت </v-btn>
             </v-col>
             <v-col cols="12" md="4" v-else>
-              <v-btn color="primary" @click="submit()"> تایید </v-btn>
+              <v-btn color="primary" @click="submit()" :disabled="loading">
+                تایید
+              </v-btn>
 
               <v-btn color="info" @click="e1 = 1"> برگشت </v-btn>
             </v-col>
@@ -131,7 +133,9 @@
           </v-col>
           <v-spacer></v-spacer>
           <div class="mt-10 mx-5">
-            <v-btn color="primary" @click="submit()"> تایید </v-btn>
+            <v-btn color="primary" @click="submit()" :disabled="loading">
+              تایید
+            </v-btn>
             <v-btn
               color="info"
               v-if="Boolean(chek_number_step)"
@@ -192,7 +196,7 @@ export default {
   }),
   beforeMount() {
     if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
-      this.admin_id = true
+      this.admin_id = true;
     }
     this.superviser_role_id = [this.$store.state.auth.role.superviser_id];
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
@@ -273,8 +277,7 @@ export default {
 
       this.$reqApi("/message/refer", form)
         .then((response) => {
-          this.loading = false;
-          let name =""
+          let name = "";
           if (Boolean(this.user) && Boolean(this.user[0])) {
             if (
               Boolean(this.user[0].first_name) &&
@@ -295,6 +298,7 @@ export default {
           }
           this.e1 = 1;
           this.relod();
+          this.loading = false;
         })
         .catch((error) => {
           this.loading = false;
