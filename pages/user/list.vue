@@ -73,6 +73,12 @@ export default {
       { text: "نام خانوادگی", value: "last_name" },
       { text: "نام کاربری", filterCol: "username", value: "username" },
       {
+        text: "منشا ورود",
+        value: "login_source",
+        filterType: "select",
+        items: this.$store.state.static.origin_of_entry,
+      },   
+         {
         text: "وضعبت فعالیت",
         value: "status_work",
         filterType: "select",

@@ -39,6 +39,20 @@
           {{ item.text }}
         </v-chip>
       </v-row>
+      <v-row cols="12" class="center-div mt-5">
+        <v-chip
+          dark
+          label
+          class="ma-2 px-3"
+          color="teal"
+          v-for="item in items_time"
+          :key="item.key"
+          @click="tab_time = item.key"
+          :outlined="tab_time != item.key"
+        >
+          {{ item.text }}
+        </v-chip>
+      </v-row>
     </v-col>
     <v-row class="d-flex justify-center">
       <v-col cols="12" md="12">
@@ -49,7 +63,9 @@
           :autoUpdate="update_url"
           :autoDelete="delete_url"
           :BTNactions="btn_actions"
+          :extraBtn="extra_btn"
           :filters="filters"
+          :rowColor="rowColor"
           v-model="selected_item"
           ref="refreshMessage"
         />
@@ -80,12 +96,20 @@
           :dialogMessageLog="dialog_message_log"
           :message_id="message_id"
         />
+        <CallBackLogs
+          @closeDialog="calls_back = false"
+          v-if="calls_back"
+          :dialog="calls_back"
+          @relod="relod"
+          :now="now"
+        />
       </v-col>
     </v-row>
   </div>
 </template>
 
 <script>
+let jmoment = require("moment");
 import BaseTable from "~/components/DataTable/BaseTable";
 import ChangeStatus from "~/components/CallCenter/ChangeStatus.vue";
 import Customer from "~/components/CallCenter/Customer.vue";
@@ -93,6 +117,7 @@ import History from "~/components/NewCallCenter/History.vue";
 import Refer from "~/components/NewCallCenter/Refer.vue";
 import MessageLog from "~/components/NewCallCenter/MessageLog.vue";
 import BasketDialog from "@/components/NewCallCenter/BasketDialog.vue";
+import CallBackLogs from "@/components/CallCenter/CallBackLogs.vue";
 
 export default {
   components: {
@@ -103,17 +128,28 @@ export default {
     Refer,
     MessageLog,
     BasketDialog,
+    CallBackLogs,
   },
   data: () => ({
     headers: [],
+    extra_btn: [],
     panel: 1,
+    calls_back: false,
     user: [],
+    now: "",
     tab: "all",
     items: [
       { text: "همه پیام ها", value: "all" },
       { text: "فعال ( قابل برسی )", value: "active" },
       { text: "غیر فعال", value: "in_activ" },
     ],
+    tab_time: "all",
+    items_time: [
+      { text: "همه", key: "all" },
+      { text: "کارهای امروز من", key: "my_today_work" },
+      { text: "کارهای دارای تاخیر", key: "my_late_work" },
+    ],
+
     dialog_history: {
       show: false,
       items: null,
@@ -138,6 +174,16 @@ export default {
     title: "لیست پیام ها",
   }),
   beforeMount() {
+    this.now = jmoment().format("YYYY-MM-DD");
+    if (this.$route.query.filter == "my_today_work") {
+      this.tab_time = "my_today_work";
+    }
+    if (this.$route.query.filter == "my_late_work") {
+      this.tab_time = "my_late_work";
+    }
+    if (this.$route.query.filter == "all") {
+      this.tab_time = "all";
+    }
     if (this.$store.state.auth.action.indexOf("messages/insert") > -1) {
       this.create_url = "/new-call-center/insert";
     }
@@ -159,23 +205,15 @@ export default {
           return "";
         },
       },
-      {
-        text: "کاربر ارسال کننده ",
-        filterable: false,
-        value: (body) => {
-          let name =
-            Boolean(body.user) && Boolean(body.user.first_name)
-              ? body.user.first_name + " " + body.user.last_name
-              : "--";
-          return name;
-        },
-      },
+      { text: "نام کاربر", value: "user_first_name" },
+      { text: "نام خانوادگی", value: "user_last_name" },
+
       {
         text: "شماره ارسال کننده",
         type: "phone",
         value: (body) => {
-          if (body.user) {
-            return body.user.username;
+          if (body.user_username) {
+            return body.user_username;
           }
         },
       },
@@ -282,9 +320,55 @@ export default {
         },
       },
     ];
+    this.extra_btn = [
+      {
+        color: "info darken-1",
+        icon: "call",
+        text: "تماس مجدد",
+        fun: (body) => {
+          this.calls_back = true;
+        },
+        show_fun: (body) => {
+          if (
+            Boolean(this.$checkRole(this.$store.state.auth.role.admin_id)) ||
+            Boolean(this.$checkRole(this.$store.state.auth.role.oprator_id))
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+    ];
     this.$store.dispatch("setPageTitle", this.title);
   },
-
+  watch: {
+    tab_time() {
+      let filter = {};
+      switch (this.tab_time) {
+        case "all":
+          this.filter_time = {};
+          break;
+        case "my_today_work":
+          this.filter_time = {
+            allocation_at: {
+              op: "=",
+              value: (this.now = jmoment().format("YYYY-MM-DD")),
+            },
+          };
+          break;
+        case "my_late_work":
+          this.filter_time = {
+            allocation_at: {
+              op: "<",
+              value: jmoment(this.now).add(-1, "days").format("YYYY-MM-DD"),
+            },
+          };
+          break;
+      }
+      this.filters = { ...this.filters, ...this.filter_time };
+    },
+  },
   methods: {
     relod() {
       this.$refs.refreshMessage.getDataFromApi();
@@ -455,6 +539,7 @@ export default {
       this.selected_item = [];
       this.panel = 1;
     },
+
     selectItem(item) {
       this.tab = item.value;
       let filters = {};
@@ -510,7 +595,20 @@ export default {
           };
         }
       }
-      this.filters = filters;
+      this.filters = { ...filters, ...this.filter_time };
+    },
+    rowColor(body) {
+      if (body.item.status == "call_again_time") {
+        let time = this.$toJalali(
+          body.call_again_time,
+          "YYYY-MM-DD",
+          "jYYYY/jMM/jDD"
+        );
+        if (this.now == time) {
+
+          return "orange lighten-4";
+        }
+      }
     },
   },
 };

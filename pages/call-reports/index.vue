@@ -232,6 +232,7 @@ export default {
               items.push({
                 src: x.src,
                 cnum: x.cnum,
+                cnum: x.cnum,
                 dst: x.dst,
                 calldate: x.calldate,
                 recordingfile: x.recordingfile,
@@ -242,15 +243,15 @@ export default {
 
               personal = this.personal.find(
                 (f) =>
-                  x.src == f.username ||
-                  Boolean(f.text.indexOf(x.src) > -1) ||
-                  f.internal_port == x.src
+                  x.cnum == f.username ||
+                  Boolean(f.text.indexOf(x.cnum) > -1) ||
+                  f.internal_port == x.cnum
               );
 
               if (Boolean(personal)) {
                 items[items.length - 1]["personal"] = personal;
               } else {
-                items[items.length - 1]["personal"] = x.src;
+                items[items.length - 1]["personal"] = x.cnum;
               }
             }
           }

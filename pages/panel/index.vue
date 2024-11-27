@@ -24,7 +24,7 @@ export default {
       if (this.$checkAccess("access_cartable/coordinator_supervisor")) {
         this.$router.push("/panel/coordinator-supervisor");
       }
-      //-----------------------------------------------------------------------------------------------------------------------
+      // ----------------------------------------------------------------------
 
       if (this.$checkAccess("access_cartable/cartable_fiscal_manager")) {
         this.$router.push("/panel/financial-manager");
@@ -35,13 +35,13 @@ export default {
       if (this.$checkAccess("access_cartable/cartable_fiscal")) {
         this.$router.push("/panel/financial");
       }
-      //-----------------------------------------------------------------------------------------------------------------------
+      // ----------------------------------------------------------------------
 
       if (this.$checkAccess("access_cartable/cartable_sefir")) {
         this.$router.push("/panel/sefir");
       }
 
-      //-----------------------------------------------------------------------------------------------------------------------
+      // ----------------------------------------------------------------------
 
       if (
         this.$checkAccess("access_cartable/cartable_supervisor_center_stock")
@@ -52,15 +52,49 @@ export default {
         this.$router.push("/panel/center-stock/employee");
       }
 
-      //-----------------------------------------------------------------------------------------------------------------------
+      // ----------------------------------------------------------------------
       if (this.$checkAccess("access_cartable/cartable_manager_sale")) {
         this.$router.push("/panel/Sales-units/manager");
       }
       if (this.$checkAccess("access_cartable/cartable_supervisor_sale")) {
         this.$router.push("/panel/Sales-units/supervisor");
       }
-      if (this.$checkAccess("ccess_cartable/cartable_employee_sale")) {
+      if (this.$checkAccess("access_cartable/cartable_employee_sale")) {
         this.$router.push("/panel/Sales-units/employee");
+      }
+      // ----------------------------------------------------------------------
+      if (this.$checkAccess("access_cartable/cartable_manager_sale_agency")) {
+        this.$router.push("/panel/sale-agency/manager");
+      }
+      if (
+        this.$checkAccess("access_cartable/cartable_stockclerk_sale_agency")
+      ) {
+        this.$router.push("/panel/sale-agency/stockclerk");
+      }
+      if (this.$checkAccess("access_cartable/cartable_courier")) {
+        this.$router.push("/panel/sale-agency/courier");
+      }
+      if (this.$checkAccess("access_cartable/cartable_employee_sale_agency")) {
+        this.$router.push("/panel/sale-agency/employee");
+      }
+      // ----------------------------------------------------------------------
+      if (this.$checkAccess("access_cartable/cartable_operator_call_center")) {
+        this.$router.push("/panel/call-center/operator");
+      }
+      if (
+        this.$checkAccess("access_cartable/cartable_supervisor_call_center")
+      ) {
+        this.$router.push("/panel/call-center/supervisor");
+      }
+      // ----------------------------------------------------------------------
+      if (this.$checkAccess("access_cartable/cartable_send_coordinator")) {
+        this.$router.push("/panel/send-coordinator/coordinator");
+      }
+      if (this.$checkAccess("access_cartable/cartable_manager_send_coordinator")) {
+        this.$router.push("/panel/send-coordinator/manager");
+      }
+      if (this.$checkAccess("access_cartable/cartable_supervisor_send_coordinator")) {
+        this.$router.push("/panel/send-coordinator/supervisor");
       }
     },
   },

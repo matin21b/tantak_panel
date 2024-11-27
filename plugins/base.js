@@ -36,8 +36,6 @@ export default ({ redirect, $toast }, inject) => {
       XLSX.utils.book_append_sheet(wb, ws, "all");
       XLSX.writeFile(wb, fileName);
     } catch (error) {
-      console.log("ErrorExportCSV =>", error);
-
       $toast.error("خطا در دریافت طلاعات");
     }
   });

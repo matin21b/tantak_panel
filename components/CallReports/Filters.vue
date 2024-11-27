@@ -1,5 +1,11 @@
 <template>
-  <div prominent outlined icon="search" class="elevation-0 pa-5" :disabled="loadingItems">
+  <div
+    prominent
+    outlined
+    icon="search"
+    class="elevation-0 pa-5"
+    :disabled="loadingItems"
+  >
     <v-row class="text-center justify-center">
       <v-col class="d-flex" cols="12" md="5">
         <amp-input
@@ -15,16 +21,14 @@
           text="مقصد تماس"
           prepend-inner-icon="call"
           placeholder=" مقصد مورد نظر را وارد کنید"
-      />
-
+        />
       </v-col>
       <v-spacer></v-spacer>
       <v-col class="d-flex" cols="12" md="5">
         <amp-jdate text="زمان ثبت تماس از" v-model="from" />
         <amp-jdate text="تا تاریخ" v-model="to" />
-
       </v-col>
-   
+
       <v-spacer></v-spacer>
 
       <v-col cols="12" md="2">
@@ -48,8 +52,8 @@
               <h1 class="grey--text">
                 <small> تماس های ورودی (از سمت تنتاک) </small>
                 <small>
-                  و همجنین تماس های خروجی تماس هایی است که ار سمت کاربرانی غیر پرسنل تنتاک
-                  گرفته شده</small
+                  و همجنین تماس های خروجی تماس هایی است که ار سمت کاربرانی غیر
+                  پرسنل تنتاک گرفته شده</small
                 >
               </h1>
             </v-banner>
@@ -94,6 +98,10 @@
                   <small v-if="Boolean(i.time)">
                     <v-icon size="19" color="grey"> timer </v-icon>
                     {{ i.time }}
+                  </small>
+                  <small v-else>
+                    <v-icon size="19" color="grey"> timer </v-icon>
+                    00:00:00
                   </small>
                 </h1>
 
@@ -199,7 +207,6 @@ export default {
       let items = [];
 
       let data = JSON.parse(JSON.stringify(this.searchResult));
-
       for (let i = 0; i < this.status_call.length; i++) {
         const element = this.status_call[i];
 
@@ -214,7 +221,7 @@ export default {
         }
         // ******************************************************************************
         else if (element.value == "incoming_to_out_calls") {
-          let array = data.filter((x) => x.src < 10000 && x.dst > 10000);
+          let array = data.filter((x) => x.cnum < 10000 && x.dst > 10000);
           element["count"] = array.length;
           element["items"] = array;
           if (array.length > 0) {
@@ -224,7 +231,7 @@ export default {
 
         // ******************************************************************************
         else if (element.value == "out_to_incoming_calls") {
-          let array = data.filter((x) => x.src > 10000 && x.dst < 10000);
+          let array = data.filter((x) => x.cnum > 10000 && x.dst < 10000);
           element["items"] = array;
           element["count"] = array.length;
           if (array.length > 0) {
@@ -234,7 +241,7 @@ export default {
 
         // ******************************************************************************
         else if (element.value == "incoming_to_incoming_calls") {
-          let array = data.filter((x) => x.src < 10000 && x.dst < 10000);
+          let array = data.filter((x) => x.cnum < 10000 && x.dst < 10000);
           element["count"] = array.length;
           element["items"] = array;
           if (array.length > 0) {
@@ -277,9 +284,7 @@ export default {
               let remainder = total_secend % 3600;
               let minutes = Math.floor(remainder / 60);
               let secs = remainder % 60;
-              element.time = `${hours
-                .toString()
-                .padStart(2, "0")}:${minutes
+              element.time = `${hours.toString().padStart(2, "0")}:${minutes
                 .toString()
                 .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
             }
@@ -296,7 +301,9 @@ export default {
   watch: {
     search_dst() {
       if (Boolean(this.search_dst)) {
-        let find = this.user_list_internal.find((x) => x.value == this.search_dst);
+        let find = this.user_list_internal.find(
+          (x) => x.value == this.search_dst
+        );
 
         if (Boolean(find)) {
           this.dst = find.internal_port;
@@ -388,8 +395,14 @@ export default {
     },
     search() {
       let filter = {};
+      let phone = "";
       if (Boolean(this.dst)) {
-        filter["dst"] = this.dst;
+        if (this.dst.length == 11) {
+          phone = `9${this.dst}`;
+        } else {
+          phone = this.dst;
+        }
+        filter["dst"] = phone;
       }
       if (Boolean(this.from)) {
         filter["from"] = this.from;
@@ -421,9 +434,9 @@ export default {
           let secs = remainder % 60;
           this.status_call[key].time = `${hours
             .toString()
-            .padStart(2, "0")}:${minutes
+            .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs
             .toString()
-            .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+            .padStart(2, "0")}`;
         }
       }
     },
@@ -447,7 +460,6 @@ export default {
 
 .selected-card {
   background: linear-gradient(to top, #4582c783, #245bc2ad, #000000) !important;
-
 }
 
 .phone-calss {
