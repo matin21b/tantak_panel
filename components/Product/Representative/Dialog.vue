@@ -34,7 +34,7 @@
                       </v-expansion-panel-header>
 
                       <v-expansion-panel-content>
-                        <!-- <v-col cols="12">
+                        <v-col cols="12">
                           <v-row cols="12" class="mt-3 justify-center">
                             <v-chip
                               :disabled="update"
@@ -55,7 +55,7 @@
                               </v-icon>
                             </v-chip>
                           </v-row>
-                        </v-col> -->
+                        </v-col>
                         <v-form
                           v-model="valid"
                           @submit.prevent="submit()"
@@ -70,21 +70,37 @@
                             :response="response"
                             :clear_vaue="continue_form"
                           />
-                          <!-- <Packages
+                          <Packages
                             @validVariations="continue_form = $event"
                             v-if="!update && tab == 'packages'"
                             @section="setSections($event)"
                             :productInfo="product"
                             :response="response"
                             :clear_vaue="continue_form"
-                          /> -->
+                          />
                           <v-row v-if="check_continue">
                             <v-col cols="12" md="4">
                               <amp-input
                                 text="موجودی"
                                 Cclass="ltr-item"
                                 rules="require,number"
-                                v-model="skock"
+                                v-model="form.skock"
+                              />
+                            </v-col>            
+                                 <v-col cols="12" md="4">
+                              <amp-input
+                                text="موجودی انبار"
+                                Cclass="ltr-item"
+                                rules="require,number"
+                                v-model="form.save_skock"
+                              />
+                            </v-col>            
+                                <v-col cols="12" md="4">
+                              <amp-input
+                                text="توضیحات"
+                                Cclass="ltr-item"
+                                rules="require,number"
+                                v-model="form.description"
                               />
                             </v-col>
                             <v-col cols="6" md="2">
@@ -110,82 +126,7 @@
                             color="grey"
                           />
                         </div>
-                        <v-col
-                          cols="12"
-                          v-for="(x, i) in products_list"
-                          :key="i"
-                        >
-                          <v-card
-                            class="elevation-1 pa-3 d-flex align-center"
-                            outlined
-                          >
-                            <v-avatar size="45" class="mx-2">
-                              <img
-                                :src="
-                                  $getImage(
-                                    x.product.variation1.product.main_image
-                                  )
-                                "
-                              />
-                            </v-avatar>
-                            <h1>
-                              {{ x.product.variation1.product.name }}
-                              <br />
-                              <small
-                                class="grey--text"
-                                v-if="Boolean(x.product.variation1.colors)"
-                              >
-                                {{ x.product.variation1.variation_type.value }}
-                                {{ x.product.variation1.colors }}
-                              </small>
-                              <small class="grey--text" v-else>
-                                {{ x.product.variation1.variation_type.value }}
-                                {{ x.product.variation1.value }}
-                              </small>
-                              <small class="mx-1 grey--text">
-                                {{ x.product.variation2.variation_type.value }}
-                                {{ x.product.variation2.value }}
-                              </small>
-                              <small class="mx-1 grey--text">
-                                {{ x.product.variation3.variation_type.value }}
-                                {{ x.product.variation3.value }}
-                              </small>
-                            </h1>
-                            <v-spacer></v-spacer>
-                            <amp-input
-                              class="mt-6"
-                              v-model="x.skock"
-                              cClass="ltr-item"
-                              rules="require,number"
-                            />
-                            <v-spacer></v-spacer>
-                            <v-btn text icon @click="deletFromCard(x)">
-                              <v-icon> delete </v-icon>
-                            </v-btn>
-                          </v-card>
-                        </v-col>
-                        <v-row class="d-flex justify-center mt-5">
-                          <v-col cols="6" md="2">
-                            <amp-button
-                              block
-                              height="40"
-                              text="تایید"
-                              color="green darken-1"
-                              @click="submit"
-                              :loading="loading"
-                              :disabled="products_list.length == 0"
-                            />
-                          </v-col>
-                          <v-col cols="6" md="2">
-                            <amp-button
-                              block
-                              height="40"
-                              text="انصراف"
-                              color="red darken-1"
-                              @click="canceld"
-                            />
-                          </v-col>
-                        </v-row>
+              
                       </v-expansion-panel-content>
                     </v-expansion-panel>
                   </v-expansion-panels>
