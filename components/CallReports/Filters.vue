@@ -280,10 +280,14 @@ export default {
             let [minutes, secend] = x.billsec.split(":").map(Number);
             total_secend += minutes * 60 + secend;
             if (total_secend > 0) {
-              let hours = Math.floor(total_secend / 3600);
-              let remainder = total_secend % 3600;
-              let minutes = Math.floor(remainder / 60);
-              let secs = remainder % 60;
+              let hours = "";
+              hours = Math.floor(total_secend / 3600);
+              let remainder = "";
+              remainder = total_secend % 3600;
+              let minutes = "";
+              minutes = Math.floor(remainder / 60);
+              let secs = "";
+              secs = remainder % 60;
               element.time = `${hours.toString().padStart(2, "0")}:${minutes
                 .toString()
                 .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
@@ -395,6 +399,11 @@ export default {
     },
     search() {
       let filter = {};
+      let i = 0;
+      do {
+        this.status_call[i].time = "00:00:00";
+        i++;
+      } while (i < 6);
       let phone = "";
       if (Boolean(this.dst)) {
         if (this.dst.length == 11) {
@@ -422,21 +431,25 @@ export default {
     },
     callTimeCalculation(data, key) {
       let total_secend = 0;
-
       for (let i = 0; i < data.length; i++) {
         const x = data[i];
         let [minutes, secend] = x.billsec.split(":").map(Number);
         total_secend += minutes * 60 + secend;
         if (total_secend > 0) {
-          let hours = Math.floor(total_secend / 3600);
-          let remainder = total_secend % 3600;
-          let minutes = Math.floor(remainder / 60);
-          let secs = remainder % 60;
+          let hours = "";
+          hours = Math.floor(total_secend / 3600);
+          let remainder = "";
+          remainder = total_secend % 3600;
+          let minutes = "";
+          minutes = Math.floor(remainder / 60);
+          let secs = "";
+          secs = remainder % 60;
           this.status_call[key].time = `${hours
             .toString()
             .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs
             .toString()
             .padStart(2, "0")}`;
+       
         }
       }
     },
@@ -452,8 +465,6 @@ export default {
   border-radius: 8px !important;
   filter: hue-rotate(3.142rad);
   filter: grayscale(0.7);
-
-
 }
 .card-style2:hover {
   color: #000000bb;
@@ -461,7 +472,6 @@ export default {
   transform: scale3d(1.02, 1.02, 1.02);
   transition: all 0.4s ease !important;
   filter: opacity(1);
-
 }
 
 .selected-card {

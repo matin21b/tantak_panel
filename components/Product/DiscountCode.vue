@@ -6,14 +6,14 @@
     class="rounded-0 pa-2 d-flex flex-column"
   >
     <v-row class="ma-2">
-      <v-col cols="12" md="3">
+      <!-- <v-col cols="12" md="3">
         <amp-select
           text="بابت"
           :items="$store.state.setting.basic_information.for_wallet"
           rules="require"
           v-model="form.for_title"
         />
-      </v-col>
+      </v-col> -->
       <v-col cols="12" md="3">
         <amp-select
           :items="code_type"
@@ -24,38 +24,25 @@
       </v-col>
       <v-col cols="12" md="3" v-if="form.type">
         <amp-input
-          v-if="form.type == 'percent'"
+          v-if="form.type == 'percentage'"
           text="درصد تخفیف"
-          v-model="form.percent"
+          v-model="form.value"
           rules="require,percent"
         />
         <amp-input
-          v-if="form.type == 'cash'"
-          text="مقدار تخفیف (تومان)"
-          v-model="form.amount"
+          v-if="form.type == 'amount'"
+          text="مقدار تخفیف (ریال)"
+          v-model="form.value"
           rules="require,price"
           is-price
         />
       </v-col>
-      <v-col cols="12" md="3">
-        <amp-autocomplete
-          :items="company"
-          v-model="form.company_id"
-          text="شرکت بیمه"
-        />
-      </v-col>
-      <v-col cols="12" md="3" v-if="show_insurance_type">
-        <amp-autocomplete
-          text="نوع بیمه"
-          :items="insurance"
-          v-model="form.insurance_id"
-          rules="require"
-        />
-      </v-col>
+
+  
       <v-col cols="12" md="3">
         <amp-select
           text="عمومی"
-          :items="$store.state.static.default_type"
+          :items="$store.state.static.bool_en"
           rules="require"
           v-model="form.public"
         ></amp-select>
@@ -94,7 +81,7 @@
         <amp-input
           rules="number,require"
           text="حداکثر استفاده "
-          v-model="form.limit"
+          v-model="form.coupon_usage_limit"
           cClass="ltr-item"
         />
       </v-col>
@@ -110,7 +97,7 @@
         <amp-input
           text="حداکثر استفاده برای کاربر"
           rules="number,require"
-          v-model="form.limit_use_user"
+          v-model="form.user_usage_limit"
           cClass="ltr-item"
         />
       </v-col>
@@ -170,8 +157,8 @@ export default {
       valid: true,
       loading: false,
       code_type: [
-        { text: "درصد", value: "percent" },
-        { text: "مقدار", value: "cash" },
+        { text: "درصد", value: "percentage" },
+        { text: "مقدار", value: "amount" },
       ],
       insurance: [],
       contract_ids: [],
@@ -189,10 +176,9 @@ export default {
         insurance_id: "",
         status: "active",
         company_id: "",
-        amount: "",
-        percent: "",
-        limit: "",
-        limit_use_user: "",
+        value: "",
+        coupon_usage_limit: "",
+        user_usage_limit: "",
         description: "",
         sort: "",
         public: true,
@@ -201,22 +187,8 @@ export default {
       },
     };
   },
-  watch: {
-    "form.company_id": {
-      deep: true,
-      handler(new_val, old_val) {
-        if (this.form.company_id) {
-          this.show_insurance_type = true;
-        }
-      },
-    },
-  },
-  mounted() {
-    this.loadInsurance();
-    this.loadCompany();
-    this.loadContract();
-    this.loadUser();
 
+  mounted() {
     this.now = jmoment().format("YYYY-MM-DD");
     if (Boolean(this.modelId)) {
       this.loadData();
@@ -226,9 +198,11 @@ export default {
     submit() {
       this.loading = true;
 
-      if (this.form.public) {
-        this.form.contract_ids = [];
-        this.form.send_in = "";
+      if (this.form.public == "yes") {
+        this.form.public = true
+
+      }else{
+        this.form.public = false
       }
       if (this.form.code.length > 7) {
         this.loading = false;
@@ -268,8 +242,8 @@ export default {
           this.form.company_id = res.data.company_id;
           this.form.amount = res.data.amount;
           this.form.percent = res.data.percent;
-          this.form.limit = res.data.limit;
-          this.form.limit_use_user = res.data.limit_use_user;
+          this.form.coupon_usage_limit = res.data.coupon_usage_limit;
+          this.form.user_usage_limit = res.data.user_usage_limit;
           this.form.description = res.data.description;
           this.form.sort = res.data.sort;
           this.form.public = res.data.public;

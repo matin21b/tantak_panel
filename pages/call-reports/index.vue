@@ -250,9 +250,12 @@ export default {
 
               if (Boolean(personal)) {
                 items[items.length - 1]["personal"] = personal;
-              } else {
+              } else if (Boolean(x.cnum)) {
                 items[items.length - 1]["personal"] = x.cnum;
+              } else{
+                items[items.length - 1]["personal"] = x.src;
               }
+             
             }
           }
           if (items.length > 0) {
