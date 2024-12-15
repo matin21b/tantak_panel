@@ -35,7 +35,7 @@ export default {
     ],
     search: "",
   }),
-  beforeMount() {
+  mounted() {
     this.getLits();
   },
   watch: {
@@ -48,10 +48,11 @@ export default {
   },
   methods: {
     getLits() {
+      
       this.loading = true;
       this.$reqApi("sale-agency-stock/base-product", {
         row_number: 3000,
-        sale_agency_id: this.$store.state.auth.user.sale_agenciy_id,
+        sale_agency_id: this.$store.state.auth.user.sale_agency_id,
       })
         .then((res) => {
           let data = [];

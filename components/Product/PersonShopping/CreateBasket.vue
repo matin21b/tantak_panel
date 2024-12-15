@@ -30,6 +30,7 @@
         </v-col>
 
         <BaseTable
+          :rowColor="rowClick"
           ref="ReloadList"
           v-model="selected_item"
           url="/sale-agency-stock/manager-list"
@@ -86,7 +87,6 @@ export default {
       root_body: "",
       product_var_id: "",
       valid: true,
-      update: false,
       form: {
         sale_agency_id: "",
         array_section: [],
@@ -116,7 +116,7 @@ export default {
   },
   beforeMount() {
     this.root_body = {
-      sale_agency_id: this.$store.state.auth.user.sale_agenciy_id,
+      sale_agency_id: this.$store.state.auth.user.sale_agency_id,
     };
     this.url_list = "/sale-agency-stock/manager-list";
     this.$store.dispatch("setPageTitle", this.title);
@@ -178,10 +178,29 @@ export default {
         disableSort: true,
         filterable: false,
         fun: (body) => {
-          console.log("dddd ===  B", body);
+        },
+        show_box: (body) => {
+          if (body.skock != "0") {
+            return true;
+          } else {
+            return false;
+          }
         },
       },
-      { text: "", value: "", disableSort: true, filterable: false },
+      {
+        text: "موجودی",
+        value: (body) => {
+          if (body.skock != "0") {
+            return body.skock;
+          } else {
+            return `<h1 class='red--text'>
+    اتمام موجودی
+    </h1>`;
+          }
+        },
+        disableSort: true,
+        filterable: false,
+      },
     ];
   },
   methods: {
@@ -192,8 +211,9 @@ export default {
       });
     },
     totalData(event) {
-      this.total_data = event.model.data;
-      console.log("this.total_data >>> ", this.total_data);
+      if (event && event.model.data.length > 0) {
+        this.total_data = [...this.total_data, ...event.model.data];
+      }
     },
     //     submit() {
     //       this.loading = true;
@@ -207,7 +227,7 @@ export default {
     //         });
     //       }
     //       let form = { ...this.form };
-    //       form.sale_agency_id = this.$store.state.auth.user.sale_agenciy_id;
+    //       form.sale_agency_id = this.$store.state.auth.user.sale_agency_id;
     //       form.array_section = items;
     //       let url = this.update
     //         ? "sale-agency-stock/update"
@@ -250,8 +270,12 @@ export default {
     },
     setlist() {
       this.selected_list.push(this.selected_var);
-      console.log("this.selected_list >. ", this.selected_list);
       this.overlay = false;
+    },
+    rowClick(body) {
+      if (body.item.skock == "0") {
+        return "red lighten-5";
+      }
     },
   },
 };

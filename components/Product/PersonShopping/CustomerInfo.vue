@@ -7,21 +7,41 @@
         rules="phone,require"
         v-model="customer.username"
       />
-      <v-btn
-            v-if="Boolean(customer.username) && customer.username.length ==11"
-        outlined
-        text
-        width="97%"
-        height="36"
-        color="blue-grey"
-        @click="submit"
-        :disabled="!Boolean(customer.username)"
+      <v-row
+      class="mx-3 my-5"
+        v-if="Boolean(customer.username) && customer.username.length == 11"
       >
-        <h1>
-          ثبت شماره همراه
-          <v-icon color="blue-grey" class="mr-1"> task_alt </v-icon>
-        </h1>
-      </v-btn>
+        <v-btn
+          outlined
+          text
+          width="48%"
+          height="36"
+          color="blue-grey"
+          @click="submit"
+          :disabled="!Boolean(customer.username)"
+        >
+          <h1>
+            ثبت شماره همراه
+            <v-icon color="blue-grey" class="mr-1"> task_alt </v-icon>
+          </h1>
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn
+          outlined
+          text
+          width="48%"
+          height="36"
+          color="teal darken-1"
+          @click="overlay = !overlay"
+          :disabled="!Boolean(customer.username)"
+        >
+          <h1>
+            تکمیل اطلاعات
+            <v-icon color="teal darken-1" class="mr-1"> person_add </v-icon>
+          </h1>
+        </v-btn>
+      </v-row>
+
       <v-alert
         dense
         text
@@ -31,15 +51,11 @@
         icon="account_circle"
         class="text-end mt-8"
       >
-        <h1 class="font_12">
+        <h1 class="font_12 mt-4">
           چنان چه شماره همراه وارد شده در کاربران تنتاک وجود نداشته باشد , کاربر
           جدید ایجاد میشود
         </h1>
-        <div class="text-start">
-          <h1 class="primary--text clicabel" @click="overlay = !overlay">
-            <small> تکمیل اطلاعات </small>
-          </h1>
-        </div>
+
         <v-col cols="12">
           <v-overlay :dark="false" :value="overlay">
             <v-row class="d-flex justify-center">
@@ -120,8 +136,8 @@ export default {
   methods: {
     submit() {
       this.$emit("customer", this.customer);
+      this.overlay = false
       this.$emit("nextStep");
-      
     },
   },
 };

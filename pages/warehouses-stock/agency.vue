@@ -205,14 +205,14 @@
           :dialog="rotation"
           @reload="refresh"
           v-if="rotation"
-          :sale-agency-id="$store.state.auth.user.sale_agenciy_id"
+          :sale-agency-id="$store.state.auth.user.sale_agency_id"
           @closeDialog="rotation = false"
         />
       </v-window-item>
 
       <v-window-item :value="2">
         <History
-          :branchId="$store.state.auth.user.sale_agenciy_id"
+          :branchId="$store.state.auth.user.sale_agency_id"
           v-if="show_history && step == 2"
           :productVarId="product_var_id"
           :productVarInfo="send_prop"
@@ -312,7 +312,7 @@ export default {
   },
   beforeMount() {
     this.root_body = {
-      sale_agency_id: this.$store.state.auth.user.sale_agenciy_id,
+      sale_agency_id: this.$store.state.auth.user.sale_agency_id,
     };
     this.url_list = "/sale-agency-stock/manager-list";
     this.$store.dispatch("setPageTitle", this.title);
@@ -496,7 +496,7 @@ export default {
         });
       }
       let form = { ...this.form };
-      form.sale_agency_id = this.$store.state.auth.user.sale_agenciy_id;
+      form.sale_agency_id = this.$store.state.auth.user.sale_agency_id;
       form.array_section = items;
       let url = this.update
         ? "sale-agency-stock/update"

@@ -62,7 +62,7 @@
             </v-window-item>
 
             <v-window-item :value="2">
-              <History :branchId="$store.state.auth.user.sale_agenciy_id" v-if="show_history" :productVarId="product_var_id"
+              <History :branchId="$store.state.auth.user.sale_agency_id" v-if="show_history" :productVarId="product_var_id"
                 :productVarInfo="send_prop" @backStep="step--" />
             </v-window-item>
           </v-window>

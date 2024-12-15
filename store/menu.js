@@ -129,7 +129,7 @@ let mnue_tree = [
   {
     id: 200564,
     name: "خرید حضوری",
-    access: "*",
+    access: "basket/sale_agency_seller_insert_basket",
     route: "/in-person-shopping",
   }, 
   //  {
@@ -481,6 +481,11 @@ let mnue_tree = [
         name: "تغییر روزهای چک",
         access: "setting/index",
         route: "/setting/change-check-days",
+      },      {
+        id: 26123,
+        name: "مهلت های یرگشت",
+        access: "setting/index",
+        route: "/setting/deadline-back",
       },
     ],
   },

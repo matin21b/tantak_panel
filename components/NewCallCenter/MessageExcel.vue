@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" persistent width="650">
+    <v-dialog v-model="dialog" persistent width="850">
       <v-card
         style="overflow: hidden !important"
         class="align-center card-style justify-center pa-8"
@@ -10,25 +10,41 @@
           height="50%"
           class="elevation-0 d-flex align-center pa-5 card-style2"
         >
-          <v-col cols="12" md="10">
-            <amp-autocomplete
-              text="خروجی اکسل  براساس وضعیت"
-              chips
-              multiple
-              v-model="status"
-              :items="$store.state.static.status_message"
-            />
-          </v-col>
-          <v-col cols="12" md="2">
-            <amp-button
-              text="تایید"
-              height="38"
-              block
-              color="teal darken-2"
-              @click="getVarComs"
-              :disabled="status.length == 0"
-            />
-          </v-col>
+          <v-row class="align-center">
+            <v-col cols="12" md="4" class="mt-7">
+              <amp-autocomplete
+                text="    وضعیت"
+                chips
+                multiple
+                v-model="status"
+                :items="$store.state.static.status_message"
+              />
+            </v-col>
+            <v-col cols="12" md="3">
+              <amp-jdate
+                text="تاریخ شروع"
+                :is-number="true"
+                v-model="start_date"
+              />
+            </v-col>
+            <v-col cols="12" md="3">
+              <amp-jdate
+                text="تاریخ پایان"
+                :is-number="true"
+                v-model="end_date"
+              />
+            </v-col>
+            <v-col cols="12" md="2" class="mt-7">
+              <amp-button
+                text="تایید"
+                height="38"
+                block
+                color="teal darken-2"
+                @click="getExcelFile"
+                :disabled="status.length == 0"
+              />
+            </v-col>
+          </v-row>
         </v-card>
 
         <div class="text-center mt-4">
@@ -93,6 +109,8 @@ export default {
       end: false,
       last_page: 10000000,
       total_data: [],
+      start_date: "",
+      end_date: "",
       set_filters: {},
       status: [],
       excel_hed: [
@@ -164,8 +182,41 @@ export default {
           op: key,
           value: value,
         };
+        console.log("s --- > ", this.start_date);
+        console.log("e --- > ", this.end_date);
         this.set_filters = filter;
       },
+    },
+    start_date() {
+      if (Boolean(this.start_date)) {
+        this.set_filters["created_at"] = {
+          op: ">=",
+          value: this.start_date,
+        };
+        if (Boolean(this.start_date) && Boolean(this.end_date)) {
+          this.set_filters["created_at"] = {
+            op: "between",
+            from: this.start_date + " 00:00:00",
+            to: this.end_date + " 23:59:59",
+          };
+        }
+      }
+    },
+    end_date() {
+      if (Boolean(this.end_date)) {
+        this.set_filters["created_at"] = {
+          op: "<=",
+          value: this.end_date,
+        };
+        if (Boolean(this.start_date) && Boolean(this.end_date)) {
+          this.set_filters["created_at"] = {
+            op: "between",
+            from: this.start_date + " 00:00:00",
+            to: this.end_date + " 23:59:59",
+          };
+        }
+        console.log("set_filters> ", this.set_filters);
+      }
     },
   },
   computed: {
@@ -176,7 +227,7 @@ export default {
     },
   },
   methods: {
-    getVarComs() {
+    getExcelFile() {
       this.disabled = true;
       if (Boolean(this.end)) {
         return;
@@ -218,6 +269,7 @@ export default {
         try {
           for (let i = 0; i < data.length; i++) {
             const x = data[i];
+
             done_messages.push({
               user_first_name: x.user_first_name,
               user_last_name: x.user_last_name,
@@ -244,7 +296,7 @@ export default {
           console.log("  this.total_data >>> ", this.total_data);
 
           this.page_number++;
-          this.getVarComs();
+          this.getExcelFile();
           this.loading = false;
         })
         .catch((err) => {
