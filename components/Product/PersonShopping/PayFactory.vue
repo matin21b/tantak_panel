@@ -172,8 +172,7 @@ export default {
           .then((res) => {
             if (Boolean(only_price_show)) {
               this.wallet = res;
-              console.log("res", res);
-              console.log("res", res);
+
               return;
             }
             this.$toast.success("سفارش با موفقیت ثبت شد");
@@ -219,19 +218,14 @@ export default {
     },
     listItems() {
       let array = [];
-      console.log("this.information.list >>> ", this.information.list);
-
       if (Object.keys(this.information).length > 0) {
         let i = 0;
         do {
           let id = this.information.selected_item[i];
-          console.log("id", id);
-
           i++;
           array.push(this.information.list.find((x) => x.id == id));
         } while (i < this.information.selected_item.length);
       }
-      console.log("array??? ", array);
       this.list_items = array;
     },
     payFactor(only_price) {
@@ -244,11 +238,21 @@ export default {
           this.loading = false;
         })
         .catch((err) => {
-          this.$emit("backStep");
-          this.$emit("backStep");
+          this.editBasket();
+          console.log("backStep");
         });
     },
     saveBasket() {
+      let find = this.data.find((x) => x.skock < x.count);
+      if (Boolean(find)) {
+        
+        this.$toast.info(
+          "سفارشی بیشتر از موجودی ثبت شده لطفا آن را اصلاح کنید "
+        );
+        this.editBasket();
+        return;
+      }
+
       this.$toast.info("سبد خرید دخیره شد");
       this.$router.push("/in-person-shopping");
     },

@@ -237,15 +237,10 @@ export default {
       this.factor_data = event;
     },
     callPayApi(kind_set) {
-      console.log("kind_set1", kind_set);
-
       this.kind_set = kind_set;
-
-      // this.$refs.submitFinal.submit();
     },
     setForm(event) {
       this.form_data = event;
-      console.log("????", event);
     },
   },
 };

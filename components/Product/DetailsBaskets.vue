@@ -98,21 +98,7 @@
               <v-spacer></v-spacer>
               <div class="align-top">
                 <v-row class="justify-end mb-2">
-                  <v-chip>
-                    <h1>
-                      <small v-if="item.info_type == 'string'"> محصول </small>
-                      <small
-                        v-if="
-                          item.info_type != 'string' && item.type == 'Package'
-                        "
-                      >
-                        پکیج
-                      </small>
-                      <small v-else-if="item.info_type != 'string'">
-                        جعبه
-                      </small>
-                    </h1>
-                  </v-chip>
+         
                 </v-row>
 
                 <h1 v-if="item.info_type == 'string'">

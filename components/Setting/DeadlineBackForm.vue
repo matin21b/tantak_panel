@@ -74,8 +74,6 @@ export default {
   methods: {
     submit() {
       let form = { ...this.form };
-      console.log("form?> ?" , form);
-      
       form.value_json.amount = this.value_json;
       form.value_json = JSON.stringify(form.value_json);
       this.loading = true;
@@ -104,10 +102,7 @@ export default {
           this.form["id"] = res.model.id;
           this.form.key = res.model.key;
           this.title = res.model.value;
-
           let str = JSON.parse(res.model.value_json);
-          console.log("res.model.value_json >>>> ", str);
-
           this.form.value = str.amount;
           this.loading = false;
         })

@@ -56,6 +56,8 @@ export const state = () => ({
   inventory_type,
   inventory_type_request,
   tiket_status,
+  reterned_type,
+ 
 });
 
 let status_type = [
@@ -760,4 +762,8 @@ let tiket_status = [
   { text: "پاسخ داده شده", value: "support" },
   { text: "منتظر پاسخ", value: "user" },
   { text: "بسته شده", value: "close" },
+];
+let reterned_type= [
+  { text: "ناقص", value: "defect" },
+  { text: "تعویض", value: "dissatisfactin" },
 ];

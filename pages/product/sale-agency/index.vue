@@ -1,27 +1,35 @@
 <template>
   <div>
-    <BaseTable
-      url="/sale-agency"
-      autoDelete="/sale-agency/delete"
-      :headers="headers"
-      autoUpdate="/product/sale-agency"
-      :createUrl="create_url"
-      :BTNactions="btn_actions"
-      :extraBtn="extra_btn"
-    >
-    </BaseTable>
-    <Dialog
-      :branchId="id"
-      :dialog="show_dialog"
-      v-if="show_dialog"
-      @closeDialog="closeDialog"
-    />
-    <VarComExcel
-      :dialog="varcome_excel"
-      v-if="varcome_excel"
-      url-list="/sale-agency"
-      @closeDialog="closeDialog"
-    />
+    <v-window v-model="step">
+      <v-window-item :value="1">
+        <BaseTable
+          url="/sale-agency"
+          autoDelete="/sale-agency/delete"
+          :headers="headers"
+          autoUpdate="/product/sale-agency"
+          :createUrl="create_url"
+          :BTNactions="btn_actions"
+          :extraBtn="extra_btn"
+        >
+        </BaseTable>
+        <Dialog
+          :branchId="id"
+          :dialog="show_dialog"
+          v-if="show_dialog"
+          @closeDialog="closeDialog"
+        />
+        <VarComExcel
+          :dialog="varcome_excel"
+          v-if="varcome_excel"
+          url-list="/sale-agency"
+          @closeDialog="closeDialog"
+        />
+      </v-window-item>
+
+      <v-window-item :value="2">
+        <Sales :id="id"  v-if="step == 2" @backStep="step--" />
+      </v-window-item>
+    </v-window>
   </div>
 </template>
 
@@ -29,10 +37,12 @@
 import BaseTable from "~/components/DataTable/BaseTable";
 import VarComExcel from "@/components/Product/VarComExcel.vue";
 import Dialog from "@/components/Product/Representative/Dialog.vue";
+import Sales from "@/components/Product/Representative/Sales.vue";
 export default {
-  components: { Dialog, BaseTable, VarComExcel },
+  components: { Dialog, BaseTable, VarComExcel, Sales },
   data: () => ({
     headers: [],
+    step: 1,
     btn_actions: [],
     extra_btn: [],
     id: "",
@@ -169,6 +179,16 @@ export default {
         fun: (body) => {
           this.id = body.id;
           this.show_dialog = true;
+        },
+      },
+
+      {
+        text: "فروش",
+        icon: "storefront",
+        color: "blue-grey",
+        fun: (body) => {
+          this.id = body.id;
+          this.step++;
         },
       },
     ];

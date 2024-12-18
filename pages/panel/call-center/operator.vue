@@ -100,7 +100,7 @@ export default {
         // multiple: true,
         // my_works: {},
         filter_key: "my_late_work",
-        route: "/new-call-center/inventory-request?filter=my_late_work",
+        route: "/new-call-center?filter=my_late_work",
       },
       // {
       //   icon: "/image/dashboard/works3.svg",

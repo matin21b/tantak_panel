@@ -47,6 +47,12 @@ let mnue_tree = [
     
   },
   {
+    id: 618564558145,
+    name: "گزارشات تماس",
+    access: "messages/issabel_request_call/history",
+    route: "/call-reports",
+  },
+  {
     id: 50,
     name: "مرکز فروش تلفنی",
     children: [
@@ -337,7 +343,7 @@ let mnue_tree = [
   {
     id: 618558145,
     name: "موجودی انبار",
-    access: "sale_agency_stocks/manager_list",
+    access: "sale_agency_stocks/manager_listـroot",
     route: "/warehouses-stock/agency",
   },
   {
@@ -481,18 +487,21 @@ let mnue_tree = [
         name: "تغییر روزهای چک",
         access: "setting/index",
         route: "/setting/change-check-days",
-      },      {
+      },    
+      
+      {
         id: 26123,
         name: "مهلت های یرگشت",
         access: "setting/index",
         route: "/setting/deadline-back",
+      },   
+         {
+        id: 2612213,
+        name: "پیام های آماده",
+        access: "setting/index",
+        route: "/setting/message-example",
       },
     ],
   },
-  {
-    id: 618564558145,
-    name: "گزارشات تماس",
-    access: "messages/issabel_request_call/history",
-    route: "/call-reports",
-  },
+ 
 ];

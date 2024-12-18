@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" persistent width="850">
+    <v-dialog v-model="dialog" persistent width="980">
       <v-card
         style="overflow: hidden !important"
         class="align-center card-style justify-center pa-8"
@@ -10,41 +10,58 @@
           height="50%"
           class="elevation-0 d-flex align-center pa-5 card-style2"
         >
-          <v-row class="align-center">
-            <v-col cols="12" md="4" class="mt-7">
-              <amp-autocomplete
-                text="    وضعیت"
-                chips
-                multiple
-                v-model="status"
-                :items="$store.state.static.status_message"
-              />
-            </v-col>
-            <v-col cols="12" md="3">
-              <amp-jdate
-                text="تاریخ شروع"
-                :is-number="true"
-                v-model="start_date"
-              />
-            </v-col>
-            <v-col cols="12" md="3">
-              <amp-jdate
-                text="تاریخ پایان"
-                :is-number="true"
-                v-model="end_date"
-              />
-            </v-col>
-            <v-col cols="12" md="2" class="mt-7">
-              <amp-button
-                text="تایید"
-                height="38"
-                block
-                color="teal darken-2"
-                @click="getExcelFile"
-                :disabled="status.length == 0"
-              />
-            </v-col>
-          </v-row>
+          <v-form v-model="valid">
+            <v-row class="justify-center">
+              <v-col cols="12" :md="role == 'all' ? 6 : 3">
+                <amp-select text="نقش" :items="roles" v-model="role" />
+              </v-col>
+              <v-col cols="12" md="3" v-if="role != 'all'">
+                <UserSelectForm
+                  :disabled="!Boolean(role)"
+                  text="انتخاب کاربر"
+                  v-model="user"
+                  url="user/searchByRole"
+                  :rules="Boolean(role) ? 'require' : ''"
+                  :role-id="[role]"
+                />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-jdate
+                  text="تاریخ شروع"
+                  :is-number="true"
+                  v-model="start_date"
+                />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-jdate
+                  text="تاریخ پایان"
+                  :is-number="true"
+                  v-model="end_date"
+                />
+              </v-col>
+              <v-col cols="12" md="10">
+                <amp-autocomplete
+                  rules="require"
+                  text=" وضعیت"
+                  chips
+                  multiple
+                  v-model="status"
+                  :items="$store.state.static.status_message"
+                />
+              </v-col>
+
+              <v-col cols="12" md="2" class="mt-8">
+                <amp-button
+                  text="تایید"
+                  height="38"
+                  block
+                  color="teal darken-2"
+                  @click="getExcelFile"
+                  :disabled="status.length == 0 || !valid"
+                />
+              </v-col>
+            </v-row>
+          </v-form>
         </v-card>
 
         <div class="text-center mt-4">
@@ -92,7 +109,12 @@
   </div>
 </template>
 <script>
+import UserSelectForm from "@/components/User/UserSelectForm";
+
 export default {
+  components: {
+    UserSelectForm,
+  },
   props: {
     dialog: {
       default: false,
@@ -109,6 +131,10 @@ export default {
       end: false,
       last_page: 10000000,
       total_data: [],
+      user: [],
+      roles: [],
+      role: "all",
+      valid: true,
       start_date: "",
       end_date: "",
       set_filters: {},
@@ -156,7 +182,25 @@ export default {
       ],
     };
   },
-
+  beforeMount() {
+    this.roles = [
+      {
+        text: "همه",
+        key: "all",
+        value: "all",
+      },
+      {
+        text: "سرپرست  ",
+        key: "supervisor",
+        value: this.$store.state.auth.role.superviser_id,
+      },
+      {
+        text: "فروشنده",
+        key: "oprator",
+        value: this.$store.state.auth.role.oprator_id,
+      },
+    ];
+  },
   watch: {
     total_data: {
       deep: true,
@@ -164,58 +208,9 @@ export default {
         this.value = (this.total_data.length * 100) / this.total_length;
       },
     },
-    status: {
-      depp: true,
-      handler() {
-        let filter = {};
-        let key = "=";
-        let value = "";
-        if (this.status.length == 1) {
-          key = "=";
-          value = this.status[0];
-        } else if (this.status.length > 1) {
-          key = "in";
-          value = [];
-          value = this.status;
-        }
-        filter["status"] = {
-          op: key,
-          value: value,
-        };
-        console.log("s --- > ", this.start_date);
-        console.log("e --- > ", this.end_date);
-        this.set_filters = filter;
-      },
-    },
-    start_date() {
-      if (Boolean(this.start_date)) {
-        this.set_filters["created_at"] = {
-          op: ">=",
-          value: this.start_date,
-        };
-        if (Boolean(this.start_date) && Boolean(this.end_date)) {
-          this.set_filters["created_at"] = {
-            op: "between",
-            from: this.start_date + " 00:00:00",
-            to: this.end_date + " 23:59:59",
-          };
-        }
-      }
-    },
-    end_date() {
-      if (Boolean(this.end_date)) {
-        this.set_filters["created_at"] = {
-          op: "<=",
-          value: this.end_date,
-        };
-        if (Boolean(this.start_date) && Boolean(this.end_date)) {
-          this.set_filters["created_at"] = {
-            op: "between",
-            from: this.start_date + " 00:00:00",
-            to: this.end_date + " 23:59:59",
-          };
-        }
-        console.log("set_filters> ", this.set_filters);
+    role() {
+      if (this.role == "all") {
+        this.user = [];
       }
     },
   },
@@ -228,14 +223,28 @@ export default {
   },
   methods: {
     getExcelFile() {
+      this.setCustomFilter();
       this.disabled = true;
       if (Boolean(this.end)) {
         return;
       }
+
       if (this.last_page < this.page_number) {
         this.total_data.length = this.total_length;
         this.value = 100;
-        let file_name = "پیام های انجام شده";
+        let name = "";
+        let file_name = "";
+        if (this.role != "all") {
+          name =
+            this.user[0].first_name && this.user[0].last_name
+              ? this.user[0].first_name + " " + this.user[0].last_name
+              : this.user[0].username;
+        }
+        if (Boolean(name)) {
+          file_name = ` ( ${name} )  پیام های  دریافتی `;
+        } else {
+          file_name = "پیام های  دریافتی";
+        }
         this.$exportCSV(this.excel_hed, this.total_data, file_name);
         this.disabled = false;
         this.last_page = 10000000;
@@ -253,6 +262,11 @@ export default {
         .then((res) => {
           this.last_page = res.model.last_page;
 
+          if (res.model.total == 0) {
+            this.$toast.info("با توجه به فیلتر های اعمال شده دیتایی ثبت نشده");
+            this.disabled = false;
+            return;
+          }
           this.total_length = res.model.total;
           if (res.model.data.length > 0) {
             this.getSortData(res.model.data);
@@ -293,8 +307,6 @@ export default {
       })
         .then((response) => {
           this.total_data = [...this.total_data, ...response];
-          console.log("  this.total_data >>> ", this.total_data);
-
           this.page_number++;
           this.getExcelFile();
           this.loading = false;
@@ -306,6 +318,53 @@ export default {
     closeDialog() {
       this.end = true;
       this.$emit("closeDialog");
+    },
+    setCustomFilter() {
+      let filter = {};
+      let key = "=";
+      let value = "";
+
+      if (this.user.length > 0 && Boolean(this.role) && this.role != "all") {
+        let find = this.roles.find((f) => f.value == this.role);
+        if (Boolean(find)) {
+          if (find.key == "supervisor") {
+            filter["supervisor_id"] = this.user[0].id;
+          } else {
+            filter["operator_id"] = this.user[0].id;
+          }
+        }
+      }
+
+      if (this.status.length == 1) {
+        key = "=";
+        value = this.status[0];
+      } else if (this.status.length > 1) {
+        key = "in";
+        value = [];
+        value = this.status;
+      }
+      filter["status"] = {
+        op: key,
+        value: value,
+      };
+      if (Boolean(this.start_date) && !Boolean(this.end_date)) {
+        filter["created_at"] = {
+          op: ">=",
+          value: this.start_date,
+        };
+      } else if (Boolean(this.start_date) && Boolean(this.end_date)) {
+        filter["created_at"] = {
+          op: "between",
+          from: this.start_date + " 00:00:00",
+          to: this.end_date + " 23:59:59",
+        };
+      } else if (Boolean(this.end_date)) {
+        filter["created_at"] = {
+          op: "<=",
+          value: this.end_date,
+        };
+      }
+      this.set_filters = filter;
     },
   },
 };
