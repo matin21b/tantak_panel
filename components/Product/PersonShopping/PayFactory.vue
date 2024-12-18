@@ -239,7 +239,6 @@ export default {
         })
         .catch((err) => {
           this.editBasket();
-          console.log("backStep");
         });
     },
     saveBasket() {
