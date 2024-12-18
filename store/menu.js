@@ -491,7 +491,7 @@ let mnue_tree = [
       
       {
         id: 26123,
-        name: "مهلت های یرگشت",
+        name: "مهلت های برگشت",
         access: "setting/index",
         route: "/setting/deadline-back",
       },   

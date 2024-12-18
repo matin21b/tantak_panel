@@ -21,8 +21,12 @@
           <h1>
             {{ x.product_var.variation1.product.name }}
             <br />
-            <small class="mx-1 grey--text">
+            <small class="mx-1 grey--text" v-if="x.product_var.price && Boolean(x.product_var.price)">
               قیمت محصول :{{ $price(x.product_var.price) }} ریال
+            </small>
+            <small v-else>
+
+              قیمت محصول :{{ $price(x.product_var.product.base_price) }} ریال
             </small>
             <br />
 
