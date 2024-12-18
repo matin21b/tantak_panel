@@ -29,12 +29,9 @@
                   v-model="form.name"
                   rules="require"
                 />
-              </v-col>           
-                 <v-col cols="12" md="3">
-                <amp-input
-                  text="نام  نمایشی محصول"
-                  v-model="form.show_name "
-                />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-input text="نام  نمایشی محصول" v-model="form.show_name" />
               </v-col>
               <v-col cols="12" md="2">
                 <amp-input text="لینک" v-model="form.slug" rules="" />
@@ -277,9 +274,9 @@
       <v-stepper-content step="3">
         <v-row>
           <v-col cols="12" class="d-flex align-center">
-            <v-row class="mt-5" v-if='step_number == 3'>
+            <v-row class="mt-5" v-if="step_number == 3">
               <v-col>
-                <SingleProductForm @reloadPage="reloadPage()" :product="form"/>
+                <SingleProductForm @reloadPage="reloadPage()" :product="form" />
               </v-col>
             </v-row>
           </v-col>
@@ -369,17 +366,16 @@ export default {
       { text: "مقدار", value: "amount" },
     ],
     product_infos: {
-        seo_description: "",
-        description: "",
-        summerized_description: "",
-        specefication_table: [],
-      },
+      seo_description: "",
+      description: "",
+      summerized_description: "",
+      specefication_table: [],
+    },
     form: {
-    
       wholesale_unit: "",
       id: "",
       name: "",
-      show_name : "",
+      show_name: "",
       slug: "",
       code: "",
       online_sale: false,
@@ -401,7 +397,6 @@ export default {
       additional_description: [],
       sort: 1,
       excerpt_description: "",
-
     },
   }),
   beforeMount() {
@@ -441,9 +436,14 @@ export default {
   },
   methods: {
     submit() {
+      if (this.step_number == 1 && this.form.category_ids.length < 4) {
+        this.$toast.info('برای ثبت دسته بندی محصولات حداقل باید 4 زیر مجموعه ثبت شده باشد')
+      return
+      }
+
       this.loading = true;
       let form = this.$copyForm(this.form);
-      form["product_infos"] = this.product_infos
+      form["product_infos"] = this.product_infos;
       if (this.step_number > 2) {
         if (form.category_ids.length > 0) {
           let items = [];
@@ -453,7 +453,7 @@ export default {
               items.push(element);
             }
           }
-          form.category_ids = items
+          form.category_ids = items;
         }
       }
 
@@ -522,7 +522,7 @@ export default {
             //  this.
 
             this.form.name = response.name;
-            this.form.show_name  = response.show_name ;
+            this.form.show_name = response.show_name;
             this.form.main_image = response.main_image;
             this.form.wholesale_unit = response.wholesale_unit;
             let items = [];
@@ -588,8 +588,7 @@ export default {
             this.form.medias = [];
             this.form.sort = response.sort;
             this.loading = false;
-          } catch (error) {
-          }
+          } catch (error) {}
         })
         .catch((error) => {
           this.redirectPage();
@@ -597,9 +596,7 @@ export default {
         });
     },
     redirectPage() {
-    
-        this.$router.back();
- 
+      this.$router.back();
     },
     getCategories() {
       let form = {

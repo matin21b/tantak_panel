@@ -260,6 +260,8 @@ export default {
         value: event.id,
       });
       this.id_selected_category.push(event.id);
+      console.log("this.id_selected_category.?? " , this.id_selected_category.length);
+      
     },
     restoreCategory() {
       this.selected_category = [];
