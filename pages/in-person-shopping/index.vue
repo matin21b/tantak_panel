@@ -152,7 +152,10 @@ export default {
         text: "شماره فاکتور",
         value: "factor_number",
       },
-      { text: "مبلغ به ریال", value: "price" },
+      { text: "قیمت با تخفیف  (ریال)", value: "price" },
+      { text: " (ریال) قیمت پایه", value: (body) =>{
+        return this.$price(body.base_price + body.products_discount) 
+      } },
 
       {
         text: "ثبت کننده",

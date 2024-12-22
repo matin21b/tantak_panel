@@ -146,19 +146,19 @@ export default {
           let var_3 = "";
 
           if (body.section_name == "ProductVariationCombination") {
-            if (body.product_var && body.product_var.product) {
-              product_name = body.product_var.product.name;
+            if (body.only_product_var && body.only_product_var.product) {
+              product_name = body.only_product_var.product.name;
             }
-            if (body.product_var.variation1) {
-              var_1 = Boolean(body.product_var.variation1.colors)
-                ? body.product_var.variation1.colors
-                : body.product_var.variation1.value;
+            if (body.only_product_var.variation1) {
+              var_1 = Boolean(body.only_product_var.variation1.colors)
+                ? body.only_product_var.variation1.colors
+                : body.only_product_var.variation1.value;
             }
-            if (body.product_var.variation2) {
-              var_2 = body.product_var.variation2.value;
+            if (body.only_product_var.variation2) {
+              var_2 = body.only_product_var.variation2.value;
             }
-            if (body.product_var.variation3) {
-              var_3 = body.product_var.variation3.value;
+            if (body.only_product_var.variation3) {
+              var_3 = body.only_product_var.variation3.value;
             }
             text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
             return text;

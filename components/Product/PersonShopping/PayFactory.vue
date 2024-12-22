@@ -232,9 +232,9 @@ export default {
           let count_item = +Number(x.count);
           count_product += count_item;
 
-          let price_item = Boolean(x.product_var.price)
-            ? +Number(x.count * x.product_var.price)
-            : +Number(x.count * x.product_var.product.base_price);
+          let price_item = Boolean(x.only_product_var.price)
+            ? +Number(x.count * x.only_product_var.price)
+            : +Number(x.count * x.only_product_var.product.base_price);
           price_product += price_item;
 
           this.product.count = count_product;

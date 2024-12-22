@@ -15,39 +15,39 @@
         v-if="x.section_name == 'ProductVariationCombination'"
       >
         <v-avatar size="45" class="mx-2">
-          <img :src="$getImage(x.product_var.variation1.product.main_image)" />
+          <img :src="$getImage(x.only_product_var.variation1.product.main_image)" />
         </v-avatar>
         <v-col cols="12" md="7">
           <h1>
-            {{ x.product_var.variation1.product.name }}
+            {{ x.only_product_var.variation1.product.name }}
             <br />
-            <small class="mx-1 grey--text" v-if="x.product_var.price && Boolean(x.product_var.price)">
-              قیمت محصول :{{ $price(x.product_var.price) }} ریال
+            <small class="mx-1 grey--text" v-if="x.only_product_var.price && Boolean(x.only_product_var.price)">
+              قیمت محصول :{{ $price(x.only_product_var.price) }} ریال
             </small>
             <small v-else>
 
-              قیمت محصول :{{ $price(x.product_var.product.base_price) }} ریال
+              قیمت محصول :{{ $price(x.only_product_var.product.base_price) }} ریال
             </small>
             <br />
 
             <small
               class="grey--text"
-              v-if="Boolean(x.product_var.variation1.colors)"
+              v-if="Boolean(x.only_product_var.variation1.colors)"
             >
-              {{ x.product_var.variation1.variation_type.value }}
-              {{ x.product_var.variation1.colors }}
+              {{ x.only_product_var.variation1.variation_type.value }}
+              {{ x.only_product_var.variation1.colors }}
             </small>
             <small class="grey--text" v-else>
-              {{ x.product_var.variation1.variation_type.value }}
-              {{ x.product_var.variation1.value }}
+              {{ x.only_product_var.variation1.variation_type.value }}
+              {{ x.only_product_var.variation1.value }}
             </small>
             <small class="mx-1 grey--text">
-              {{ x.product_var.variation2.variation_type.value }}
-              {{ x.product_var.variation2.value }}
+              {{ x.only_product_var.variation2.variation_type.value }}
+              {{ x.only_product_var.variation2.value }}
             </small>
             <small class="mx-1 grey--text">
-              {{ x.product_var.variation3.variation_type.value }}
-              {{ x.product_var.variation3.value }}
+              {{ x.only_product_var.variation3.variation_type.value }}
+              {{ x.only_product_var.variation3.value }}
             </small>
           </h1>
         </v-col>
@@ -190,7 +190,7 @@ export default {
         if (x.section_name == "ProductVariationCombination") {
           products.push({
             number: x.count,
-            product_varcomb_id: x.product_var.id,
+            product_varcomb_id: x.only_product_var.id,
           });
         } else if (Boolean(x.package)) {
           packages.push({

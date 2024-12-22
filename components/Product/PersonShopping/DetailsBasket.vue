@@ -74,8 +74,9 @@
 
                   <br />
                   <small>
-                    {{ x.information }}
+                    {{ x.information }} 
                   </small>
+                  ( <small> عدد {{ x.number }} </small> )
                 </h1>
                 <h1 v-else>
                   <small> {{ i + 1 }} - </small>
@@ -83,16 +84,21 @@
                   <small> ( پکیج ) </small>
                 </h1>
                 <h1>
-                  <v-row class="justify-space-between pa-3 py-4">
-                    <small>
+                  <small>
                       بارکد :‌
                       {{ x.full_barcode }}
                     </small>
-                    <small> قیمت :‌ {{ $price(x.price) }} ریال </small>
+                </h1>
+                <h1>
+                  <v-row class="justify-space-between pa-3 py-4">
+               
+                    
+                    <small> قیمت اصلی:‌ {{ $price(x.base_price) }} ریال </small>
+                    <small class="grey--text">  مقدار تخفیف:‌ {{ $price(x.off_amount) }} ریال </small>
                     <small>
-                      تعداد :‌
-                      {{ x.number }}
+                      قیمت پس از تخفیف:‌ {{ $price(x.price) }} ریال
                     </small>
+
                     <small>
                       جمع کل :‌
                       {{ $price(x.price * x.number) }} ریال
@@ -100,52 +106,54 @@
                   </v-row>
                 </h1>
               </v-card-text>
-              <v-card v-if="Boolean(x.returned)"  class="red lighten-5 elevation-3" outlined>
-                <v-col cols="12"  >
-             
-             <v-row class="align-center mt-2 ">
-               <v-col cols="3">
-                 <amp-select
-                   text=" نوع مرجوعیت"
-                   :items="$store.state.static.reterned_type"
-                   v-model="x.returned_type"
-                 />
-               </v-col>
-               <v-col cols="2">
-                 <amp-input
-                   text="تعداد"
-                   v-model="x.new_count"
-                   rules="number"
-                   cClass="ltr-item"
-                 />
-               </v-col>
-               <v-col cols>
-                 <amp-textarea
-                   text=" توضیحات"
-                   :rows="1"
-                   v-model="x.description"
-                 />
-               </v-col>
-               <v-col cols="12">
-                 <amp-button
-                   text="ثبت  مرجوعی"
-                   height="40"
-                   block
-                   icon="free_cancellation"
-                   color="red lighten-1"
-                   :disabled="
-                     !Boolean(x.new_count) ||
-                     !Boolean(x.returned_type) ||
-                     !Boolean(x.description)
-                   "
-                   @click="submitReterned(x)"
-                   class="ma-1"
-                 />
-               </v-col>
-             </v-row>
-           </v-col>
+              <v-card
+                v-if="Boolean(x.returned)"
+                class=" elevation-3"
+                outlined
+              >
+                <v-col cols="12">
+                  <v-row class="align-center mt-2">
+                    <v-col cols="3">
+                      <amp-select
+                        text=" نوع مرجوعیت"
+                        :items="$store.state.static.reterned_type"
+                        v-model="x.returned_type"
+                      />
+                    </v-col>
+                    <v-col cols="2">
+                      <amp-input
+                        text="تعداد"
+                        v-model="x.new_count"
+                        rules="number"
+                        cClass="ltr-item"
+                      />
+                    </v-col>
+                    <v-col cols>
+                      <amp-textarea
+                        text=" توضیحات"
+                        :rows="1"
+                        v-model="x.description"
+                      />
+                    </v-col>
+                    <v-col cols="12">
+                      <amp-button
+                        text="ثبت  مرجوعی"
+                        height="40"
+                        block
+                        icon="free_cancellation"
+                        color="red lighten-1"
+                        :disabled="
+                          !Boolean(x.new_count) ||
+                          !Boolean(x.returned_type) ||
+                          !Boolean(x.description)
+                        "
+                        @click="submitReterned(x)"
+                        class="ma-1"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-col>
               </v-card>
-            
             </v-card>
           </v-window-item>
 
@@ -285,9 +293,9 @@ export default {
 
   methods: {
     closeDialog() {
-if (this.check_returned.length > 0) {
-  this.$emit("reload")
-}
+      if (this.check_returned.length > 0) {
+        this.$emit("reload");
+      }
       this.$emit("closeDialog");
     },
     show_dialog(index) {
@@ -306,7 +314,6 @@ if (this.check_returned.length > 0) {
       if (data.new_count > data.number) {
         this.$toast.info(
           "تعداد وارد شده از تعداد  موجودی محصول در سبد خرید بیشتر است"
-          
         );
         this.loading = false;
         return;
@@ -344,13 +351,13 @@ if (this.check_returned.length > 0) {
 }
 .card-items {
   cursor: pointer !important;
-  border-right: 2px solid rgb(141, 141, 141) !important ;
+  border-right: 3px solid rgb(141, 141, 141) !important ;
   transition: all 0.4s ease;
 }
 .card-items:hover {
   transform: scale3d(1.01, 1.01, 1.01);
   opacity: 1;
-  box-shadow: 0px 8px 8px 1px rgba(0, 0, 0, 0.3) !important;
+  background-color: rgba(233, 233, 233, 0.308) !important;
   transition: all 0.4s ease;
 }
 </style>
