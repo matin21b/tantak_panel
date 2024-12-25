@@ -20,6 +20,7 @@ export const state = () => ({
   site_logo: "",
   type_plate: false,
   barnds: [],
+  ready_messages: [],
 });
 
 export const mutations = {
@@ -43,6 +44,9 @@ export const mutations = {
   },
   set_counter_item: function (state, data) {
     state.conter_item = data;
+  },
+  set_ready_messages: function (state, data) {
+    state.ready_messages = data;
   },
   set_item_divison: function (state, data) {
     state.province = data.province;
@@ -233,6 +237,29 @@ export const actions = {
           });
         });
         commit("set_brand", items);
+      })
+      .catch((err) => {
+        return err;
+      });
+  },
+  readyMessages({ commit }) {
+    let filters = {
+      key: {
+        op: "=",
+        value: "message_example",
+      },
+    };
+    this.$reqApi("/setting", { row_number: 3000, filters: filters })
+      .then((res) => {
+        let items = [];
+
+        res.model.data.map((x) => {
+          items.push({
+            text: x.value,
+            value: x.value,
+          });
+        });
+        commit("set_ready_messages", items);
       })
       .catch((err) => {
         return err;

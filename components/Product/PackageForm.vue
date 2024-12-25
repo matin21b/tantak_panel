@@ -222,7 +222,7 @@ export default {
     if (Boolean(this.$route.query.type)) {
       this.form.type = this.$route.query.type;
     }
-    this.$store.dispatch("setting/getRoleServer");
+    ;
     if (this.modelId) {
       this.loadData();
     }

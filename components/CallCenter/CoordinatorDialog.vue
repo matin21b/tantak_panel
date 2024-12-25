@@ -27,6 +27,11 @@
               v-model="coordinator_id"
             />
             <AmpUploadFile title="بارگذاری فایل" v-model="file" />
+            <amp-select
+              text="پیام های اماده"
+              :items="$store.state.setting.ready_messages"
+              v-model="ready_message"
+            />
 
             <amp-textarea
               rules="require"
@@ -66,6 +71,7 @@ export default {
     valid: true,
     coordinator_id: "",
     file: "",
+    ready_message: "",
     message: "",
     valid_comment: true,
     coordinator_list: [],
@@ -73,6 +79,12 @@ export default {
   }),
   mounted() {
     this.coordinatorList();
+    this.$store.dispatch("setting/readyMessages");
+  },
+  watch: {
+    ready_message() {
+      this.message = this.ready_message;
+    },
   },
   methods: {
     submit() {
