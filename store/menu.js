@@ -141,7 +141,7 @@ let mnue_tree = [
    {
     id: 2005687564,
     name: "کد های تخفیف",
-    access: "*",
+    access: "coupons/index",
     route: "/discount-code",
   },
   {

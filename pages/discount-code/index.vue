@@ -10,15 +10,24 @@
       autoUpdate="/discount-code"
       autoDelete="/coupon/delete"
     />
+    <History
+      v-if="show_history"
+      :dialog="show_history"
+      :couponId="coupon_id"
+      @closeDialog="show_history = false"
+    />
   </div>
 
   <!-- <v-col cols="12" md="12">
 
     </v-col> -->
 </template>
-
 <script>
+import History from "@/components/Product/Discount/History.vue";
 export default {
+  components: {
+    History,
+  },
   data: () => ({
     headers: [],
     headers_custom: [],
@@ -26,9 +35,9 @@ export default {
     btn_actions: [],
     discount_for: [],
     dialog_log: { show: false, items: null },
-    dialog_used: { show: false, items: null },
+    show_history: false,
     filters: {},
-    code_id: "",
+    coupon_id: "",
     items: [
       { text: "غیر شخصی ", icon: "group" },
       { text: "شخصی", icon: "person" },
@@ -45,7 +54,24 @@ export default {
           this.copyCode(body.coupon);
         },
       },
-
+      {
+        color: "blue-grey",
+        icon: "history",
+        text: "تاریخچه استفاده",
+        fun: (body) => {
+          this.coupon_id = body.id;
+          this.show_history = true;
+        },
+        show_fun: (body) => {
+          if (
+            Boolean(this.$store.state.auth.action.indexOf("coupons/index") > -1)
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
     ];
     this.headers = [
       {
@@ -81,12 +107,12 @@ export default {
       {
         text: "حد اکثر استفاده برای کاربر",
         value: "user_usage_limit",
-        type:"price"
+        type: "price",
       },
       {
         text: "حداکثر",
         value: "coupon_usage_limit",
-          type:"price"
+        type: "price",
       },
       {
         type: "price",

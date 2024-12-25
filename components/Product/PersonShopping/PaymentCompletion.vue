@@ -85,7 +85,7 @@
             </v-card>
           </v-col>
           <div class="d-flex justify-center">
-            <v-col cols="6">
+            <v-col cols="4">
               <v-card
                 class="elevation-0 text-center pa-2"
                 style="border-top: 3px solid teal"
@@ -101,8 +101,23 @@
                 </v-chip>
               </v-card>
             </v-col>
+            <v-col cols="4">
+                <v-card
+                  class="elevation-0 text-center pa-2"
+                  style="border-top: 3px solid teal"
+                  outlined
+                >
+                  <h1 class="font_10">مقدار استفاده شده از کد تخفیف</h1>
+                  <br />
 
-            <v-col cols="6">
+                  <v-chip>
+                    <h1 class="font_11">
+                      ریال{{ $price(wallet.amount_coupon) }}
+                    </h1>
+                  </v-chip>
+                </v-card>
+              </v-col>
+            <v-col cols="4">
               <v-card
                 class="elevation-0 text-center pa-2"
                 style="border-top: 3px solid teal"
