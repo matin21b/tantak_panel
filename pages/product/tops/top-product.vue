@@ -75,8 +75,6 @@ export default {
         .then((res) => {
           let items = [];
           const data = res.model;
-
-          console.log("sss >> ", data);
           for (let i = 0; i < data.length; i++) {
             const x = data[i];
             items.push({

@@ -234,7 +234,6 @@ export default {
             this.$router.push("/in-person-shopping");
           })
           .catch((err) => {
-            console.log(err);
           });
       }
     },
