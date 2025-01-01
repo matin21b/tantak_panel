@@ -6,7 +6,7 @@
     class="rounded-0 pa-2 d-flex flex-column"
   >
     <v-row class="ma-2">
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <amp-select
           text="بابت"
           :items="for_title_texts"
@@ -14,7 +14,7 @@
           v-model="form.for_title"
         />
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <amp-select
           :items="code_type"
           text="نوع کد"
@@ -22,7 +22,7 @@
           rules="require"
         />
       </v-col>
-      <v-col cols="12" md="3" v-if="form.type">
+      <v-col cols="12" md="4" v-if="form.type">
         <amp-input
           v-if="form.type == 'percentage'"
           text="درصد تخفیف"
@@ -38,7 +38,7 @@
         />
       </v-col>
 
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <amp-select
           text="عمومی"
           :items="$store.state.static.bool_en"
@@ -46,7 +46,7 @@
           v-model="form.is_public"
         ></amp-select>
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <amp-select
           text="وضعیت"
           :items="$store.state.static.status_cupon"
@@ -55,7 +55,7 @@
         ></amp-select>
       </v-col>
 
-      <v-col cols="12" md="3" v-if="form.is_public == 'no'">
+      <v-col cols="12" md="4" v-if="form.is_public == 'no'">
         <UserSelectForm
           text="انتخاب کاربر"
           v-model="user"
@@ -65,7 +65,7 @@
           :role-id="[]"
         />
       </v-col>
-      <v-col cols="12" md="3" v-if="form.send_in != 'custom'">
+      <v-col cols="12" md="4" v-if="form.send_in != 'custom'">
         <amp-input
           rules="number,require"
           text="حداکثر استفاده "
@@ -73,7 +73,7 @@
           cClass="ltr-item"
         />
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <amp-select
           text="قابل استفاده برای تمامی محصولات (پکیج و محصولات)"
           :items="$store.state.static.bool_en"
@@ -81,7 +81,7 @@
           v-model="form.all_products"
         ></amp-select>
       </v-col>
-      <v-col cols="12" md="3" v-if="form.all_products == 'no'">
+      <v-col cols="12" md="4" v-if="form.all_products == 'no'">
         <amp-select
           text="تخفیف برای "
           :items="send_for_items"
@@ -89,7 +89,11 @@
           v-model="form.send_for"
         ></amp-select>
       </v-col>
-      <v-col cols="12" md="3" v-if="form.all_products == 'no'">
+      <v-col
+        cols="12"
+        md="4"
+        v-if="form.all_products == 'no' && form.send_for != 'category'"
+      >
         <amp-autocomplete
           v-if="form.send_for == 'product'"
           text="انتخاب محصول"
@@ -106,17 +110,35 @@
           rules="require"
           v-model="form.package_ids"
         />
-        <amp-autocomplete
-          @click="show_dialog = true"
-          v-if="form.send_for == 'category'"
-          text="دسته بندی های انتخاب شده"
-          multiple
-          :items="catgoury_items"
-          rules="require"
-          v-model="form.category_ids"
-        />
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col
+        cols="12"
+        md="4"
+        class="d-flex align-center"
+        v-if="form.send_for == 'category' && form.all_products == 'no'"
+      >
+        <v-col cols="10" class="pa-0">
+          <amp-autocomplete
+            :disabled="true"
+            text="دسته بندی های انتخاب شده"
+            multiple
+            :items="catgoury_items"
+            rules="require"
+            v-model="form.category_ids"
+          />
+        </v-col>
+        <v-col cols="2" class="pa-0 mt-1">
+          <amp-button
+            block
+            height="38"
+            @click="show_dialog = true"
+            :text="form.category_ids.length > 0 ? 'ویرایش' : 'ثبت'"
+            color="blue-grey"
+            v-if="form.send_for == 'category'"
+          />
+        </v-col>
+      </v-col>
+      <v-col cols="12" md="4">
         <amp-input
           text="  سقف استفاده برای کاربر (ریال)"
           rules="require,price"
@@ -125,14 +147,14 @@
           cClass="ltr-item"
         />
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <amp-jdate
           text=" تاریخ شروع "
           rules="require"
           v-model="form.start_date"
         />
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <amp-jdate
           text="تاریخ پایان"
           rules="require"
@@ -140,20 +162,20 @@
           v-model="form.end_date"
         />
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <amp-input text="ترتیب" v-model="form.sort" cClass="ltr-item" />
       </v-col>
       <v-col cols="12" md="12">
         <amp-textarea :rows="3" text="توضیحات" v-model="form.description" />
       </v-col>
-      <!-- <SelectCategorey
+      <SelectCategorey
         :dialog="show_dialog"
         v-if="show_dialog"
         @closeDialog="show_dialog = false"
         @catgoryIds="form.category_ids = $event"
         :data="form.category_ids"
         :categorey-items="catgoury_items"
-      /> -->
+      />
     </v-row>
     <v-row class="ma-1 d-flex justify-center">
       <amp-button
@@ -178,12 +200,12 @@
 <script>
 let jmoment = require("moment");
 import UserSelectForm from "@/components/User/UserSelectForm";
-// import SelectCategorey from "@/components/Product/Discount/SelectCategorey.vue";
+import SelectCategorey from "@/components/Product/Discount/SelectCategorey.vue";
 
 export default {
   components: {
     UserSelectForm,
-    // SelectCategorey,
+    SelectCategorey,
   },
 
   props: {
@@ -246,11 +268,7 @@ export default {
       this.loadData();
     }
   },
-  watch: {
-    "form.send_for"() {
-      this.show_dialog = this.form.send_for == "category" ? true : false;
-    },
-  },
+
   methods: {
     submit() {
       this.loading = true;
@@ -384,6 +402,7 @@ export default {
             items.push({
               text: x.name,
               value: x.id,
+              level: x.level,
               parent: x.parent_id,
             });
           }

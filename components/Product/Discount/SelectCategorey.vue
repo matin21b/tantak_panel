@@ -5,7 +5,7 @@
         <div class="primary white--text pa-4 d-flex align-center">
           <h1>اعمال کد تخفیف بر اساس دسته بندی</h1>
           <v-spacer></v-spacer>
-          <v-btn text color="white" @click="closeDialog">
+          <v-btn text color="white" @click="closeList">
             <v-icon> close </v-icon>
           </v-btn>
         </div>
@@ -40,31 +40,26 @@
               </v-alert>
               <v-divider></v-divider>
               <v-divider></v-divider>
-              <v-btn
-                @click="saveCategory"
-                block
-                outlined
-                color="btn_color"
-                class="mt-4"
-              >
-                <span> اعمال تخفیف برای </span>
+              <v-btn @click="saveCategory" block color="btn_color" class="mt-4">
+                <span class="white--text"> اعمال تخفیف برای </span>
                 <span class="mx-2">
                   <span
                     v-for="(x, i) in catgory_catalog"
                     :key="i"
-                    class="ml-1 blue-grey--text"
+                    class="ml-1 white--text"
                   >
                     {{ x.text }}
                   </span>
                 </span>
 
-                <v-icon> task_alt </v-icon>
+                <v-icon color="white"> task_alt </v-icon>
               </v-btn>
             </v-col>
           </v-row>
           <v-row class="mx-4">
             <v-col cols="12" md="3" v-for="(c, i) in selected_list" :key="i">
               <v-card
+                :class="Boolean(c.deleted) ? 'red lighten-4' : ''"
                 outlined
                 class="pa-2 elevation-2"
                 style="border-right: 3px solid orange"
@@ -72,13 +67,34 @@
                 <v-row class="align-center">
                   <v-col cols="10">
                     <h1>
-                      <small>
+                      <v-icon
+                        small
+                        color="green"
+                        class="ml-1"
+                        v-if="!Boolean(c.deleted)"
+                        >task_alt</v-icon
+                      >
+                      <v-icon
+                        small
+                        color="red"
+                        class="ml-1"
+                        v-if="Boolean(c.deleted)"
+                        >cancel</v-icon
+                      >
+                      {{ c.title }}
+                      <br />
+                      <small class="grey--text">
                         {{ c.text }}
                       </small>
                     </h1>
                   </v-col>
                   <v-col cols="2">
-                    <v-icon small color="red"> cancel</v-icon>
+                    <v-btn @click="c.deleted = !c.deleted" icon>
+                      <v-icon v-if="!Boolean(c.deleted)" color="grey">
+                        delete</v-icon
+                      >
+                      <v-icon v-else color="grey">replay</v-icon>
+                    </v-btn>
                   </v-col>
                 </v-row>
               </v-card>
@@ -86,13 +102,16 @@
             <v-col
               cols="12"
               class="text-center"
-              v-if="selected_list.length > 0"
+              v-if="selected_list.length > 0 && !this.show_catgory_list"
             >
               <v-divider class="my-2"></v-divider>
-              <v-btn @click="submit" block outlined color="btn_color">
-                <span> ثبت </span>
-                <v-icon> task_alt </v-icon>
-              </v-btn>
+
+              <amp-button
+                text="ثبت"
+                icon="task_alt"
+                color="btn_color"
+                @click="submit"
+              />
             </v-col>
           </v-row>
 
@@ -187,9 +206,10 @@ export default {
     total_data: [],
     final_catgory: "",
     filters: {},
+    adavnce: [],
+    adavnce_obj: {},
   }),
   beforeMount() {
-
     this.subCategory();
     this.filters = {
       level: {
@@ -249,46 +269,28 @@ export default {
         },
       },
     ];
-
-    this.extraBtn = [
-      {
-        id: 1,
-        text: "حذف موارد",
-        color: "error",
-        icon: "delete",
-        fun: (body) => {
-          if (this.selected_item.length == 0) {
-            this.$toast.error("موردی انتخاب نشده");
-            return;
-          }
-
-          this.time = 3;
-          this.removeDialog = true;
-          this.timeInterval = setInterval(() => {
-            if (this.time > 0) {
-              this.time -= 1;
-            } else {
-              clearInterval(this.timeInterval);
-            }
-          }, 1000);
-        },
-      },
-    ];
   },
   mounted() {
     if (this.data.length > 0) {
       this.loadData();
     }
   },
+
   methods: {
     submit() {
       let ids = [];
       this.selected_list.map((x) => {
-        ids.push(x.value);
+        if (!Boolean(x.deleted)) {
+          ids.push(x.value);
+        }
       });
-
-      this.$emit("catgoryIds", ids);
-      this.closeList();
+if (ids.length > 0) {
+  this.$emit("catgoryIds", ids);
+  this.closeList();
+}else{
+  this.$toast.error("دسته بندی انتخاب نشده")
+}
+    
     },
 
     removeRecords() {
@@ -375,10 +377,14 @@ export default {
     },
     saveCategory() {
       let category = { text: "", value: "" };
+
       let text = this.catgory_catalog.map((x) => x.text).join(` - `);
       category.text = text;
+      category.title =
+        this.catgory_catalog[this.catgory_catalog.length - 1].text;
       category.value =
         this.catgory_catalog[this.catgory_catalog.length - 1].value;
+      category.deleted = false;
       this.selected_list.push(category);
       this.clearAll();
     },
@@ -388,9 +394,12 @@ export default {
     },
     closeList() {
       this.$emit("closeDialog");
+      this.$emit("closeDialog");
+      this.$emit("closeDialog");
+      this.$emit("closeDialog");
+      this.$emit("closeDialog");
     },
     loadData() {
-
       for (let i = 0; i < this.data.length; i++) {
         const x = this.data[i];
 
@@ -403,16 +412,46 @@ export default {
       }
     },
     findParents(id) {
+      let items = [];
       // let find  =  ? this.findParents()
+      for (let i = 0; i < this.data.length; i++) {
+        let find = {};
+        const x = this.data[i];
 
-      for (let i = 0; i < this.categoreyItems.length; i++) {
-        let text = [];
-        const x = this.categoreyItems[i];
-        if (Boolean(this.categoreyItems.find((x) => id == x.parent))) {
-          text.push(x.text);
-          this.findParents(x.parent);
+        find = this.categoreyItems.find((f) => f.value == x);
+        if (Boolean(find)) {
+          items.push(find);
         }
-        
+      }
+      for (let i = 0; i < items.length; i++) {
+        const element = items[i];
+        this.adavnce_obj[element.value] = [];
+
+        this.setParenst(items[i], element.value);
+      }
+      this.setListCtegoury();
+    },
+    setParenst(item, parent_id) {
+      let find = this.categoreyItems.find((f) => item.parent == f.value);
+
+      this.adavnce_obj[parent_id].push(item.text);
+      if (Boolean(find)) {
+        return this.setParenst(find, parent_id);
+      }
+      return "";
+    },
+    setListCtegoury() {
+      let items = [];
+
+      for (let i in this.adavnce_obj) {
+        let title = this.adavnce_obj[i].reverse();
+        items.push({
+          title: title[title.length - 1],
+          text: title.map((x) => x).join(" - "),
+          value: i,
+          deleted: false,
+        });
+        this.selected_list = items;
       }
     },
   },
