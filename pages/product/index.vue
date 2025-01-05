@@ -77,7 +77,7 @@ export default {
     this.headers = [
       {
         text: "",
-        width: "30px",
+        width: "29px",
         type: "checkbox",
         disableSort: true,
         filterable: false,
@@ -91,24 +91,8 @@ export default {
         size: "small",
       },
       { text: "نام محصول", value: "name" },
-      // {
-      //   text: 'فروش تکی',
-      //   value: 'has_single_sell',
-      //   filterType: 'select',
-      //   items: this.$store.state.static.bool_num_enum,
-      // },
-      // {
-      //   text: 'فروش فله/عمده',
-      //   value: 'has_whole_sell',
-      //   filterType: 'select',
-      //   items: this.$store.state.static.bool_num_enum,
-      // },
-      // {
-      //   text: 'دمنوش ساز',
-      //   value: 'mixturable',
-      //   filterType: 'select',
-      //   items: this.$store.state.static.bool_num_enum,
-      // },
+
+
       {
         text: "فروش تلفنی",
         type: "boolean",
@@ -162,7 +146,7 @@ export default {
         text: "حذف موارد",
         color: "error",
         icon: "delete",
-        fun: (body) => {
+        fun: () => {
           if (this.selected_item.length == 0) {
             this.$toast.error("موردی انتخاب نشده");
             return;
