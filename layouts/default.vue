@@ -1,10 +1,6 @@
 <template>
   <v-app>
-    <AppBar
-      v-if="$vuetify.breakpoint.mdAndUp"
-      v-model="drawer"
-      class="container_menu"
-    />
+    <AppBar v-if="$vuetify.breakpoint.mdAndUp" v-model="drawer" class="container_menu" />
     <AppBarMobile v-else v-model="drawer" class="" />
     <MenuDrawer
       v-model="drawer"
@@ -38,6 +34,43 @@ export default {
     this.checkAuth();
     this.checkNotification();
     this.callNotif();
+    //# 1 -------------------------------------------------------------------------------------------
+    let array1 = Array.from("1234");
+    let array2 = Array.of(
+      { id: 1 },
+      { id: 2 },
+      { id: 5 },
+      { id: 4 },
+      { id: 1 },
+      { id: 3 },
+      { id: 12 },
+      { id: 6 },
+      { id: 3 }
+    );
+
+    console.log("1", array1);
+    console.log("2", array2);
+    //#2 ---------------------------------------------------------------------------------
+    let items = array1.reduce((acc, x) => acc + +Number(x), 0);
+
+    let new_items = [];
+    for (let i in items) {
+      new_items.push(items[i]);
+    }
+    console.log(">>new_items>", new_items);
+
+    //#3 ---------------------------------------------------------------------------------
+    let person1 = {
+      first_name: "matin",
+      age: "23",
+      job: "developer",
+    };
+    let person2 = {
+      first_name: "ali",
+      color: "black",
+    };
+    //# ---------------------------------------------------------------------------------
+    // every , some , find , findLast
   },
   watch: {
     "$store.state.auth.action"() {
