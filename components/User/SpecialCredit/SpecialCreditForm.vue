@@ -149,9 +149,6 @@ export default {
   },
 
   mounted() {
-
- 
-
     this.loadCategory();
     this.getReasons();
     this.loadProduct();
@@ -173,6 +170,15 @@ export default {
     },
     submit() {
       this.loading = true;
+      if (Boolean(this.form.product_ids.find((x) => x == "all"))) {
+        let items = [];
+        for (let i = 0; i < this.products.length; i++) {
+          const element = this.products[i];
+          items.push(element.value);
+        }
+        this.form.product_ids = items.filter((x) => x != "all");
+      }
+
       let form = { ...this.form };
       if (this.modelId) {
         form["id"] = this.modelId;
@@ -248,7 +254,6 @@ export default {
 
     loadProduct(category_ids) {
       this.load_item = true;
-
       let ides = {};
       if (category_ids && category_ids.length > 0) {
         ides = category_ids;

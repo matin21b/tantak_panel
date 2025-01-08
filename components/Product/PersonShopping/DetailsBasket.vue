@@ -1,6 +1,10 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="800">
-    <v-card style="overflow: hidden !important" class="pa-5" :disabled="loading">
+    <v-card
+      style="overflow: hidden !important"
+      class="pa-5"
+      :disabled="loading"
+    >
       <div class="card-style pa-5">
         <v-row class="d-flex align-center pa-5 mb-4">
           <h1 class="font_18">جزییات سبد خرید</h1>
@@ -58,7 +62,9 @@
               class="pa-3 elevation-1 my-4 card-items"
               outlined
               :style="
-                Boolean(x.returned) ? 'border-right : 2px solid red !important;' : ''
+                Boolean(x.returned)
+                  ? 'border-right : 2px solid red !important;'
+                  : ''
               "
             >
               <v-card-text class="elevation-0" @click="show_dialog(i)">
@@ -89,7 +95,9 @@
                     <small class="grey--text">
                       مقدار تخفیف:‌ {{ $price(x.off_amount) }} ریال
                     </small>
-                    <small> قیمت پس از تخفیف:‌ {{ $price(x.price) }} ریال </small>
+                    <small>
+                      قیمت پس از تخفیف:‌ {{ $price(x.price) }} ریال
+                    </small>
 
                     <small>
                       جمع کل :‌
@@ -101,9 +109,9 @@
               <v-card v-if="Boolean(x.returned)" class="elevation-3" outlined>
                 <v-col cols="12">
                   <h1 v-if="Boolean(selected_name)">
-                     نام محصول / پکیج  جایگزین : {{ selected_name }} 
+                    نام محصول / پکیج جایگزین : {{ selected_name }}
                   </h1>
-                  <v-row class="align-center mt-2">
+                  <v-row class="align-center mt-2 justify-center">
                     <v-col cols="4">
                       <amp-select
                         text=" نوع مرجوعیت"
@@ -119,18 +127,38 @@
                         cClass="ltr-item"
                       />
                     </v-col>
-                    <v-col cols="4" v-if="x.returned_type == 'replacement'">
+                    <v-col cols="4">
+                      <amp-input text="عنوان" v-model="x.title" />
+                    </v-col>
+                    <v-col
+                      cols="2"
+                      v-if="x.returned_type == 'replacement'"
+                      class="text-center"
+                    >
                       <amp-button
                         text="انتخاب کالا"
-                        block
                         color="btn_color"
                         height="38"
                         @click="show_select = true"
                       />
                     </v-col>
+                    <v-col
+                      cols="4"
+                      v-if="
+                        x.returned_type == 'replacement' &&
+                        Boolean(selected_name)
+                      "
+                    >
+                      <amp-input
+                        text="تعداد محصول جایگزین"
+                        v-model="x.count"
+                        rules="number"
+                        cClass="ltr-item"
+                      />
+                    </v-col>
+
                     <v-col cols>
                       <amp-textarea
-                        cols="12"
                         text=" توضیحات"
                         :rows="1"
                         v-model="x.description"
@@ -146,6 +174,7 @@
                         :disabled="
                           !Boolean(x.new_count) ||
                           !Boolean(x.returned_type) ||
+                          !Boolean(x.title) ||
                           !Boolean(x.description)
                         "
                         @click="submitReterned(x)"
@@ -164,7 +193,10 @@
             @closeDialog="show_select = false"
           />
           <v-window-item :value="2">
-            <div class="text-center my-2" v-if="Object.keys(transactions).length > 0">
+            <div
+              class="text-center my-2"
+              v-if="Object.keys(transactions).length > 0"
+            >
               <v-card
                 v-for="(x, i) in transactions.payments"
                 :key="x.id"
@@ -208,7 +240,9 @@
                       {{ x.pay_text }}
                       <small v-if="Boolean(x.paid_date)">
                         ( پرداخت شده در
-                        {{ $toJalali(x.paid_date, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
+                        {{
+                          $toJalali(x.paid_date, "YYYY-MM-DD", "jYYYY/jMM/jDD")
+                        }}
                         )
                       </small>
                     </h1>
@@ -264,6 +298,7 @@ export default {
   },
   data() {
     return {
+      selected_new_item: {},
       items_basket: [],
       check_returned: [],
       selected_name: "",
@@ -289,7 +324,9 @@ export default {
         const element = this.data[index];
         element["returned"] = false;
         element["returned_type"] = "";
+        element["title "] = "";
         element["new_count"] = "";
+        element["count"] = "";
         this.items_basket.push(element);
       }
     }
@@ -314,6 +351,7 @@ export default {
     //   );
     // },
     selectedData(event) {
+      this.selected_new_item = event;
       let body = event;
       let text = "";
       let product_name = "";
@@ -345,26 +383,36 @@ export default {
     },
     submitReterned(data) {
       this.loading = true;
-      console.log(">>>"  , data);
-      
-      if (data.new_count > data.number) {
-        this.$toast.info("تعداد وارد شده از تعداد  موجودی محصول در سبد خرید بیشتر است");
-        this.loading = false;
-        return;
-      }
+      let form = {};
 
-      let form = {
+      form = {
         basket_id: data.basket_id,
-        section_id: Boolean(data.package_id) ? data.package_id : data.product_varcomb_id,
+        section_id: Boolean(data.package_id)
+          ? data.package_id
+          : data.product_varcomb_id,
         section_name: Boolean(data.package_id)
           ? "Package"
           : "ProductVariationCombination",
         description: data.description,
         sale_agency_id: this.$store.state.auth.user.sale_agency_id,
         type: data.returned_type,
-        number: data.new_count,
+        title: data.title,
       };
-      this.$reqApi("return-product/insert", form)
+
+      if (form.type == "replacement") {
+        form["count"] = data.count;
+        if (Boolean(data.package_id)) {
+          form["package_id"] = this.selected_new_item.package.id;
+        } else {
+          form["product_id"] = this.selected_new_item.only_product_var.id;
+        }
+      }
+
+      form["number"] = data.new_count;
+      form["basket_item_id"] = data.id;
+
+      let new_form = { ...form };
+      this.$reqApi("return-product/insert", new_form)
         .then((res) => {
           this.$toast.success("عملیات با موفقیت انجام شد");
           this.check_returned.push(form.section_id);

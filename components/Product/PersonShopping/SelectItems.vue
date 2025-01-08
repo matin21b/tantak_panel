@@ -279,8 +279,6 @@ export default {
   methods: {
     selectItems(row) {
       this.$emit("selectedItem", row);
-      console.log(">>." , row);
-      
       this.$toast.success("محصول  /  پکیج  مورد نظر با موفقیت انتخاب شد")
       this.closeDialog()
     },

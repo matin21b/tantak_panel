@@ -130,6 +130,29 @@ export default {
           return "";
         },
       },
+
+      {
+        text: "نوع سبد",
+
+        value: (body) => {
+          let type = body.type_basket == "dependent" ? "تعویضی" : " اصلی";
+          let factor_number = Boolean(body.basket)
+            ? body.basket.factor_number
+            : "--";
+          return `
+      <h1 class="my-2">
+          ${type}
+          <br />
+          <small class='grey--text'> 
+
+
+           ${factor_number}
+            </small>
+        </h1>
+      `;
+        },
+      },
+
       {
         text: "کاربر",
         filterCol: "body.user.username",
@@ -283,6 +306,7 @@ export default {
       `;
         },
       },
+
       {
         text: "توضیحات",
         filterCol: "description",
