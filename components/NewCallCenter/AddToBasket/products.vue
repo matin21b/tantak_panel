@@ -84,7 +84,7 @@
     </v-col>
 
     <v-col cols="12" v-if="loading_add">
-      <v-card class="elevation-0">
+      <v-card class="elevation-2">
         <v-skeleton-loader height="120" class="mx-auto" type="card" />
       </v-card>
     </v-col>

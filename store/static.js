@@ -59,6 +59,8 @@ export const state = () => ({
   reterned_type,
   status_cupon,
   discount_type,
+  festival_type,
+  festival_status,
 });
 
 let status_type = [
@@ -776,8 +778,17 @@ let status_cupon = [
   { text: "استفاده شده", value: "used" },
   { text: "منقضی شده", value: "expired" },
 ];
+let festival_status = [
+  { text: "فعال", value: "active" },
+  { text: "غیرفعال", value: "inactive" },
+  { text: "منقضی شده", value: "expired" },
+];
 
-let discount_type =  [
+let discount_type = [
   { text: "درصد", value: "percent" },
   { text: "مقدار", value: "amount" },
+];
+let festival_type = [
+  { text: "برای سبد های خرید", value: "on_basket" },
+  { text: "برای محصولات", value: "on_product" },
 ];

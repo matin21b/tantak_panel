@@ -1,7 +1,6 @@
 <template>
-  <v-row class="d-flex justify-center align-center mt-2 pa-5">
-    <v-col cols="12">
-    </v-col>
+  <v-row class="d-flex justify-center align-center  pa-5">
+    
     <v-col cols="12">
       <v-autocomplete
         v-if="
@@ -109,7 +108,7 @@
       </v-col>
     </v-row>
     <v-col cols="12" class="ma-0 pa-0 mt-5" v-if="loading_add">
-      <v-card class="elevation-0">
+      <v-card class="elevation-2">
         <v-skeleton-loader height="200" class="mx-auto" type="card" />
       </v-card>
     </v-col>
@@ -121,7 +120,7 @@
       v-for="(pack, index) in list_selected_packages"
       :key="index"
     >
-      <v-card class="pa-5 elevation-0 card-style">
+      <v-card class="pa-5 elevation-2 card-style">
         <div
           v-if="!$vuetify.breakpoint.mdAndUp"
           class="d-flex justify-center align-center"
@@ -157,7 +156,7 @@
               outlined
               v-for="(item, index) in pack.products"
               :key="index"
-              class="text-end pa-1 pr-3 elevation-0 ma-1"
+              class="text-end pa-1 pr-3 elevation-2 ma-1"
             >
               <h1>
                 <small v-if="item.product">

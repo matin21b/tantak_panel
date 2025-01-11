@@ -36,6 +36,16 @@
           />
         </v-col>
         <v-col cols="12" md="3">
+          <amp-autocomplete
+            text="دسته بندی کاربر"
+            chips
+            multiple
+            rules="require"
+            v-model="form.category_id"
+            :items="category_users"
+          />
+        </v-col>
+        <v-col cols="12" md="3">
           <amp-select
             text="وضعیت"
             rules="require"
@@ -218,6 +228,7 @@ export default {
     parent_id: [],
     psychologist: [],
     supervisor_status_items: [],
+    category_users: [],
     province: [],
     user: [],
     citis: [],
@@ -239,6 +250,7 @@ export default {
       internal_port: "",
       status_work: "",
       role_id: [],
+      category_id: [],
       national_code: "",
       status: "active",
     },
@@ -262,7 +274,7 @@ export default {
             -1
         )
       ) {
-        this.$store.dispatch("setting/setgetRegion")
+        this.$store.dispatch("setting/setgetRegion");
         return true;
       } else {
         return false;
@@ -279,6 +291,9 @@ export default {
         this.form.role_id.indexOf(this.$store.state.auth.role.admin_id) > -1
       );
     },
+  },
+  beforeMount() {
+    this.loadCategoryUser();
   },
   // watch: {
   //   "form.province_id"() {
@@ -332,8 +347,8 @@ export default {
       if (this.modelId) {
         url = this.updateUrl;
         form["id"] = this.modelId;
-      }else{
-        form["manual"] = "manual"
+      } else {
+        form["manual"] = "manual";
       }
 
       form.username = this.$FarsiToEnglishNumber(form.username);
@@ -377,11 +392,16 @@ export default {
           if (response.model.parent) {
             this.parent_id = [response.model.parent];
           }
+          if (response.model.categories.length > 0) {
+            response.model.categories.map((x) => {
+              this.form.category_id.push({
+                text: x.value,
+                value: x.id,
+              });
+            });
+          }
 
-          // setTimeout(() => {
-          //   this.form.address.country_division_id =
-          //     response.model.addresses[response.model.addresses.length -1].country_division_id;
-          // }, 400);
+     
 
           if (Array.isArray(response.model.roles)) {
             this.form.role_id = response.model.roles.map((x) => x.id);
@@ -394,6 +414,28 @@ export default {
           this.loading = false;
         });
     },
+    loadCategoryUser() {
+      let filters = {
+        key: {
+          op: "=",
+          value: "category_user",
+        },
+      };
+
+      this.$reqApi("/setting", { filters: filters })
+        .then((response) => {
+          this.category_users = response.model.data.map((x) => ({
+            value: x.id,
+            text: x.value,
+          }));
+
+          this.loading = false;
+        })
+        .catch((error) => {
+          this.loading = false;
+        });
+    },
+
     // loadState() {
     //   return new Promise((response, rej) => {
     //     let filters = {

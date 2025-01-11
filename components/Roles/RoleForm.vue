@@ -8,6 +8,12 @@
     <v-row class="ma-2">
       <v-col cols="12" md="12">
         <amp-input text="عنوان" v-model="form.name" rules="require"></amp-input>
+        <amp-autocomplete
+            text="دسته بندی نقش"
+            rules="require"
+            v-model="form.category_id"
+            :items="category_roles"
+          />
       </v-col>
       <v-col cols="12" md="6" v-for="(item, i) in action" :key="i">
         <v-card class="h-max pa-4">
@@ -64,8 +70,10 @@ export default {
       valid: true,
       loading: false,
       panel: [],
+      category_roles: [],
       form: {
         name: "",
+        category_id: "",
         action_id: [],
         sort: "1",
         id: "",
@@ -91,6 +99,7 @@ export default {
     },
   },
   beforeMount() {
+    this.loadCategoryRoles()
     this.$store.dispatch("setting/getActions");
   },
   mounted() {
@@ -114,12 +123,34 @@ export default {
           this.loading = false;
         });
     },
+    loadCategoryRoles() {
+      let filters = {
+        key: {
+          op: "=",
+          value: "category_role",
+        },
+      };
+
+      this.$reqApi("/setting", { filters: filters })
+        .then((response) => {
+          this.category_roles = response.model.data.map((x) => ({
+            value: x.id,
+            text: x.value,
+          }));
+
+          this.loading = false;
+        })
+        .catch((error) => {
+          this.loading = false;
+        });
+    },
     loadData() {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then((response) => {
           this.form.id = this.modelId;
           this.form.name = response.model.name;
+          this.form.category_id = response.model.category_id;
           this.setActions(response.model.actions);
           this.loading = false;
         })
