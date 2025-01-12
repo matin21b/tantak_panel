@@ -151,7 +151,7 @@
               </v-col>
             </div>
             <v-col cols="12" class="pa-0">
-              <FestivalInPersone v-if="festival_item.length > 0" :festival-item="festival_item" />
+              <FestivalInPersone v-if="festival_item.length > 0" :festival-item="festival_item" :user-id="user_id" />
             </v-col>
             <v-row class="d-flex justify-center pa-4">
               <v-col cols="12" md="2" class="ma-2">
@@ -218,6 +218,7 @@ export default {
     coupon: "",
     loading: false,
     basket_id: "",
+    user_id: "",
     wallet: {},
     only_price: false,
   }),
@@ -353,6 +354,7 @@ export default {
         .then((res) => {
           if (Boolean(res.id)) {
             this.basket_id = res.id;
+            this.user_id = res.user_id;
             this.getFestivals(res.user_id);
           }
           this.loading = false;

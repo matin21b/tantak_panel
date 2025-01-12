@@ -47,7 +47,7 @@
               v-for="(pack, packi) in x.gift_packages"
               :key="packi"
               class="d-flex align-center pa-2 ma-2 elevation-1 card-style"
-              @click.stop="selectBox(pack, 'package')"
+              @click.stop="selectBox(pack, 'package', x)"
             >
               <v-avatar size="45">
                 <v-img :src="$getImage(pack.logo)" />
@@ -66,21 +66,19 @@
               v-for="(product, proi) in x.gift_products"
               :key="proi"
               class="d-flex align-center pa-2 ma-2 elevation-1 card-style"
-              @click.stop="selectBox(product, 'product')"
+              @click.stop="selectBox(product, 'product', x)"
             >
               <v-avatar size="45">
                 <v-img :src="$getImage(product.main_image)" />
               </v-avatar>
-
               <v-spacer></v-spacer>
-
               <h1>
                 نام محصول :‌
                 {{ product.name }}
               </h1>
               <v-spacer></v-spacer>
             </v-card>
-
+            <JustVariatin v-if="show_dialog" :product-id="product_id" />
             <!-- <div class="d-flex align-center" v-else>
               <v-avatar size="45">
                 <v-img :src="$getImage(x.main_image)" />
@@ -104,9 +102,16 @@
   </v-card>
 </template>
 <script>
+import JustVariatin from "@/components/Product/PersonShopping/JustVariatin.vue";
 export default {
+  components: {
+    JustVariatin,
+  },
   props: {
     festivalItem: {
+      default: false,
+    },
+    userId: {
       default: false,
     },
   },
@@ -114,6 +119,8 @@ export default {
     return {
       festivals: [],
       loading: false,
+      show_dialog: false,
+      product_id:"",
     };
   },
   mounted() {
@@ -130,6 +137,9 @@ export default {
       for (let i = 0; i < data.length; i++) {
         const x = data[i];
         x["step"] = "1";
+        if (x.gift_products.length > 0) {
+          x.gift_products["show_var"] = false;
+        }
         items.push(x);
       }
       console.log("???++++?", items);
@@ -148,12 +158,33 @@ export default {
       console.log("festivals[index].step", this.festivals[index].step);
       console.log("festivals[index].step", this.festivals[index].step);
     },
-    selectBox(item, key) {
+    selectBox(item, key, data) {
+      console.log("key ,,,,,", key);
       if (key == "package") {
+        this.addGift(item, data);
       } else if (key == "product") {
+        this.show_dialog = true;
+        this.product_id = item.id
       }
-      console.log("item >>> " , item);
-      
+    },
+    addGift(data, festival) {
+      //       console.log("festiitemitemitemitemitemval", [festival , item]);
+      let form = {
+        user_id: this.userId,
+        festival_id: festival.id,
+        gift_section_id: data.id,
+        number_use: data.number,
+        gift_section_name: data.package_number ? "Package" : "Product",
+        section_use_name: data.package_number
+          ? "Package"
+          : "ProductVariationCombination",
+        section_use_id: data.package_number ? data.id : "---",
+      };
+      this.$reqApi("basket/sale-agency/seller/insert-festival", form)
+        .then((res) => {
+          this.$toast.success("هدیه برای کاربر ثبت شد");
+        })
+        .catch((err) => {});
     },
   },
 };
@@ -166,10 +197,12 @@ export default {
   transform: scale3d(1.04, 1.04, 1.04);
   background: linear-gradient(
     to right,
-
-    rgb(253, 227, 210),
+    #fc9106ad,
+    #ffffff,
+    #ffffff,
+    #ffffff,
     #ffffff
   ) !important;
-  transition: all 0.8s ease;
+  transition: all 0.4s ease;
 }
 </style>
