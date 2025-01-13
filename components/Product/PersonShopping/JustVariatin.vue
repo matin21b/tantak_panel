@@ -9,7 +9,9 @@
         >
           <v-icon color="red" size="50"> error </v-icon>
           <br />
-          <small class="red--text"> برای محصول انتخاب شده ویژگی تعیین شده</small>
+          <small class="red--text">
+            برای محصول انتخاب شده ویژگی تعیین شده</small
+          >
         </v-col>
         <v-form v-model="valid_variations" v-if="!loading">
           <v-row class="align-center">
@@ -21,7 +23,9 @@
                 v-model="var_id_1"
                 :items="product_sort_1.items"
                 :loading="loading"
-                :disabled="loading && !Boolean(step_var_1) && !Boolean(product_sort_1)"
+                :disabled="
+                  loading && !Boolean(step_var_1) && !Boolean(product_sort_1)
+                "
             /></v-col>
             <v-col cols="12" md="3">
               <amp-select
@@ -50,7 +54,9 @@
                 color="blue-grey"
                 text="ثبت"
                 height="38"
-                :disabled="!Boolean(variation_id)"
+                :disabled="
+                  !Boolean(var_id_1) || !Boolean(var_id_2) || !Boolean(var_id_3)
+                "
                 @click="getSelectedVar(variation_id)"
               />
             </v-col>
@@ -153,19 +159,25 @@ export default {
       if (Boolean(this.productVar[0])) {
         if (this.productVar[0].variation1) {
           this.step_var_1 = true;
-          set_title[`var_${this.productVar[0].variation1.variation_type.sort}`] = {
+          set_title[
+            `var_${this.productVar[0].variation1.variation_type.sort}`
+          ] = {
             title: this.productVar[0].variation1.variation_type.value,
           };
         }
         if (this.productVar[0].variation2) {
           this.step_var_2 = true;
-          set_title[`var_${this.productVar[0].variation2.variation_type.sort}`] = {
+          set_title[
+            `var_${this.productVar[0].variation2.variation_type.sort}`
+          ] = {
             title: this.productVar[0].variation2.variation_type.value,
           };
         }
         if (this.productVar[0].variation3) {
           this.step_var_3 = true;
-          set_title[`var_${this.productVar[0].variation3.variation_type.sort}`] = {
+          set_title[
+            `var_${this.productVar[0].variation3.variation_type.sort}`
+          ] = {
             title: this.productVar[0].variation3.variation_type.value,
           };
         }
@@ -273,7 +285,10 @@ export default {
             }
           }
           if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
-            if (this.var_id_1 == f.variation_3_id && this.var_id_2 == f.variation_2_id) {
+            if (
+              this.var_id_1 == f.variation_3_id &&
+              this.var_id_2 == f.variation_2_id
+            ) {
               product = f;
             }
           }

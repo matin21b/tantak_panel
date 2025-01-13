@@ -1,68 +1,64 @@
 <template>
   <div class="text-center">
     <v-dialog v-model="dialog" persistent width="450">
-
-        <v-card
-          :disabled="disabled"
-          class="elevation-0 d-flex align-center pa-3 "
-          style="overflow: hidden !important;"
-        >
-          <v-form v-model="valid">
-            <v-row class="justify-center">
-              <v-col cols="12" md="12">
-                <amp-select
-                  text="نقش"
-                  :items="roles"
+      <v-card
+        :disabled="disabled"
+        class="elevation-0 d-flex align-center pa-3"
+        style="overflow: hidden !important"
+      >
+        <v-form v-model="valid">
+          <v-row class="justify-center">
+            <v-col cols="12" md="12">
+              <amp-select
+                text="نقش"
+                :items="roles"
                 rules="require"
-
-                  v-model="form.type_report"
-                />
-                <UserSelectForm
-                  v-if="Boolean(form.type_report)"
-                  text="انتخاب کاربر"
-                  v-model="user"
-                  url="user/searchByRole"
-                  :rules="Boolean(form.type_report) ? 'require' : ''"
-                  :role-id="filter_role"
-                />
-                <amp-jdate
-                  text="تاریخ شروع"
-                  :is-number="true"
+                v-model="form.type_report"
+              />
+              <UserSelectForm
+                v-if="Boolean(check_show_list)"
+                text="انتخاب کاربر"
+                v-model="user"
+                :url="url_list"
+                :rules="Boolean(form.type_report) ? 'require' : ''"
+                :role-id="filter_role"
+              />
+              <amp-jdate
+                text="تاریخ شروع"
+                :is-number="true"
                 rules="require"
-
-                  v-model="form.start_at"
-                />
-                <amp-jdate
+                v-model="form.start_at"
+              />
+              <amp-jdate
                 class="mt-3"
                 rules="require"
-                  text="تاریخ پایان"
-                  :is-number="true"
-                  v-model="form.end_at"
-                />
-              </v-col>
-              <v-row class="align-center pa-2 justify-center my-2">
-                <amp-button
-                  text="تایید"
-                  height="38"
-                  class="ma-2"
-                  :loading="loading"
-                  color="blue-grey"
-                  @click="getLogsRefral"
-                  :disabled="!valid || loading"
-                />
-                <amp-button
-                  text="انصراف"
-                  height="38"
-                    class="ma-2"
-                  color="red"
-                  @click="closeDialog"
-                  :disabled="loading"
-                />
-              </v-row>
+                text="تاریخ پایان"
+                :is-number="true"
+                v-model="form.end_at"
+              />
+            </v-col>
+            <v-row class="align-center pa-2 justify-center my-2">
+              <amp-button
+                text="تایید"
+                height="38"
+                class="ma-2"
+                :loading="loading"
+                color="blue-grey"
+                @click="getLogsRefral"
+                :disabled="!valid || loading"
+              />
+              <amp-button
+                text="انصراف"
+                height="38"
+                class="ma-2"
+                color="red"
+                @click="closeDialog"
+                :disabled="loading"
+              />
             </v-row>
-          </v-form>
-        </v-card>
-
+          </v-row>
+        </v-form>
+      </v-card>
     </v-dialog>
   </div>
 </template>
@@ -85,6 +81,7 @@ export default {
       disabled: false,
       page_number: 1,
       total_length: "0",
+      url_list: "user/searchByRole",
       value: 0,
       end: false,
       total_data: [],
@@ -115,24 +112,41 @@ export default {
       ],
     };
   },
+
   beforeMount() {
-    this.roles = [
-      {
-        text: "مدیر مرکز تماس",
-        value: "manager",
-        role_id: this.$store.state.auth.role.admin_call_center_id,
-      },
-      {
-        text: "سرپرست",
-        value: "supervisor",
-        role_id: this.$store.state.auth.role.superviser_id,
-      },
-      {
-        text: "فروشنده",
-        value: "operator",
-        role_id: this.$store.state.auth.role.oprator_id,
-      },
-    ];
+    if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
+      this.url_list = "user/list-employee";
+      this.roles = [
+        {
+          text: "خودم",
+          value: "supervisor",
+          role_id: this.$store.state.auth.role.superviser_id,
+        },
+        {
+          text: "فروشنده",
+          value: "operator",
+          role_id: this.$store.state.auth.role.oprator_id,
+        },
+      ];
+    } else {
+      this.roles = [
+        {
+          text: "مدیر مرکز تماس",
+          value: "manager",
+          role_id: this.$store.state.auth.role.admin_call_center_id,
+        },
+        {
+          text: "سرپرست",
+          value: "supervisor",
+          role_id: this.$store.state.auth.role.superviser_id,
+        },
+        {
+          text: "فروشنده",
+          value: "operator",
+          role_id: this.$store.state.auth.role.oprator_id,
+        },
+      ];
+    }
   },
   watch: {
     total_data: {
@@ -150,6 +164,23 @@ export default {
     },
   },
   computed: {
+    check_show_list() {
+      if (
+        Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) &&
+        this.form.type_report == "supervisor"
+      ) {
+        console.log("1");
+
+        return false;
+      } else if (!Boolean(this.form.type_report)) {
+        console.log("2");
+
+        return false;
+      } else {
+        console.log("3");
+        return true;
+      }
+    },
     status_request() {
       return `
  ${this.total_length} / ${this.total_data.length}
@@ -160,7 +191,14 @@ export default {
     getLogsRefral() {
       this.loading = true;
       let form = { ...this.form };
-      form.user_id = this.user[0].id;
+      if (
+        Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) &&
+        form.type_report == "supervisor"
+      ) {
+        form.user_id = this.$store.state.auth.user.id;
+      } else {
+        form.user_id = this.user[0].id;
+      }
       this.$reqApi("message/refer/history-report", { ...form })
         .then((res) => {
           if (res) {
@@ -210,13 +248,10 @@ export default {
       this.$toast.success("اکسل گزارش ارجاعات با موفقیت دریافت شد");
     },
 
-
-
     closeDialog() {
       this.end = true;
       this.$emit("closeDialog");
     },
-
   },
 };
 </script>

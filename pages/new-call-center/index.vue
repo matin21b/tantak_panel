@@ -387,6 +387,21 @@ export default {
           //   .then((res) => {})
           //   .catch((err) => {});
         },
+        show_fun: (body) => {
+          if (
+            Boolean(
+              this.$checkRole(this.$store.state.auth.role.superviser_id)
+            ) ||
+            Boolean(
+              this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
+            ) ||
+            Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
       },
     ];
     this.$store.dispatch("setPageTitle", this.title);

@@ -43,14 +43,14 @@
       <amp-button
         text="تایید"
         height="38"
-        @click="payFactor(true)"
+        @click="payFactor(true, 'pay')"
         color="blue-grey"
         type="submit"
         class="ma-1"
       />
     </v-col>
     <div class="text-center">
-      <v-overlay :value="overlay" :dark="false">
+      <v-overlay style="overflow: scroll !important;" :value="overlay" :dark="false" height="600">
         <v-row class="d-flex justify-center">
           <v-card class="pa-5" width="750">
             <v-col cols="12">
@@ -151,12 +151,25 @@
               </v-col>
             </div>
             <v-col cols="12" class="pa-0">
-              <FestivalInPersone v-if="festival_item.length > 0" :festival-item="festival_item" :user-id="user_id" />
+              <FestivalInPersone
+                v-if="festival_item.length > 0 && !Boolean(finalization)"
+                :festival-item="festival_item "
+                :user-id="user_id"
+              />
             </v-col>
             <v-row class="d-flex justify-center pa-4">
               <v-col cols="12" md="2" class="ma-2">
                 <amp-button
-                  text="پرداخت سبد"
+                  v-if="!Boolean(finalization)"
+                  text="ادامه "
+                  height="38"
+                  @click="overlay = false"
+                  color="teal darken-2"
+                  type="submit"
+                />
+                <amp-button
+                  v-if="Boolean(finalization)"
+                  text="پرداخت "
                   height="38"
                   @click="payFactor(false)"
                   color="teal darken-2"
@@ -164,7 +177,7 @@
                 />
               </v-col>
 
-              <v-col cols="12" md="4" class="ma-2">
+              <v-col cols="12" md="3" class="ma-2">
                 <amp-button
                   text="انصراف و ذخیره سبد"
                   height="38"
@@ -205,12 +218,13 @@ export default {
     },
   },
   data: () => ({
-    festival_item :[],
+    festival_item: [],
     pay_type: [
       { text: "نقد", value: "naghd" },
       { text: "پرداخت با کارتخوان", value: "pos" },
     ],
     overlay: false,
+    finalization: false,
     product: { title: "محصولات ", count: 0, price: "" },
     package: { title: "پکیج ها ", count: 0, price: "" },
     sumb_price: 0,
@@ -225,56 +239,7 @@ export default {
   watch: {
     basket_id() {
       console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-
+ 
       let only_price_show = this.only_price;
       if (Boolean(only_price_show)) {
         this.overlay = true;
@@ -348,8 +313,11 @@ export default {
       }
       this.list_items = array;
     },
-    payFactor(only_price) {
+    payFactor(only_price, key) {
       this.only_price = only_price;
+      if (key && key == "pay") {
+        this.finalization = true;
+      }
       this.$reqApi("basket/sale-agency/seller/insert", this.formData)
         .then((res) => {
           if (Boolean(res.id)) {
@@ -382,9 +350,7 @@ export default {
     getFestivals(user_id) {
       this.$reqApi("festival/user-cover", { user_id: user_id })
         .then((res) => {
-          this.festival_item = res.model.data
-          console.log("@>", res);
-          console.log("@  this.festival_item>",   this.festival_item);
+          this.festival_item = res.model.data;
         })
         .catch((err) => {});
     },
