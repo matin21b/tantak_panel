@@ -31,11 +31,16 @@
         </v-window-item>
 
         <v-window-item :value="2">
-          <v-card @click="setStep(i)" class="pa-3">
+          <v-card class="pa-3">
             <div class="d-flex align-center px-4">
               <h1>جوایز جشنواره</h1>
               <v-spacer></v-spacer>
-              <v-icon> redeem </v-icon>
+          <v-btn color="red" @click="setStep(i)">
+          <span class="white--text" small>
+            برگشت
+
+          </span>
+          </v-btn>
             </div>
             <v-col cols="12">
               <v-divider></v-divider>
@@ -65,20 +70,28 @@
               outlined
               v-for="(product, proi) in x.gift_products"
               :key="proi"
-              class="d-flex align-center pa-2 ma-2 elevation-1 card-style"
-              @click.stop="selectBox(product, 'product', x)"
+              class="pa-2 ma-2 elevation-1 card-style"
             >
-              <v-avatar size="45">
-                <v-img :src="$getImage(product.main_image)" />
-              </v-avatar>
-              <v-spacer></v-spacer>
-              <h1>
-                نام محصول :‌
-                {{ product.name }}
-              </h1>
-              <v-spacer></v-spacer>
+              <v-col cols="12" class="d-flex align-center">
+                <v-avatar size="45">
+                  <v-img :src="$getImage(product.main_image)" />
+                </v-avatar>
+                <v-spacer></v-spacer>
+                <h1>
+                  نام محصول :‌
+                  {{ product.name }}
+                </h1>
+                <v-spacer></v-spacer>
+              </v-col>
+
+              <v-col cols="12">
+                <JustVariatin
+                  :product-var="product.product_variation_combinations"
+                  @SelectedVarId="addGift(product, x , $event)"
+                />
+              </v-col>
             </v-card>
-            <JustVariatin v-if="show_dialog" :product-id="product_id" />
+
             <!-- <div class="d-flex align-center" v-else>
               <v-avatar size="45">
                 <v-img :src="$getImage(x.main_image)" />
@@ -118,12 +131,15 @@ export default {
   data() {
     return {
       festivals: [],
+      product_variation_combinations: [],
       loading: false,
       show_dialog: false,
-      product_id:"",
+      product_id: "",
+      variation_id: "",
     };
   },
   mounted() {
+    console.log("this.festivalItem", this.festivalItem);
     console.log("this.festivalItem", this.festivalItem);
     console.log("this.festivalItem", this.festivalItem);
 
@@ -142,6 +158,18 @@ export default {
         }
         items.push(x);
       }
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
+      console.log("???++++?", items);
       console.log("???++++?", items);
 
       this.festivals = items;
@@ -163,22 +191,26 @@ export default {
       if (key == "package") {
         this.addGift(item, data);
       } else if (key == "product") {
+        console.log(
+          "  this.product_variation_combinations ",
+          item.product_variation_combinations
+        );
+
+        this.product_variation_combinations = item.product_variation_combinations;
+
         this.show_dialog = true;
-        this.product_id = item.id
+        this.product_id = item.id;
       }
     },
-    addGift(data, festival) {
-      //       console.log("festiitemitemitemitemitemval", [festival , item]);
+    addGift(data, festival , event) {
       let form = {
         user_id: this.userId,
         festival_id: festival.id,
         gift_section_id: data.id,
         number_use: data.number,
         gift_section_name: data.package_number ? "Package" : "Product",
-        section_use_name: data.package_number
-          ? "Package"
-          : "ProductVariationCombination",
-        section_use_id: data.package_number ? data.id : "---",
+        section_use_name: data.package_number ? "Package" : "ProductVariationCombination",
+        section_use_id: data.package_number ? data.id : event,
       };
       this.$reqApi("basket/sale-agency/seller/insert-festival", form)
         .then((res) => {
@@ -194,15 +226,7 @@ export default {
   transition: all 0.4s ease;
 }
 .card-style:hover {
-  transform: scale3d(1.04, 1.04, 1.04);
-  background: linear-gradient(
-    to right,
-    #fc9106ad,
-    #ffffff,
-    #ffffff,
-    #ffffff,
-    #ffffff
-  ) !important;
+  transform: scale3d(1.02, 1.02, 1.02);
   transition: all 0.4s ease;
 }
 </style>

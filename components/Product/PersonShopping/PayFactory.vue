@@ -52,7 +52,7 @@
     <div class="text-center">
       <v-overlay :value="overlay" :dark="false">
         <v-row class="d-flex justify-center">
-          <v-card class="pa-5" width="650">
+          <v-card class="pa-5" width="750">
             <v-col cols="12">
               <v-card
                 class="elevation-0 d-flex justify-space-between align-center pa-2"
