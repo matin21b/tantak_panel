@@ -169,15 +169,12 @@ export default {
         Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) &&
         this.form.type_report == "supervisor"
       ) {
-        console.log("1");
 
         return false;
       } else if (!Boolean(this.form.type_report)) {
-        console.log("2");
 
         return false;
       } else {
-        console.log("3");
         return true;
       }
     },

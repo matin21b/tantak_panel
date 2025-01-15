@@ -145,33 +145,24 @@ export default {
         }
         items.push(x);
       }
-      console.log("???++++?", items);
-      console.log("???++++?", items);
-      console.log("???++++?", items);
-      console.log("???++++?", items);
+  
 
       this.festivals = items;
     },
     setStep(index) {
       this.loading = true;
-      console.log(index);
       if (this.festivals[index].step == 1) {
         this.festivals[index].step++;
       } else {
         this.festivals[index].step--;
       }
       this.loading = false;
-      console.log("festivals[index].step", this.festivals[index].step);
     },
     selectBox(item, key, data) {
-      console.log("key ,,,,,", key);
       if (key == "package") {
         this.addGift(item, data);
       } else if (key == "product") {
-        console.log(
-          "  this.product_variation_combinations ",
-          item.product_variation_combinations
-        );
+  
 
         this.product_variation_combinations =
           item.product_variation_combinations;

@@ -27,7 +27,7 @@
               />
             </v-col>
 
-            <v-col cols="12" md="3" v-if="type_send == 'multi'">
+            <v-col cols="12" md="3" v-if="type_send == 'multi' || step_ref =='supervisor_to_manager'">
               <amp-input
                 cClass="ltr-item"
                 rules="number"
@@ -168,6 +168,7 @@
 
 <script>
 import UserSelectForm from "@/components/User/UserSelectForm";
+import { ref } from "vue";
 
 export default {
   props: {
@@ -258,8 +259,7 @@ export default {
       let form = {};
       let step = "";
       let role_user = "";
-      if (Boolean(this.count)) {
-      }
+  
       // //////////////////////////////////////////////////////////////
       if (Boolean(this.is_admin_call_center)) {
         if (this.type_send == "close") {

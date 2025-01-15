@@ -238,7 +238,6 @@ export default {
   }),
   watch: {
     basket_id() {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
  
       let only_price_show = this.only_price;
       if (Boolean(only_price_show)) {
@@ -266,7 +265,6 @@ export default {
     },
   },
   mounted() {
-    console.log(">>>>", this.userId);
     this.payFactor(true);
     this.loadData();
   },

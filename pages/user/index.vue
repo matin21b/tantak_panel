@@ -4,6 +4,7 @@
       <RoleChip
         v-show="showChips"
         @selectRole="addRole"
+    
         :value="rootBody.role_id"
       />
       <UserList
@@ -23,7 +24,7 @@ export default {
   data: () => ({
     rootBody: { role_id: [] },
     btnActions: [],
-    title: "کاربران"
+    title: "کاربران",
   }),
   computed: {
     showChips() {
@@ -33,18 +34,17 @@ export default {
         }
       }
       return true;
-    }
+    },
   },
   beforeMount() {
-    this.rootBody={
-      role_id :['791d1b02-3610-4177-9051-eb7ae6b72def']
-    }
-    this.$store.dispatch("setPageTitle", this.title);
+    (this.rootBody.role_id = ["791d1b02-3610-4177-9051-eb7ae6b72def"]),
+      this.$store.dispatch("setPageTitle", this.title);
   },
   methods: {
     addRole(id) {
       this.rootBody.role_id = [id];
-    }
-  }
+    },
+
+  },
 };
 </script>

@@ -68,21 +68,35 @@
               "
             >
               <v-card-text class="elevation-0" @click="show_dialog(i)">
-                <h1 v-if="Boolean(x.product)">
-                  <small> {{ i + 1 }} - </small>
-                  {{ x.product.name }}
+                <div class="d-flex">
+                  <h1 v-if="Boolean(x.product)">
+                    <small> {{ i + 1 }} - </small>
+                    {{ x.product.name }}
 
-                  <br />
-                  <small>
+                    <br />
+                    <small>
+                      {{ x.information }}
+                    </small>
+                    ( <small> عدد {{ x.number }} </small> )
+                  </h1>
+                  <h1 v-else>
+                    <small> {{ i + 1 }} - </small>
                     {{ x.information }}
-                  </small>
-                  ( <small> عدد {{ x.number }} </small> )
-                </h1>
-                <h1 v-else>
-                  <small> {{ i + 1 }} - </small>
-                  {{ x.information }}
-                  <small> ( پکیج ) </small>
-                </h1>
+                    <small> ( پکیج ) </small>
+                  </h1>
+                  <v-spacer  v-if="x.price == 0"></v-spacer>
+                  <v-progress-circular
+                    v-if="x.price == 0"
+                    :rotate="360"
+                    :size="55"
+                    :width="20"
+                    value="100"
+                    color="blue-grey lighten-4"
+                  >
+                    <v-icon size="26" color="blue-grey"> redeem </v-icon>
+                  </v-progress-circular>
+                </div>
+
                 <h1>
                   <small>
                     بارکد :‌
@@ -92,14 +106,14 @@
                 <h1>
                   <v-row class="justify-space-between pa-3 py-4">
                     <small> قیمت اصلی:‌ {{ $price(x.base_price) }} ریال </small>
-                    <small class="grey--text">
+                    <small class="grey--text" v-if="x.price != 0">
                       مقدار تخفیف:‌ {{ $price(x.off_amount) }} ریال
                     </small>
-                    <small>
+                    <small v-if="Boolean(x.price)">
                       قیمت پس از تخفیف:‌ {{ $price(x.price) }} ریال
                     </small>
 
-                    <small>
+                    <small v-if="Boolean(x.price) && Boolean(x.off_amount)">
                       جمع کل :‌
                       {{ $price(x.price * x.number) }} ریال
                     </small>
@@ -319,6 +333,8 @@ export default {
     };
   },
   mounted() {
+
+
     if (this.data.length > 0) {
       for (let index = 0; index < this.data.length; index++) {
         const element = this.data[index];
@@ -347,7 +363,6 @@ export default {
     },
     // checkReturned() {
     //   this.check_returned = this.items_basket.filter((x) =>
-    //     Boolean(x.returned)
     //   );
     // },
     selectedData(event) {

@@ -151,7 +151,6 @@ export default {
   },
   mounted() {
     if (Boolean(this.productVar)) {
-      console.log("productVar", this.productVar);
       let set_title = [];
       this.all_variatons_product = this.productVar;
       // ساختار کلی variations

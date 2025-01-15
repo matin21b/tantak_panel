@@ -103,8 +103,6 @@ export default {
   },
   methods: {
     addItem() {
-      console.log("this.product_id", this.product_id, this.list_item);
-      // console.log("this.package_id", this.package_id);
 
       let selected_item_pack = {};
       let selected_item_product = {};
@@ -116,7 +114,6 @@ export default {
         dublicate_product = this.list_item.find(
           (x) => x.value == this.product_id
         );
-        console.log(dublicate_product);
 
         if (Boolean(dublicate_product)) {
           this.$toast.info(`محصول  ${dublicate_product.text} قبلا اضافه شده`);
