@@ -40,10 +40,19 @@
 
       <v-col cols="12" md="4">
         <amp-select
+          text="تخفیف برای جشنواره است ؟‌"
+          :items="$store.state.static.bool_en"
+          rules="require"
+          v-model="form.is_festival"
+        ></amp-select>
+      </v-col>
+      <v-col cols="12" md="4">
+        <amp-select
           text="عمومی"
           :items="$store.state.static.bool_en"
           rules="require"
           v-model="form.is_public"
+          :disabled="disabel_public"
         ></amp-select>
       </v-col>
       <v-col cols="12" md="4">
@@ -55,7 +64,11 @@
         ></amp-select>
       </v-col>
 
-      <v-col cols="12" md="4" v-if="form.is_public == 'no'">
+      <v-col
+        cols="12"
+        md="4"
+        v-if="form.is_public == 'no' && form.is_festival != 'yes'"
+      >
         <UserSelectForm
           text="انتخاب کاربر"
           v-model="user"
@@ -87,6 +100,7 @@
           text="قابل استفاده برای تمامی محصولات (پکیج و محصولات)"
           :items="$store.state.static.bool_en"
           rules="require"
+          :disabled="disabel_public"
           v-model="form.all_products"
         ></amp-select>
       </v-col>
@@ -244,6 +258,7 @@ export default {
       catgoury_items: [],
       users: [],
       show_dialog: false,
+      disabel_public: false,
       now: "",
       form: {
         for_title: "",
@@ -260,6 +275,7 @@ export default {
         description: "",
         sort: "",
         is_public: "yes",
+        is_festival: "no",
         product_ids: [],
         category_ids: [],
         package_ids: [],
@@ -279,7 +295,17 @@ export default {
       this.loadData();
     }
   },
-
+  watch: {
+    "form.is_festival"() {
+      if (this.form.is_festival == "yes") {
+        this.form.is_public = "no";
+        this.disabel_public = true;
+        this.all_products = "yes";
+      } else {
+        this.disabel_public = false;
+      }
+    },
+  },
   methods: {
     submit() {
       this.loading = true;
@@ -288,6 +314,11 @@ export default {
         this.form.is_public = true;
       } else {
         this.form.is_public = false;
+      }
+      if (this.form.is_festival == "yes") {
+        this.form.is_festival = true;
+      } else {
+        this.form.is_festival = false;
       }
 
       if (this.form.all_products == "yes") {
@@ -325,6 +356,7 @@ export default {
           }
           this.form.all_products = Boolean(data.all_products) ? "yes" : "no";
           this.form.is_public = Boolean(data.is_public) ? "yes" : "no";
+          this.form.is_festival = Boolean(data.is_festival) ? "yes" : "no";
           this.user =
             data.users.length > 0 ? data.users.map((x) => x.user) : [];
           data.couponables.map((y) => {
@@ -373,7 +405,7 @@ export default {
             const x = response.model.data[i];
             items.push({
               text: x.value,
-              value: x.id,
+              value: x.value,
             });
           }
           this.for_title_texts = items;

@@ -290,7 +290,8 @@
                 </v-row>
               </v-col>
             </v-row>
-            <v-overlay
+            <v-dialog
+            :dark="false"
               v-model="overlay"
               class="d-flex justify-center align-center"
             >
@@ -315,6 +316,13 @@
                       item.value ? `${$price(item.value) } ریال` : "__"
                     }}</span>
                   </v-col>
+                  <v-col cols="12" class="pa-0">
+              <FestivalInPersone
+                v-if="festival_item.length > 0 "
+                :festival-item="festival_item "
+                :user-id="user_id"
+              />
+            </v-col>
                   <v-col
                     cols="12"
                     md="12"
@@ -340,7 +348,7 @@
                   </v-col>
                 </v-row>
               </v-card>
-            </v-overlay>
+            </v-dialog>
             <v-form v-model="valid_pay">
               <v-row class="d-flex justify-center">
                 <v-col cols="12" md="5">
@@ -398,8 +406,10 @@
 import UserSelectForm from "@/components/User/UserSelectForm";
 import Basket from "@/components/Product/Basket.vue";
 import CompleteInfo from "@/components/Product/CompleteInfo.vue";
+import FestivalInPersone from "@/components/Product/PersonShopping/FestivalInPersone.vue";
+
 export default {
-  components: { UserSelectForm, Basket, CompleteInfo },
+  components: { UserSelectForm, Basket, CompleteInfo, FestivalInPersone  },
   data: () => ({
     e1: 1,
     attrs: {
@@ -428,6 +438,7 @@ export default {
     loading_factor: false,
     tab: null,
     user: [],
+    festival_item: [],
     products: [],
     list_basket: {},
     factor_list: {},
@@ -472,6 +483,8 @@ export default {
     e1() {
       if (this.e1 == 4) {
         this.loadFactor();
+  this.getFestivals(this.user_id);
+
       }
     },
     save() {
@@ -482,6 +495,13 @@ export default {
     },
   },
   methods: {
+    getFestivals(user_id) {
+      this.$reqApi("festival/user-cover", { user_id: user_id })
+        .then((res) => {
+          this.festival_item = res.model.data;
+        })
+        .catch((err) => {});
+    },
     addUser(tab, add) {
       this.loading = true;
       if (tab == 1 && Boolean(add)) {

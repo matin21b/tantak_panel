@@ -5,6 +5,7 @@
         <BaseTable
           url="/basket/sale-agency/seller/list"
           :headers="headers"
+          :rowColor="rowColor"
           :BTNactions="btn_actions"
           :extraBtn="extra_btn"
           ref="RefreshTabel"
@@ -22,6 +23,7 @@
           v-if="completion"
           :dialog="completion"
           :basket-id="basket_id"
+          :user-id="user_id"
           @closeDialog="completion = false"
           @relaod="refresh"
         />
@@ -42,8 +44,9 @@
 <script>
 import DetailsBasket from "@/components/Product/PersonShopping/DetailsBasket.vue";
 import PaymentCompletion from "@/components/Product/PersonShopping/PaymentCompletion.vue";
+
 export default {
-  components: { DetailsBasket, PaymentCompletion },
+  components: { DetailsBasket, PaymentCompletion},
   data: () => ({
     headers: [],
     btn_actions: [],
@@ -56,6 +59,7 @@ export default {
     completion: false,
     show_transactions: false,
     basket_id: "",
+    user_id: "",
     step: 1,
     transactions: {},
   }),
@@ -86,7 +90,7 @@ export default {
         color: "teal darken-2",
         fun: (body) => {
           this.basket_id = body.id;
-
+          this.user_id = body.user.id;
           this.completion = true;
         },
         show_fun: (body) => {
@@ -219,7 +223,7 @@ export default {
         },
       },
       {
-        text: "وشعیت ",
+        text: "وضعیت ",
         filterType: "select",
         filterCol: "status",
         value: "status",
@@ -336,6 +340,11 @@ export default {
     refreshAllTabels() {
       this.refresh();
       this.$refs.ReternedTabel.getDataFromApi();
+    },
+    rowColor(body) {
+      if (body.item.status == "canceled") {
+        return "red lighten-5";
+      }
     },
   },
 };

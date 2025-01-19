@@ -61,6 +61,7 @@ export const state = () => ({
   discount_type,
   festival_type,
   festival_status,
+  type_gift,
 });
 
 let status_type = [
@@ -791,4 +792,11 @@ let discount_type = [
 let festival_type = [
   { text: "برای سبد های خرید", value: "on_basket" },
   { text: "برای محصولات", value: "on_product" },
+];
+
+let type_gift = [
+  { text: "محصول یا پکیج ها", value: "product_package" },
+  { text: "کد تخفیف", value: "coupon" },
+  { text: "شارژ کیف پول نقدی", value: "cash_walet" },
+  { text: "اعتباری", value: "credit_wallt" },
 ];

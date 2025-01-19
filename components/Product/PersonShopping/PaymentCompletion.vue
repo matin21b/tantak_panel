@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="650">
+  <v-dialog v-model="dialog" persistent max-width="850">
     <v-card style="overflow: hidden !important" class="pa-2">
       <div class="card-style pa-4 pt-7">
         <v-row class="d-flex align-center px-3">
@@ -36,64 +36,66 @@
           />
         </v-col>
         <div class="pa-5" v-if="only_price">
-          <v-col cols="12">
-            <v-card
-              class="elevation-0 d-flex justify-space-between align-center pa-2"
-              style="border-right: 3px solid teal"
-              outlined
-            >
-              <h1 class="font_11">جمع کل فاکتور</h1>
-              <v-chip>
-                <h1 class="font_11">ریال{{ $price(wallet.price) }}</h1>
-              </v-chip>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card
-              class="elevation-0 d-flex justify-space-between align-center pa-2"
-              style="border-right: 3px solid teal"
-              outlined
-            >
-              <h1 class="font_11">مبلغ قابل پرداخت</h1>
-              <v-chip>
-                <h1 class="font_11">ریال{{ $price(wallet.buy_online) }}</h1>
-              </v-chip>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card
-              class="elevation-0 d-flex justify-space-between align-center pa-2"
-              style="border-right: 3px solid teal"
-              outlined
-            >
-              <h1 class="font_11">مقدار کسر شده از کیف پول نقدی</h1>
-              <v-chip>
-                <h1 class="font_11">ریال{{ $price(wallet.cash_wallt) }}</h1>
-              </v-chip>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card
-              class="elevation-0 d-flex justify-space-between align-center pa-2"
-              style="border-right: 3px solid teal"
-              outlined
-            >
-              <h1 class="font_11">مقدار کسر شده از کیف پول اعتباری</h1>
-              <v-chip>
-                <h1 class="font_11">ریال{{ $price(wallet.credit_wallt) }}</h1>
-              </v-chip>
-            </v-card>
-          </v-col>
-          <div class="d-flex justify-center">
-            <v-col cols="4">
+          <v-row class="mb-3">
+            <v-col cols="6">
               <v-card
-                class="elevation-0 text-center pa-2"
-                style="border-top: 3px solid teal"
+                class="elevation-0 d-flex justify-space-between align-center pa-2"
+                style="border-right: 3px solid teal"
+                outlined
+              >
+                <h1 class="font_11">جمع کل فاکتور</h1>
+                <v-chip>
+                  <h1 class="font_11">ریال{{ $price(wallet.price) }}</h1>
+                </v-chip>
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card
+                class="elevation-0 d-flex justify-space-between align-center pa-2"
+                style="border-right: 3px solid teal"
+                outlined
+              >
+                <h1 class="font_11">مبلغ قابل پرداخت</h1>
+                <v-chip>
+                  <h1 class="font_11">ریال{{ $price(wallet.buy_online) }}</h1>
+                </v-chip>
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card
+                class="elevation-0 d-flex justify-space-between align-center pa-2"
+                style="border-right: 3px solid teal"
+                outlined
+              >
+                <h1 class="font_11">مقدار کسر شده از کیف پول نقدی</h1>
+                <v-chip>
+                  <h1 class="font_11">ریال{{ $price(wallet.cash_wallt) }}</h1>
+                </v-chip>
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card
+                class="elevation-0 d-flex justify-space-between align-center pa-2"
+                style="border-right: 3px solid teal"
+                outlined
+              >
+                <h1 class="font_11">مقدار کسر شده از کیف پول اعتباری</h1>
+                <v-chip>
+                  <h1 class="font_11">ریال{{ $price(wallet.credit_wallt) }}</h1>
+                </v-chip>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row class="d-flex justify-center mb-3">
+            <v-col cols="6">
+              <v-card
+                class="elevation-0 text-center pa-2 d-flex align-center"
+                style="border-right: 3px solid teal"
                 outlined
               >
                 <h1 class="font_13">قیمت اصلی سبد خرید</h1>
-                <br />
-
+                <v-spacer></v-spacer>
                 <v-chip>
                   <h1 class="font_11">
                     ریال{{ $price(wallet.original_price) }}
@@ -101,36 +103,48 @@
                 </v-chip>
               </v-card>
             </v-col>
-            <v-col cols="4">
-                <v-card
-                  class="elevation-0 text-center pa-2"
-                  style="border-top: 3px solid teal"
-                  outlined
-                >
-                  <h1 class="font_10">مقدار استفاده شده از کد تخفیف</h1>
-                  <br />
-
-                  <v-chip>
-                    <h1 class="font_11">
-                      ریال{{ $price(wallet.amount_coupon) }}
-                    </h1>
-                  </v-chip>
-                </v-card>
-              </v-col>
-            <v-col cols="4">
+            <v-col cols="6">
               <v-card
-                class="elevation-0 text-center pa-2"
-                style="border-top: 3px solid teal"
+                class="elevation-0 text-center pa-2 d-flex align-center"
+                style="border-right: 3px solid teal"
+                outlined
+              >
+                <h1 class="font_10">مقدار استفاده شده از کد تخفیف</h1>
+                <v-spacer></v-spacer>
+
+                <v-chip>
+                  <h1 class="font_11">
+                    ریال{{ $price(wallet.amount_coupon) }}
+                  </h1>
+                </v-chip>
+              </v-card>
+            </v-col>
+
+            <v-col cols="12">
+              <v-card
+                class=" text-center pa-2 d-flex align-center elevation-4"
+                color="#ff590014"
                 outlined
               >
                 <h1 class="font_13">مجموع کل تخفیفات</h1>
-                <br />
+                <v-spacer></v-spacer>
+
                 <v-chip>
                   <h1 class="font_11">ریال{{ $price(wallet.off_amount) }}</h1>
                 </v-chip>
               </v-card>
             </v-col>
-          </div>
+          </v-row>
+          <v-row>
+            <v-col cols="12" class="pa-0">
+            <FestivalInPersone
+              v-if="festival_item.length > 0 && !Boolean(finalization)"
+              :festival-item="festival_item"
+              :user-id="userId"
+            />
+          </v-col>
+          </v-row>
+
           <v-row class="d-flex justify-center pa-4">
             <v-col cols="12" md="2" class="ma-2">
               <amp-button
@@ -148,13 +162,22 @@
   </v-dialog>
 </template>
 <script>
+import FestivalInPersone from "@/components/Product/PersonShopping/FestivalInPersone.vue";
+
 export default {
+  components: {
+    FestivalInPersone,
+  },
   props: {
     dialog: {
       type: Boolean,
       default: false,
     },
     basketId: {
+      type: String,
+      default: "",
+    },
+    userId: {
       type: String,
       default: "",
     },
@@ -165,6 +188,7 @@ export default {
       loading: false,
       only_price: false,
       wallet: {},
+      festival_item: [],
       kind_set: "naghd",
       coupon: "",
       pay_type: [
@@ -173,7 +197,11 @@ export default {
       ],
     };
   },
-  mounted() {},
+  mounted() {
+    if (Boolean(this.userId)) {
+      this.getFestivals(this.userId);
+    }
+  },
   methods: {
     payFactor(only_price) {
       let only_price_show = only_price;
@@ -196,6 +224,13 @@ export default {
           })
           .catch((err) => {});
       }
+    },
+    getFestivals(user_id) {
+      this.$reqApi("festival/user-cover", { user_id: user_id })
+        .then((res) => {
+          this.festival_item = res.model.data;
+        })
+        .catch((err) => {});
     },
     closeDialog() {
       this.$emit("closeDialog");

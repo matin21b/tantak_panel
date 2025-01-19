@@ -50,9 +50,9 @@
       />
     </v-col>
     <div class="text-center">
-      <v-overlay style="overflow: scroll !important;" :value="overlay" :dark="false" height="600">
+      <v-dialog width="750" style="overflow: hidden !important;" v-model="overlay" :dark="false" >
         <v-row class="d-flex justify-center">
-          <v-card class="pa-5" width="750">
+          <v-card class="pa-5" width="100%">
             <v-col cols="12">
               <v-card
                 class="elevation-0 d-flex justify-space-between align-center pa-2"
@@ -189,7 +189,7 @@
             </v-row>
           </v-card>
         </v-row>
-      </v-overlay>
+      </v-dialog>
     </div>
   </v-row>
 </template>
@@ -267,6 +267,7 @@ export default {
   mounted() {
     this.payFactor(true);
     this.loadData();
+    
   },
   methods: {
     loadData() {
