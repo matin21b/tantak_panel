@@ -142,12 +142,12 @@
                   <v-icon>cancel</v-icon>
                 </v-btn>
               </v-col>
-              <v-col cols="12" >
-              <v-divider></v-divider>
-              <v-divider></v-divider>
-              <v-divider></v-divider>
-            </v-col>
-         
+              <v-col cols="12">
+                <v-divider></v-divider>
+                <v-divider></v-divider>
+                <v-divider></v-divider>
+              </v-col>
+
               <v-col cols="8">
                 <amp-input
                   text="مقدار شارژ (ریال)"
@@ -166,63 +166,71 @@
               </v-col>
             </v-row>
           </v-card>
-          <v-card
-            class="pa-3 "
-            v-if="x.type_gift == 'coupon'"
-          >
-          <v-row class="d-flex justify-center align-center">
-            <v-col cols="12" class="d-flex align-center py-0 mt-2 px-4">
-              <h1>استفاده از کد تخفیف</h1>
-              <v-spacer></v-spacer>
-              <v-btn icon color="red" @click="setStep(i)" text>
-                <v-icon>cancel</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col cols="12" >
-              <v-divider></v-divider>
-              <v-divider></v-divider>
-              <v-divider></v-divider>
-            </v-col>
-            <v-col cols="8" class="mt-6">
-              <v-autocomplete
-                clearable
-                outlined
-                dense
-                prepend-inner-icon="newspaper"
-                v-model="coupon_id"
-                :items="x.coupon_list"
-                label="کد های تخفیف"
-              >
-                <template v-slot:item="data">
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <h1>
-                        {{ data.item.text }}
-                      </h1>
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      <h1>
-                        <small class="blue-grey--text">
-                          مقدار تخفیف :‌ {{ data.item.discount_value }}
-                        </small>
-                        <br />
-                        <small> {{ data.item.date }} </small>
-                      </h1>
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </template>
-              </v-autocomplete>
-            </v-col>
-            <v-col cols="2">
-              <amp-button
-                @click.stop="selectBox(coupon_id, 'coupon', x)"
-                text="تایید"
-                color="blue-grey"
-                height="38"
-              ></amp-button>
-            </v-col>
-          </v-row>
-      
+          <v-card class="pa-3" v-if="x.type_gift == 'coupon'">
+            <v-row class="d-flex justify-center align-center">
+              <v-col cols="12" class="d-flex align-center py-0 mt-2 px-4">
+                <h1>استفاده از کد تخفیف</h1>
+                <v-spacer></v-spacer>
+                <v-btn icon color="red" @click="setStep(i)" text>
+                  <v-icon>cancel</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col cols="12">
+                <v-divider></v-divider>
+                <v-divider></v-divider>
+                <v-divider></v-divider>
+              </v-col>
+              <v-col cols="8" class="mt-6">
+                <v-autocomplete
+                  clearable
+                  :disabled="show_btn_copy"
+                  outlined
+                  dense
+                  prepend-inner-icon="newspaper"
+                  v-model="coupon_id"
+                  :items="x.coupon_list"
+                  label="کد های تخفیف"
+                >
+                  <template v-slot:item="data">
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        <h1>
+                          {{ data.item.text }}
+                        </h1>
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        <h1>
+                          <small class="blue-grey--text">
+                            مقدار تخفیف :‌ {{ data.item.discount_value }}
+                          </small>
+                          <br />
+                          <small> {{ data.item.date }} </small>
+                        </h1>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </template>
+                </v-autocomplete>
+              </v-col>
+              <v-col cols="2" class="mx-1">
+                <amp-button
+                  :disabled="!Boolean(coupon_id)"
+                  @click.stop="selectBox(coupon_id, 'coupon', x)"
+                  text="تایید"
+               v-if="!show_btn_copy"
+                  color="blue-grey"
+                  height="38"
+                ></amp-button>
+                <v-btn
+                  v-if="show_btn_copy"
+                  icon
+                  @click.stop="saveCoupon(x)"
+                  class="blue-grey"
+                >
+                  <v-icon small color="white">content_copy</v-icon>
+                </v-btn>
+              </v-col>
+        
+            </v-row>
           </v-card>
         </v-window-item>
       </v-window>
@@ -248,6 +256,7 @@ export default {
       festivals: [],
       product_variation_combinations: [],
       loading: false,
+      show_btn_copy: false,
       show_dialog: false,
       product_id: "",
       variation_id: "",
@@ -255,7 +264,6 @@ export default {
     };
   },
   mounted() {
-
     if (Boolean(this.festivalItem)) {
       this.setItems(this.festivalItem);
     }
@@ -316,9 +324,9 @@ export default {
         this.show_dialog = true;
         this.product_id = item.id;
       } else if (key == "wallet") {
-
         this.addGift(item, data, "", key);
       } else if (key == "coupon") {
+        this.show_btn_copy = true;
         this.addGift(item, data, "", key);
       }
     },
@@ -354,6 +362,13 @@ export default {
           this.$toast.success("هدیه برای کاربر ثبت شد");
         })
         .catch((err) => {});
+    },
+    saveCoupon(code) {
+      let coupon = code.coupons.find((x) => x.id == this.coupon_id);
+      if (coupon && Boolean(coupon)) {
+        navigator.clipboard.writeText(coupon.coupon);
+        this.$toast.success(" کپی شد");
+      }
     },
   },
 };

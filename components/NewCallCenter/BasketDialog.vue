@@ -405,7 +405,7 @@
                   @validForm="valid_addres_form = $event"
                   @load="loadFactor"
                   :basket_costumer_id="basket_costumer_id"
-                  :user_id="this.user_basket.id"
+                  :user_id="user_basket.id"
                   :hide_btn="true"
                 />
               </v-col>
@@ -489,8 +489,9 @@
                   <v-divider> </v-divider>
                 </v-col>
 
-                <v-overlay
+                <v-dialog
                   v-model="overlay"
+                  width="850"
                   class="d-flex justify-center align-center"
                 >
                   <v-card class="white pa-6">
@@ -538,8 +539,16 @@
                         />
                       </v-col>
                     </v-row>
+                    <v-col cols="12">
+
+                      <FestivalInPersone
+                      v-if="festival_item.length > 0"
+                      :festival-item="festival_item"
+                      :user-id="user_basket.id"
+                      />
+                    </v-col>
                   </v-card>
-                </v-overlay>
+                </v-dialog>
                 <v-col cols="12">
                   <v-form v-model="valid_pay">
                     <v-row class="d-flex justify-center">
@@ -621,6 +630,8 @@
 <script>
 import AddProduct from "@/components/Product/AddProduct.vue";
 import CompleteInfo from "@/components/Product/CompleteInfo.vue";
+import FestivalInPersone from "@/components/Product/PersonShopping/FestivalInPersone.vue";
+
 export default {
   props: {
     user_basket: {
@@ -631,7 +642,7 @@ export default {
       default: false,
     },
   },
-  components: { AddProduct, CompleteInfo },
+  components: { AddProduct, CompleteInfo, FestivalInPersone },
   data: () => ({
     attrs: {
       class: "mb-6",
@@ -722,6 +733,9 @@ export default {
     //   }
     // },
   },
+  mounted() {
+    this.getFestivals(this.user_basket.id);
+  },
   methods: {
     addBasket(event) {
       this.loading = true;
@@ -744,7 +758,7 @@ export default {
           information:
             event.product.variation1.variation_type.value +
             " " +
-            set_var_1+
+            set_var_1 +
             " - " +
             event.product.variation2.variation_type.value +
             " " +
@@ -800,6 +814,13 @@ export default {
 
       this.$emit("chek_save");
       this.loading = false;
+    },
+    getFestivals(user_id) {
+      this.$reqApi("festival/user-cover", { user_id: user_id })
+        .then((res) => {
+          this.festival_item = res.model.data;
+        })
+        .catch((err) => {});
     },
     saveBasket() {
       return new Promise((res, rej) => {

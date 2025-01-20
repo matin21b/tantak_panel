@@ -138,7 +138,7 @@
           <v-row>
             <v-col cols="12" class="pa-0">
             <FestivalInPersone
-              v-if="festival_item.length > 0 && !Boolean(finalization)"
+              v-if="festival_item.length > 0"
               :festival-item="festival_item"
               :user-id="userId"
             />

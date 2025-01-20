@@ -639,6 +639,7 @@ export default {
     changeNumber() {
       this.save = false;
     },
+
   },
 };
 </script>

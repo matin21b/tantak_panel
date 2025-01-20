@@ -12,47 +12,51 @@
             <v-divider></v-divider>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="12" md="3">
-            <amp-input
-              text="تعداد افراد جشنواره"
-              v-model="form.people_number_use"
-              rules="number,number"
-              cClass="ltr-item"
-            />
-          </v-col>
-          <v-col cols="12" md="3">
-            <amp-jdate
-              text="زمان قرعه کشی"
-              :is-number="true"
-              v-model="form.time"
-            />
-          </v-col>
-          <v-col cols="12" md="3">
-            <amp-select
-              text="وضعیت"
-              v-model="form.status"
-              :items="$store.state.static.status"
-              rules="require"
-            />
-          </v-col>
-          <v-col cols="12" md="3">
-            <amp-input
-              text="ترتیب"
-              v-model="form.sort"
-              rules="number,number"
-              cClass="ltr-item"
-            />
-          </v-col>
-          <v-col cols>
-            <amp-textarea
-              text="توضیحات"
-              v-model="form.description"
-              rules="require"
-            />
-          </v-col>
-        </v-row>
-        <v-row class="align-center justify-center">
+        <v-form v-model="valid">
+          <v-row>
+            <v-col cols="12" md="3">
+              <amp-input
+                text="تعداد افراد جشنواره"
+                v-model="form.people_number_use"
+                rules="require,number"
+                cClass="ltr-item"
+              />
+            </v-col>
+            <v-col cols="12" md="3">
+              <amp-jdate
+                text="زمان قرعه کشی"
+                rules="require"
+                :is-number="true"
+                v-model="form.time"
+              />
+            </v-col>
+            <v-col cols="12" md="3">
+              <amp-select
+                text="وضعیت"
+                v-model="form.status"
+                :items="$store.state.static.status"
+                rules="require"
+              />
+            </v-col>
+            <v-col cols="12" md="3">
+              <amp-input
+                text="ترتیب"
+                v-model="form.sort"
+                rules="number"
+                cClass="ltr-item"
+              />
+            </v-col>
+            <v-col cols>
+              <amp-textarea text="توضیحات" v-model="form.description" />
+            </v-col>
+            <v-col cols="12">
+            <WinningUsers v-if="valid" :users-count="form.people_number_use" />
+
+            </v-col>
+          </v-row>
+        </v-form>
+
+        <!-- <v-row class="align-center justify-center">
           <v-col cols="12">
             <FestivalAwards
               v-if="products.length > 0 && package.length > 0"
@@ -63,7 +67,7 @@
               ref="FestivalAwards"
             />
           </v-col>
-        </v-row>
+        </v-row> -->
         <v-col cols="12" class="text-center">
           <amp-button
             large
@@ -80,8 +84,9 @@
 </template>
 <script>
 import FestivalAwards from "@/components/Product/Festival/FestivalAwards.vue";
+import WinningUsers from "@/components/Product/Festival/WinningUsers.vue";
 export default {
-  components: { FestivalAwards },
+  components: { FestivalAwards, WinningUsers },
   props: {
     dialog: {
       type: Boolean,
@@ -105,6 +110,7 @@ export default {
       showUrl: "/lottery/show",
       only_price: false,
       products: [],
+      peoples: [],
       package: [],
       load_items: {},
       form: {
@@ -120,6 +126,7 @@ export default {
       this.loadData();
     }
   },
+
   methods: {
     submit() {
       this.$refs.FestivalAwards.callSubmit();
@@ -157,10 +164,10 @@ export default {
             this.form[i] = data[i];
           }
           if (Boolean(data.packages) && data.packages.length > 0) {
-            this.load_items["packages"] = data.packages
-          }   
-             if (Boolean(data.products) && data.products.length > 0) {
-            this.load_items["products"] = data.products
+            this.load_items["packages"] = data.packages;
+          }
+          if (Boolean(data.products) && data.products.length > 0) {
+            this.load_items["products"] = data.products;
           }
           this.loading = false;
         })
