@@ -220,12 +220,22 @@ this.coupon_ids = false
         case "cash":
           this.dialog = true;
           this.dialog_title = `${type.text} ( نفر ${user.number} )`;
-
+          user.gift_items.push({
+            type: key,
+            type_name: this.dialog_title,
+            valeu: this.coupon_ids,
+            items: items,
+          });
           break;
         case "credit":
           this.dialog = true;
           this.dialog_title = `${type.text} ( نفر ${user.number} )`;
-
+          user.gift_items.push({
+            type: key,
+            type_name: this.dialog_title,
+            valeu: this.coupon_ids,
+            items: items,
+          });
           break;
       }
     },
