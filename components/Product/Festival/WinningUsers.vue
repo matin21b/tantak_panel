@@ -5,14 +5,12 @@
         <v-expansion-panel-header>
           <h1 class="font_17">نفر {{ x.number }}</h1>
         </v-expansion-panel-header>
-        <v-col
-          cols="12"
-          class="text-center mt-3"
+        <div
+          class="text-center mb-2"
           v-if="x.gift_items.length == 0"
-          style="border-bottom: 1px solid red"
         >
           <h1 class="error--text">جایزه ثبت نشده</h1>
-        </v-col>
+        </div>
         <v-expansion-panel-content>
           <v-row class="align-center">
             <v-col md="12" cols="12" class="text-center">
@@ -28,7 +26,7 @@
               </v-btn>
               <v-card v-if="x.gift_items.label != 0" class="pa-3 text-center">
                 <div v-for="(gift , index) in x.gift_items" :key="index">
-                  <v-row>
+                  <v-row v-if="gift.key =='coupon_items'">
                     <v-col
                       cols="12"
                       md="4"
@@ -36,6 +34,7 @@
                       :key="item.value"
                     >
                       <v-card class="text-center pa-3">
+                      {{ item }}
                         <h1>
                           {{ item.text }}
                         </h1>
@@ -129,24 +128,19 @@
   </div>
 </template>
 <script>
-import JustVariatin from "@/components/Product/PersonShopping/JustVariatin.vue";
 export default {
-  components: {
-    JustVariatin,
-  },
+
   props: {
-    usersCount: {
-      default: "",
-      type: String,
-    },
     products: {
       default: [],
       type: Array,
     },
-    loadItems: {
-      default: () => ({}),
-      type: Object,
+    usersCount: {
+      default: "",
+      type: String,
     },
+
+
   },
   data: () => ({
     types: [
@@ -157,7 +151,6 @@ export default {
       { text: "اعتباری", value: "credit" },
     ],
     dialog: false,
-
     step: 1,
     package_id: "",
     product_id: "",
@@ -178,7 +171,6 @@ export default {
       let people_count = +Number(this.usersCount);
       console.log("people_count", people_count);
       console.log("people_count", people_count);
-      console.log("people_count", people_count);
       let peoples = [];
       for (let i = 1; i <= people_count; i++) {
         peoples.push({
@@ -191,10 +183,7 @@ export default {
   },
   methods: {
     addGift(key, type, user, index) {
-      console.log("key", key);
-      console.log("type", type);
-      console.log("user", user);
-      console.log("index", index);
+    
       this.dialog = true;
       this.dialog_title = `${type.text} ( نفر ${user.number} )`;
       this.dialog_key = key;
@@ -212,8 +201,6 @@ export default {
         case "coupon_items":
           let items = [];
           for (let i in this.coupon_list) {
-            console.log("this.coupon_list", this.coupon_list[i]);
-
             let find = {};
             this.coupon_list.find((x) => x.value == this.coupon_list[i]);
             if (Boolean(find)) {
@@ -227,7 +214,8 @@ export default {
             valeu: this.coupon_ids,
             items: items,
           });
-
+this.dialog = false
+this.coupon_ids = false
           break;
         case "cash":
           this.dialog = true;
@@ -241,77 +229,11 @@ export default {
           break;
       }
     },
-    addItem() {
-      let selected_item_pack = {};
-      let selected_item_product = {};
-      let dublicate_pack = {};
-      let dublicate_product = "";
 
-      // ---------------------------------------------------------------------
-      if (this.product_id) {
-        dublicate_product = this.list_item.find(
-          (x) => x.value == this.product_id
-        );
-
-        if (Boolean(dublicate_product)) {
-          this.$toast.info(`محصول  ${dublicate_product.text} قبلا اضافه شده`);
-          this.product_id = "";
-          selected_item_product = {};
-        }
-      }
-
-      // ---------------------------------------------------------------------
-
-      if (this.package_id) {
-        dublicate_pack = this.list_item.find((x) => x.value == this.package_id);
-        if (Boolean(dublicate_pack) && Object.keys(dublicate_pack).length > 0) {
-          this.$toast.info(`پکیچ  ${dublicate_pack.text} قبلا اضافه شده`);
-          this.package_id = "";
-          dublicate_pack = {};
-          selected_item_pack = {};
-        }
-      }
-      // ---------------------------------------------------------------------
-
-      if (Boolean(this.package_id)) {
-        selected_item_pack = this.package.find(
-          (x) => x.value == this.package_id
-        );
-        selected_item_pack["is_pack"] = true;
-      }
-      // ---------------------------------------------------------------------
-
-      if (Boolean(this.product_id)) {
-        selected_item_product = this.products.find(
-          (y) => y.value == this.product_id
-        );
-        selected_item_product["is_pack"] = false;
-      }
-
-      if (
-        Boolean(selected_item_pack) &&
-        Object.keys(selected_item_pack).length > 0
-      ) {
-        selected_item_pack["number"] = "1";
-        this.list_item.push(selected_item_pack);
-        this.package_id = "";
-        selected_item_pack = {};
-      }
-
-      if (
-        Boolean(selected_item_product) &&
-        Object.keys(selected_item_product).length > 0
-      ) {
-        selected_item_product["number"] = "1";
-        this.list_item.push(selected_item_product);
-        this.product_id = "";
-        selected_item_product = {};
-      }
-    },
-    deleteItem(index) {
-      let items = this.list_item;
-      items.splice(index, 1);
-    },
+    // deleteItem(index) {
+    //   let items = this.list_item;
+    //   items.splice(index, 1);
+    // },
 
     loadPackages() {
       let filter = {
@@ -399,6 +321,6 @@ export default {
 </script>
 <style scoped>
 .expan-style {
-  border-right: 3px solid #ff7300a8;
+  border-right: 3px solid #0c84a1a8;
 }
 </style>
