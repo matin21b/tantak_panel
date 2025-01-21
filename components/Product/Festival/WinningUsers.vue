@@ -227,6 +227,7 @@ export default {
             valeu: this.coupon_ids,
             items: items,
           });
+          console.log("user" , user);
 
           break;
         case "cash":
@@ -239,6 +240,7 @@ export default {
           this.dialog_title = `${type.text} ( نفر ${user.number} )`;
 
           break;
+          
       }
     },
     addItem() {
