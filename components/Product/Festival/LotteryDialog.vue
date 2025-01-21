@@ -50,8 +50,12 @@
               <amp-textarea text="توضیحات" v-model="form.description" />
             </v-col>
             <v-col cols="12">
-            <WinningUsers v-if="valid" :users-count="form.people_number_use" />
-
+              <WinningUsers
+                ref="WinningUsersFestival"
+                @winingUsers="winingUsers($event)"
+                v-if="valid"
+                :users-count="form.people_number_use"
+              />
             </v-col>
           </v-row>
         </v-form>
@@ -113,10 +117,14 @@ export default {
       peoples: [],
       package: [],
       load_items: {},
-      form: {
-        product_items: [],
-        package_items: [],
-      },
+      form: {},
+      types: [
+        { text: "محصول ", value: "product_var_com_items" },
+        { text: "پکیج ", value: "package_items" },
+        { text: "کد تخفیف", value: "coupon_items" },
+        { text: "اعتباری", value: "wallets" },
+      ],
+      type_data: {},
     };
   },
   mounted() {
@@ -129,7 +137,89 @@ export default {
 
   methods: {
     submit() {
-      this.$refs.FestivalAwards.callSubmit();
+      this.$refs.WinningUsersFestival.callSubmit();
+    },
+    winingUsers(event) {
+      for (let i in this.types) {
+        this.type_data[this.types[i].value] = [];
+      }
+      for (let i in event) {
+        if (event[i].gift_items.length == 0) {
+          this.$toast.error(
+            ` برای برنده شماره ${event[i].number} هدیه ای ثبت نشده`
+          );
+          return;
+        }
+
+        // for (let i = 0; i < event.length; i++) {
+        //   const element = event[i];
+        //   for (let index = 0; index < element.gift_items.length; index++) {
+        //     const x = element.gift_items[index];
+        //     this.sortData(x);
+        //     console.log(
+        //       "*%%%%%%%%%****************************************************************************************************************************************************"
+        //     );
+        //   }
+        // }
+      }
+      console.log("$ 4 ", event);
+      for (let i = 0; i < event.length; i++) {
+        const x = event[i];
+        for (let index = 0; index < x.gift_items.length; index++) {
+          const element = x.gift_items[index];
+          this.sortData(element);
+        }
+ 
+      }
+      let form = { ...this.form, ...this.type_data };
+      form["festival_id"] = this.festivalId
+      this.$reqApi("/lottery/insert", form).then((res)=>{
+        this.$toast.success("قرعه کشی با موفقیت ثبت شد")
+        this.closeDialog()
+      }).catch((err)=>{})
+    },
+    sortData(item) {
+      if (item.type == "product_var_com_items") {
+        console.log(">>>product_var_com_items>", item);
+
+        item.items.map((x) => {
+          this.type_data.product_var_com_items.push({
+            id: x.id,
+            number: x.number,
+            person_win: item.user_number,
+          });
+        });
+      } else if (item.type == "package_items") {
+        console.log(">>>package_items>", item);
+
+        item.items.map((x) => {
+          this.type_data.package_items.push({
+            id: x.value,
+            number: x.count,
+            person_win: item.user_number,
+          });
+        });
+      } else if (item.type == "cash") {
+        this.type_data.wallets.push({
+          person_win: item.user_number,
+          amount: item.value,
+          type: "cash",
+        });
+      } else if (item.type == "coupon_items") {
+        item.items.map((x) => {
+          this.type_data.coupon_items.push({
+            person_win: item.user_number,
+            id: x.value,
+          });
+        });
+      } else if (item.type == "credit") {
+        this.type_data.wallets.push({
+          person_win: item.user_number,
+          amount: item.value,
+          type: "credit",
+        });
+      }
+      console.log(" >>> F I N A L >> ", this.type_data);
     },
     selectedIItems(event) {
       this.form.package_items = event.packages;

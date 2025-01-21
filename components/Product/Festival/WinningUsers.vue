@@ -3,16 +3,14 @@
     <v-expansion-panels v-for="(x, i) in peoples" :key="i" class="my-2">
       <v-expansion-panel class="expan-style">
         <v-expansion-panel-header>
-          <h1 class="font_17">نفر {{ x.number }}</h1>
+          <h1 class="font_17">
+            نفر {{ x.number }}
+            <small v-if="x.gift_items.length == 0">
+              ( جایزه ای ثبت نشده )
+            </small>
+          </h1>
         </v-expansion-panel-header>
-        <v-col
-          cols="12"
-          class="text-center mt-3"
-          v-if="x.gift_items.length == 0"
-          style="border-bottom: 1px solid red"
-        >
-          <h1 class="error--text">جایزه ثبت نشده</h1>
-        </v-col>
+
         <v-expansion-panel-content>
           <v-row class="align-center">
             <v-col md="12" cols="12" class="text-center">
@@ -26,31 +24,207 @@
                   {{ y.text }}
                 </h1>
               </v-btn>
-              <v-card v-if="x.gift_items.label != 0" class="pa-3 text-center">
-                <div v-for="(gift , index) in x.gift_items" :key="index">
-                  <v-row>
-                    <v-col
+              <v-col cols="12"></v-col>
+              <div v-if="x.gift_items.label != 0" class="pa-3 text-center">
+                <v-row
+                  v-for="gift in x.gift_items"
+                  :key="gift.key"
+                  class="align-center"
+                >
+                  <v-col cols="12" v-if="gift.type == 'coupon_items'">
+                    <v-row class="justify-center">
+                      <v-col
+                        cols="12"
+                        md="12"
+                        v-for="item in gift.items"
+                        :key="item.value"
+                        class="py-0"
+                      >
+                        <v-card class="d-flex align-center pa-3 my-1">
+                          <v-icon color="green"> task_alt </v-icon>
+                          <v-spacer></v-spacer>
+                          <h1>
+                            {{ item.text }}
+                          </h1>
+                          <v-spacer></v-spacer>
+                          <h1>
+                            <small>
+                              {{ item.date }}
+                            </small>
+                          </h1>
+                          <v-spacer></v-spacer>
+
+                          <h1>
+                            <small>
+                              مقدار تخفیف : {{ item.discount_value }}
+                            </small>
+                          </h1>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            small
+                            icon
+                            @click="saveCoupon(item)"
+                            class="blue-grey mx-1"
+                          >
+                            <v-icon x-small color="white">content_copy</v-icon>
+                          </v-btn>
+                          <v-btn
+                            small
+                            icon
+                            @click="deleteItem(y.value, y, x, i)"
+                            class="blue-grey mx-1"
+                          >
+                            <v-icon x-small color="white">delete</v-icon>
+                          </v-btn>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    v-if="gift.type == 'cash' || gift.type == 'credit'"
+                  >
+                    <v-card
+                      width="100%"
+                      class="d-flex align-center pa-5"
                       cols="12"
-                      md="4"
-                      v-for="item in gift.items"
-                      :key="item.value"
+                      v-if="gift.type == 'cash'"
                     >
-                      <v-card class="text-center pa-3">
+                      <v-icon color="green"> task_alt </v-icon>
+                      <v-spacer></v-spacer>
+
+                      <h1>شارژ کیف پول نقدی</h1>
+                      <v-spacer></v-spacer>
+                      <h1>مبلغ {{ $price(gift.value) }} ریال</h1>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        small
+                        icon
+                        @click="deleteItem(y.value, y, x, i)"
+                        class="blue-grey mx-1"
+                      >
+                        <v-icon x-small color="white">delete</v-icon>
+                      </v-btn>
+                    </v-card>
+                    <v-card
+                      width="100%"
+                      cols="12"
+                      class="d-flex align-center pa-5"
+                      v-if="gift.type == 'credit'"
+                    >
+                      <v-icon color="green"> task_alt </v-icon>
+                      <v-spacer></v-spacer>
+                      <h1>شارژ کیف پول اعتباری</h1>
+                      <v-spacer></v-spacer>
+                      <h1>مبلغ {{ $price(gift.value) }} ریال</h1>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        small
+                        icon
+                        @click="deleteItem(y.value, y, x, i)"
+                        class="blue-grey mx-1"
+                      >
+                        <v-icon x-small color="white">delete</v-icon>
+                      </v-btn>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" v-if="gift.type == 'product_var_com_items'">
+                    <v-card
+                      v-for="product in gift.items"
+                      :key="product.id"
+                      width="100%"
+                      class="d-flex align-center pa-3 my-1"
+                      cols="12"
+                    >
+                      <v-avatar size="35" class="mx-2">
+                        <img contain :src="$getImage(product.img)" />
+                      </v-avatar>
+                      <v-spacer></v-spacer>
+                      <h1>
+                        <small> تعداد :‌ {{ product.number }} </small>
+                      </h1>
+                      <v-spacer></v-spacer>
+                      <h1>
+                        <small>
+                          قیمت محصول :‌ {{ $price(product.product_price) }} ریال
+                        </small>
+                      </h1>
+                      <v-spacer></v-spacer>
+
+                      <v-col cols="5">
                         <h1>
-                          {{ item.text }}
-                        </h1>
-                        <h1>
-                          <small>
-                            {{ item.date }}
+                          <small v-if="Boolean(product.variation1.colors)">
+                            {{ product.variation1.variation_type.value }}
+                            {{ product.variation1.colors }} /
                           </small>
-                           <br />
-                          <small></small>
+
+                          <small>
+                            {{ product.variation2.variation_type.value }}
+                            {{ product.variation2.value }} /
+                          </small>
+                          <small>
+                            {{ product.variation3.variation_type.value }}
+                            {{ product.variation3.value }}
+                          </small>
                         </h1>
-                      </v-card>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        small
+                        icon
+                        @click="deleteItem(y.value, y, x, i)"
+                        class="blue-grey mx-1"
+                      >
+                        <v-icon x-small color="white">delete</v-icon>
+                      </v-btn>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" v-if="gift.type == 'package_items'">
+                    <v-card
+                      v-for="pack in gift.items"
+                      :key="pack.id"
+                      width="100%"
+                      class="d-flex align-center pa-3 my-1"
+                      cols="12"
+                    >
+                      <v-avatar size="35" class="mx-2">
+                        <img contain :src="$getImage(pack.logo)" />
+                      </v-avatar>
+                      <v-spacer></v-spacer>
+                      <h1>
+                        <small> پکیج ‌ {{ pack.text }} </small>
+                      </h1>
+                      <v-spacer></v-spacer>
+                      <h1>
+                        <small> تعداد :‌ {{ pack.count }} </small>
+                      </h1>
+                      <v-spacer></v-spacer>
+                      <h1>
+                        <small>
+                          قیمت محصول :‌ {{ $price(pack.price) }} ریال
+                        </small>
+                      </h1>
+                      <v-spacer></v-spacer>
+                      <h1>
+                        <small>
+                          قیمت پس از تخفیف :‌
+                          {{ $price(pack.discount_value) }} ریال
+                        </small>
+                      </h1>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        small
+                        icon
+                        @click="deleteItem(y.value, y, x, i)"
+                        class="blue-grey mx-1"
+                      >
+                        <v-icon x-small color="white">delete</v-icon>
+                      </v-btn>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </div>
             </v-col>
           </v-row>
         </v-expansion-panel-content>
@@ -100,6 +274,23 @@
               </v-autocomplete>
             </v-col>
           </div>
+          <div
+            v-if="dialog_key == 'cash' || dialog_key == 'credit'"
+            class="text-center"
+          >
+            <amp-input
+              text="مبلغ به ریال"
+              v-model="wallet"
+              cClass="ltr-item"
+              is-price
+            ></amp-input>
+          </div>
+          <div v-if="dialog_key == 'product_var_com_items'">
+            <Products ref="LattryProduct" @data="getData($event, 'product')" />
+          </div>
+          <div v-if="dialog_key == 'package_items'">
+            <Packages ref="LattryPackage" @data="getData($event, 'package')" />
+          </div>
         </div>
 
         <v-col cols="12" class="d-flex justify-center">
@@ -129,23 +320,14 @@
   </div>
 </template>
 <script>
-import JustVariatin from "@/components/Product/PersonShopping/JustVariatin.vue";
+import Packages from "@/components/Product/Festival/LotteryGift/Packages.vue";
+import Products from "@/components/Product/Festival/LotteryGift/Products.vue";
 export default {
-  components: {
-    JustVariatin,
-  },
+  components: { Products, Packages },
   props: {
     usersCount: {
       default: "",
       type: String,
-    },
-    products: {
-      default: [],
-      type: Array,
-    },
-    loadItems: {
-      default: () => ({}),
-      type: Object,
     },
   },
   data: () => ({
@@ -157,10 +339,10 @@ export default {
       { text: "اعتباری", value: "credit" },
     ],
     dialog: false,
-
     step: 1,
     package_id: "",
     product_id: "",
+    wallet: "",
     dialog_title: "",
     dialog_key: "",
     dialog_user: {},
@@ -176,9 +358,6 @@ export default {
     this.loadFestivalCoupon();
     if (Boolean(this.usersCount)) {
       let people_count = +Number(this.usersCount);
-      console.log("people_count", people_count);
-      console.log("people_count", people_count);
-      console.log("people_count", people_count);
       let peoples = [];
       for (let i = 1; i <= people_count; i++) {
         peoples.push({
@@ -189,12 +368,22 @@ export default {
       this.peoples = peoples;
     }
   },
+
   methods: {
     addGift(key, type, user, index) {
-      console.log("key", key);
-      console.log("type", type);
-      console.log("user", user);
-      console.log("index", index);
+      let check_action = null;
+      if (key == "credit") {
+        check_action = user.gift_items.find((x) => x.type == "credit");
+      }
+      if (key == "cash") {
+        check_action = user.gift_items.find((x) => x.type == "cash");
+      }
+      if (Boolean(check_action)) {
+        this.$toast.error("شما این نوع هدیه را قبلا ثبت کرده اید");
+        check_action = null;
+        return;
+      }
+
       this.dialog = true;
       this.dialog_title = `${type.text} ( نفر ${user.number} )`;
       this.dialog_key = key;
@@ -203,118 +392,74 @@ export default {
     submit(key, user) {
       switch (key) {
         case "product_var_com_items":
+          this.$refs.LattryProduct.addVariation();
           break;
         case "package_items":
-          this.dialog = true;
-          this.dialog_title = `${type.text} ( نفر ${user.number} )`;
+          this.$refs.LattryPackage.addPackage();
 
           break;
         case "coupon_items":
           let items = [];
-          for (let i in this.coupon_list) {
-            console.log("this.coupon_list", this.coupon_list[i]);
-
-            let find = {};
-            this.coupon_list.find((x) => x.value == this.coupon_list[i]);
+          for (let i in this.coupon_ids) {
+            let coupon_key = user.gift_items.find((f) => f.type == key);
+            let find = this.coupon_list.find(
+              (x) => x.value == this.coupon_ids[i]
+            );
             if (Boolean(find)) {
-              items.push(find);
+              if (Boolean(coupon_key)) {
+                coupon_key.items.push(find);
+                items = coupon_key;
+              } else {
+                items.push(find);
+                user.gift_items.push({
+                  type: key,
+                  user_number: user.number,
+                  type_name: this.dialog_title,
+                  value: this.coupon_ids,
+                  items: items,
+                });
+              }
             }
           }
 
-          user.gift_items.push({
-            type: key,
-            type_name: this.dialog_title,
-            valeu: this.coupon_ids,
-            items: items,
-          });
-          console.log("user" , user);
-
+          this.dialog = false;
+          this.coupon_ids = false;
           break;
         case "cash":
-          this.dialog = true;
-          this.dialog_title = `${type.text} ( نفر ${user.number} )`;
+          user.gift_items.push({
+            type: key,
+            user_number: user.number,
+            type_name: this.dialog_title,
+            value: this.wallet,
+          });
+          this.wallet = "";
+          this.dialog = false;
 
           break;
         case "credit":
-          this.dialog = true;
-          this.dialog_title = `${type.text} ( نفر ${user.number} )`;
+          user.gift_items.push({
+            type: key,
+            user_number: user.number,
+            type_name: this.dialog_title,
+            value: this.wallet,
+          });
+          this.wallet = "";
+          this.dialog = false;
 
           break;
-          
       }
     },
-    addItem() {
-      let selected_item_pack = {};
-      let selected_item_product = {};
-      let dublicate_pack = {};
-      let dublicate_product = "";
 
-      // ---------------------------------------------------------------------
-      if (this.product_id) {
-        dublicate_product = this.list_item.find(
-          (x) => x.value == this.product_id
-        );
-
-        if (Boolean(dublicate_product)) {
-          this.$toast.info(`محصول  ${dublicate_product.text} قبلا اضافه شده`);
-          this.product_id = "";
-          selected_item_product = {};
-        }
-      }
-
-      // ---------------------------------------------------------------------
-
-      if (this.package_id) {
-        dublicate_pack = this.list_item.find((x) => x.value == this.package_id);
-        if (Boolean(dublicate_pack) && Object.keys(dublicate_pack).length > 0) {
-          this.$toast.info(`پکیچ  ${dublicate_pack.text} قبلا اضافه شده`);
-          this.package_id = "";
-          dublicate_pack = {};
-          selected_item_pack = {};
-        }
-      }
-      // ---------------------------------------------------------------------
-
-      if (Boolean(this.package_id)) {
-        selected_item_pack = this.package.find(
-          (x) => x.value == this.package_id
-        );
-        selected_item_pack["is_pack"] = true;
-      }
-      // ---------------------------------------------------------------------
-
-      if (Boolean(this.product_id)) {
-        selected_item_product = this.products.find(
-          (y) => y.value == this.product_id
-        );
-        selected_item_product["is_pack"] = false;
-      }
-
-      if (
-        Boolean(selected_item_pack) &&
-        Object.keys(selected_item_pack).length > 0
-      ) {
-        selected_item_pack["number"] = "1";
-        this.list_item.push(selected_item_pack);
-        this.package_id = "";
-        selected_item_pack = {};
-      }
-
-      if (
-        Boolean(selected_item_product) &&
-        Object.keys(selected_item_product).length > 0
-      ) {
-        selected_item_product["number"] = "1";
-        this.list_item.push(selected_item_product);
-        this.product_id = "";
-        selected_item_product = {};
-      }
-    },
     deleteItem(index) {
       let items = this.list_item;
       items.splice(index, 1);
     },
-
+    saveCoupon(code) {
+      if (code && Boolean(code)) {
+        navigator.clipboard.writeText(code.coupon);
+        this.$toast.success(" کپی شد");
+      }
+    },
     loadPackages() {
       let filter = {
         type: {
@@ -385,6 +530,7 @@ export default {
             items.push({
               text: x.for_title,
               date: date,
+              coupon: x.coupon,
               value: x.id,
               discount_value: discount_value,
             });
@@ -396,11 +542,50 @@ export default {
           this.load_item = false;
         });
     },
+    getData(data, type) {
+      if (type == "package") {
+        let package_key = this.dialog_user.gift_items.find(
+          (f) => f.type == this.dialog_key
+        );
+        if (Boolean(package_key)) {
+          package_key.items.push(data);
+        } else {
+          this.dialog_user.gift_items.push({
+            type: this.dialog_key,
+            user_number: this.dialog_user.number,
+            type_name: this.dialog_title,
+            items: [data],
+          });
+        }
+      } else if (type == "product") {
+        let product_key = this.dialog_user.gift_items.find(
+          (f) => f.type == this.dialog_key
+        );
+        if (Boolean(product_key)) {
+          product_key.items.push(data);
+        } else {
+          this.dialog_user.gift_items.push({
+            type: this.dialog_key,
+            user_number: this.dialog_user.number,
+            type_name: this.dialog_title,
+            items: [data],
+          });
+        }
+      }
+    },
+    callSubmit() {
+      this.$emit("winingUsers", this.peoples);
+    },
   },
 };
 </script>
 <style scoped>
 .expan-style {
-  border-right: 3px solid #ff7300a8;
+  background: linear-gradient(
+    to left,
+    #fffffff1,
+    #f8f8f86c,
+    #ffffff6c
+  ) !important;
 }
 </style>
