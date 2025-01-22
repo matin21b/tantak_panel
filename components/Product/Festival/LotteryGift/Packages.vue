@@ -69,11 +69,11 @@
                   +
                 </v-chip>
                 <small class="mx-1">
-                  {{ selected_package.count }}
+                  {{ selected_package.number }}
                 </small>
                 <v-chip
                   small
-                  :disabled="selected_package.count == 0"
+                  :disabled="selected_package.number == 0"
                   @click="actionNumber(selected_package, false)"
                 >
                   -
@@ -166,7 +166,7 @@ export default {
                 const element = sub_product[index];
                 element["product"] = {};
                 element.product["name"] = element.name;
-                element.product["info"] = `تعداد محصول :‌${element.count}`;
+                element.product["info"] = `تعداد محصول :‌${element.number}`;
                 new_data.push(element);
               }
               packages.push({
@@ -174,7 +174,7 @@ export default {
                 value: x.section_id,
                 products: new_data,
                 logo: x.package.logo,
-                count: x.number,
+                number: x.number,
                 price: x.price,
                 discount_value: x.base_price,
               });
@@ -228,7 +228,7 @@ export default {
               discount_type: x.discount_type,
               type: x.type,
               discount_value: discount_value,
-              count: 1,
+              number: 1,
             });
           }
 
@@ -262,9 +262,9 @@ export default {
     actionNumber(item, pluss) {
       this.loading = true;
       if (Boolean(pluss)) {
-        item.count++;
+        item.number++;
       } else {
-        item.count--;
+        item.number--;
       }
       this.loading = false;
     },

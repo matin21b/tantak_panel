@@ -51,6 +51,7 @@
             </v-col>
             <v-col cols="12">
               <WinningUsers
+                :load-data="load_data"
                 ref="WinningUsersFestival"
                 @winingUsers="winingUsers($event)"
                 v-if="valid"
@@ -115,6 +116,7 @@ export default {
       only_price: false,
       products: [],
       peoples: [],
+      load_data: [],
       package: [],
       load_items: {},
       form: {
@@ -166,7 +168,11 @@ export default {
       }
       let form = { ...this.form, ...this.type_data };
       form["festival_id"] = this.festivalId;
-      this.$reqApi("/lottery/insert", form)
+      let url = Boolean(this.itemId) ? this.updateUrl : this.createUrl;
+      if (Boolean(this.itemId)) {
+        form["id"] = this.itemId;
+      }
+      this.$reqApi(url, form)
         .then((res) => {
           this.$toast.success("قرعه کشی با موفقیت ثبت شد");
           this.closeDialog();
@@ -184,11 +190,19 @@ export default {
         });
       } else if (item.type == "package_items") {
         item.items.map((x) => {
+          let id = "";
+          if (typeof x.value != "undefined") {
+            id = x.value;
+          } else if (x.id != "undefined") {
+            id = x.id;
+          }
+
           this.type_data.package_items.push({
-            id: x.value,
-            number: x.count,
+            id: id,
+            number: x.number,
             person_win: item.user_number,
           });
+    
         });
       } else if (item.type == "cash") {
         this.type_data.wallets.push({
@@ -211,30 +225,30 @@ export default {
         });
       }
     },
-    selectedIItems(event) {
-      this.form.package_items = event.packages;
-      this.form.product_items = event.products;
-      let form = { ...this.form };
-      form["festival_id"] = this.festivalId;
-      this.loading = true;
-      let url = this.createUrl;
-      if (this.itemId) {
-        url = this.updateUrl;
-        form["id"] = this.itemId;
-      }
-      this.$reqApi(url, form)
-        .then((response) => {
-          if (!this.itemId) {
-            this.$toast.success("اطلاعات ثبت شد");
-          } else {
-            this.$toast.success("اطلاعات ویرایش شد");
-          }
-          this.closeDialog();
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
-    },
+ 
+    //   this.form.package_items = event.packages;
+    //   this.form.product_items = event.products;
+    //   let form = { ...this.form };
+    //   form["festival_id"] = this.festivalId;
+    //   this.loading = true;
+    //   let url = this.createUrl;
+    //   if (this.itemId) {
+    //     url = this.updateUrl;
+       
+    //   }
+    //   this.$reqApi(url, form)
+    //     .then((response) => {
+    //       if (!this.itemId) {
+    //         this.$toast.success("اطلاعات ثبت شد");
+    //       } else {
+    //         this.$toast.success("اطلاعات ویرایش شد");
+    //       }
+    //       this.closeDialog();
+    //     })
+    //     .catch((error) => {
+    //       this.loading = false;
+    //     });
+    // },
     loadData() {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.itemId })
@@ -247,29 +261,104 @@ export default {
           this.form.description = data.description;
           this.form.festival_id = data.festival_id;
           let prop_items = [];
-          if (data.product_var_coms.length > 0) {
-            let items = [];
-            for (let i = 0; i < data.product_var_coms.length; i++) {
-              const x = data.product_var_coms[i];
-              items.push({
-                type: "product_var_coms",
-                user_number: x.person_win,
-                type_name: `محصول ( نفر ${x.person_win} )`,
-                value: this.wallet,
-              });
-              prop_items.push({
-                number: x.person_win,
+          let mian_array = [
+            ...data.wallets,
+            ...data.product_var_coms,
+            ...data.coupons,
+            ...data.packages,
+          ].reduce((pre, cur) => {
+            if (typeof pre[cur.person_win] == "undefined") {
+              pre[cur.person_win] = {
+                number: cur.person_win,
                 gift_items: [],
+              };
+            }
+            if (typeof cur.coupon != "undefined") {
+              let items = [];
+              let check = pre[cur.person_win].gift_items.find(
+                (x) => x.type == "coupon_items"
+              );
+              let discount_value =
+                cur.type == "amount"
+                  ? `${this.$price(cur.value)} ریال`
+                  : `${cur.value} درصد`;
+              let start = this.$toJalali(
+                cur.start_date,
+                "YYYY-MM-DD",
+                "jYYYY/jMM/jDD"
+              );
+              let end = this.$toJalali(
+                cur.end_date,
+                "YYYY-MM-DD",
+                "jYYYY/jMM/jDD"
+              );
+              let date = `قابل استفاده از تاریخ ${start} تا ${end}`;
+              items.push({
+                text: cur.for_title,
+                date: date,
+                coupon: cur.coupon,
+                value: cur.id,
+                discount_value: discount_value,
+              });
+
+
+              pre[cur.person_win].gift_items.push({
+                type: "coupon_items",
+                user_number: cur.person_win,
+                type_name: `کد تحفیف ( نفر ${cur.person_win} )`,
+                items: items,
               });
             }
+
+            if (typeof cur.package_number != "undefined") {
+              let check = pre[cur.person_win].gift_items.find(
+                (x) => x.type == "package_items"
+              );
+              if (Boolean(check)) {
+                check.items.push(cur);
+              } else {
+                pre[cur.person_win].gift_items.push({
+                  type: "package_items",
+                  user_number: cur.person_win,
+                  type_name: `پکیج ( نفر ${cur.person_win} )`,
+                  items: [cur],
+                });
+              }
+            }
+            if (typeof cur.lotterygable_id != "undefined") {
+              let text =
+                cur.lotterygable_id == "cash"
+                  ? "کیف پول نقدی"
+                  : "کیف پول اعتباری";
+              pre[cur.person_win].gift_items.push({
+                type: cur.lotterygable_id == "cash" ? "cash" : "credit",
+                user_number: cur.person_win,
+                type_name: `${text} ( نفر ${cur.person_win} )`,
+                value: cur.number,
+              });
+            }
+
+            if (cur.type == "Product") {
+              let check = pre[cur.person_win].gift_items.find(
+                (x) => x.type == "product_var_com_items"
+              );
+              if (Boolean(check)) {
+                check.items.push(cur);
+              } else {
+                pre[cur.person_win].gift_items.push({
+                  type: "product_var_com_items",
+                  user_number: cur.person_win,
+                  type_name: `محصول ( نفر ${cur.person_win} )`,
+                  items: [cur],
+                });
+              }
+            }
+            return pre;
+          }, {});
+          for (let key in mian_array) {
+            this.load_data.push(mian_array[key]);
           }
 
-          // if (Boolean(data.packages) && data.packages.length > 0) {
-          //   this.load_items["packages"] = data.packages;
-          // }
-          // if (Boolean(data.products) && data.products.length > 0) {
-          //   this.load_items["products"] = data.products;
-          // }
           this.loading = false;
         })
         .catch((error) => {

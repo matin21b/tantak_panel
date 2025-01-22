@@ -42,7 +42,7 @@
                       >
                         <v-card
                           class="d-flex align-center pa-3 my-1 elevation-2"
-                          style="border-right: 3px solid grey !important;"
+                          style="border-right: 3px solid grey !important"
                           outlined
                         >
                           <v-icon color="green"> task_alt </v-icon>
@@ -90,8 +90,7 @@
                     v-if="gift.type == 'cash' || gift.type == 'credit'"
                   >
                     <v-card
-                    style="border-right: 3px solid grey !important;"
-
+                      style="border-right: 3px solid grey !important"
                       outlined
                       width="100%"
                       class="d-flex align-center pa-3 elevation-2"
@@ -116,8 +115,7 @@
                     </v-card>
                     <v-card
                       outlined
-                      style="border-right: 3px solid grey !important;"
-
+                      style="border-right: 3px solid grey !important"
                       width="100%"
                       cols="12"
                       class="d-flex align-center pa-3 elevation-2"
@@ -142,8 +140,7 @@
                   <v-col cols="12" v-if="gift.type == 'product_var_com_items'">
                     <v-card
                       outlined
-                      style="border-right: 3px solid grey !important;"
-
+                      style="border-right: 3px solid grey !important"
                       v-for="(product, i_product) in gift.items"
                       :key="i_product"
                       width="100%"
@@ -151,16 +148,42 @@
                       cols="12"
                     >
                       <v-avatar size="35" class="mx-2">
-                        <img contain :src="$getImage(product.img)" />
+                        <img contain v-if="product.img && Boolean(product.img)" :src="$getImage(product.img)" />
+                        <img contain v-else :src="$getImage(product.variation1.product.main_image)" />
                       </v-avatar>
+                      <h1>
+                        <small>  {{ product.variation1.product.name}} </small>
+                      </h1>
                       <v-spacer></v-spacer>
                       <h1>
                         <small> تعداد :‌ {{ product.number }} </small>
                       </h1>
                       <v-spacer></v-spacer>
                       <h1>
-                        <small>
+                        <small
+                          v-if="
+                            product.product_price &&
+                            Boolean(product.product_price)
+                          "
+                        >
                           قیمت محصول :‌ {{ $price(product.product_price) }} ریال
+                        </small>
+                        <small
+                          v-else-if="product.price && Boolean(product.price)"
+                        >
+                          قیمت محصول :‌ {{ $price(product.price) }} ریال
+                        </small>
+                        <small
+                          v-else-if="
+                            product.variation1 &&
+                            Boolean(product.variation1.product.base_price)
+                          "
+                        >
+                          قیمت محصول :‌
+                          {{
+                            $price(product.variation1.product.base_price)
+                          }}
+                          ریال
                         </small>
                       </h1>
                       <v-spacer></v-spacer>
@@ -195,8 +218,7 @@
                   </v-col>
                   <v-col cols="12" v-if="gift.type == 'package_items'">
                     <v-card
-                    style="border-right: 3px solid grey !important;"
-
+                      style="border-right: 3px solid grey !important"
                       outlined
                       v-for="(pack, i_pack) in gift.items"
                       :key="i_pack"
@@ -213,7 +235,7 @@
                       </h1>
                       <v-spacer></v-spacer>
                       <h1>
-                        <small> تعداد :‌ {{ pack.count }} </small>
+                        <small> تعداد :‌ {{ pack.number }} </small>
                       </h1>
                       <v-spacer></v-spacer>
                       <h1>
@@ -345,6 +367,10 @@ export default {
       default: "",
       type: String,
     },
+    loadData: {
+      default: [],
+      type: Array,
+    },
   },
   data: () => ({
     types: [
@@ -372,7 +398,10 @@ export default {
     this.loadPackages();
     this.loadProduct();
     this.loadFestivalCoupon();
-    if (Boolean(this.usersCount)) {
+    if (Boolean(this.loadData) && this.loadData.length > 0) {
+      this.peoples = this.loadData;
+    }
+    if (Boolean(this.usersCount) && this.loadData.length == 0) {
       let people_count = +Number(this.usersCount);
       let peoples = [];
       for (let i = 1; i <= people_count; i++) {
@@ -470,7 +499,6 @@ export default {
           this.dialog = false;
 
           break;
-
       }
     },
 
@@ -581,12 +609,13 @@ export default {
         });
     },
     getData(data, type) {
-      
+
       if (type == "package") {
         let package_key = this.dialog_user.gift_items.find(
           (f) => f.type == this.dialog_key
         );
         if (Boolean(package_key)) {
+          
           package_key.items.push(data);
         } else {
           this.dialog_user.gift_items.push({
@@ -611,8 +640,6 @@ export default {
           });
         }
       }
-
-      
     },
     callSubmit() {
       this.$emit("winingUsers", this.peoples);
