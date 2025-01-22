@@ -240,7 +240,6 @@ export default {
       this.$reqApi(this.showUrl, { id: this.itemId })
         .then(async (response) => {
           let data = response.data;
-          console.log("data", data);
           this.form.people_number_use = data.people_number_use.toString();
           this.form.time = data.time;
           this.form.status = data.status;

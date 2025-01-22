@@ -581,7 +581,6 @@ export default {
         });
     },
     getData(data, type) {
-      console.log("data" ,  data);
       
       if (type == "package") {
         let package_key = this.dialog_user.gift_items.find(
@@ -612,7 +611,6 @@ export default {
           });
         }
       }
-      console.log("this.peoples" ,  this.peoples);
 
       
     },
