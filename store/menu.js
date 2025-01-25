@@ -532,6 +532,11 @@ let mnue_tree = [
         name: "دسته بندی کاربران ",
         access: "setting/root",
         route: "/setting/category-user",
+      },      {
+        id: 261515468254213,
+        name: "دسته بندی مخاطبین ",
+        access: "setting/root",
+        route: "/setting/category-contact",
       },
     ],
   },

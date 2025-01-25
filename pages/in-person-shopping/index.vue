@@ -37,6 +37,12 @@
           :extraBtn="extra_btn2"
           ref="ReternedTabel"
         />
+        <ChangeStatus
+          v-if="change_status_item"
+          :dialog="change_status_item"
+          :data="data"
+          @closeDialog="change_status_item = false"
+        />
       </v-window-item>
     </v-window>
   </div>
@@ -44,21 +50,25 @@
 <script>
 import DetailsBasket from "@/components/Product/PersonShopping/DetailsBasket.vue";
 import PaymentCompletion from "@/components/Product/PersonShopping/PaymentCompletion.vue";
+import ChangeStatus from "@/components/Product/PersonShopping/ChangeStatus.vue";
 
 export default {
-  components: { DetailsBasket, PaymentCompletion},
+  components: { DetailsBasket, PaymentCompletion, ChangeStatus },
   data: () => ({
     headers: [],
     btn_actions: [],
     basket_items: [],
     headers_return: [],
+    data: {},
     extra_btn: [],
     extra_btn2: [],
     title: "خرید حضوری",
     show_details: false,
     completion: false,
+    change_status_item: false,
     show_transactions: false,
     basket_id: "",
+    product_id: "",
     user_id: "",
     step: 1,
     transactions: {},
@@ -78,6 +88,29 @@ export default {
         },
         show_fun: (body) => {
           if (Boolean(body.only_items) && body.only_items.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "تعیین وضعیت",
+        icon: "receipt",
+        color: "blue-grey",
+        fun: (body) => {
+          this.data = body;
+          this.change_status_item = true;
+        },
+        show_fun: (body) => {
+          if (
+            Boolean(
+              this.$store.state.auth.action.indexOf(
+                "return_products/change_status"
+              ) > -1
+            ) &&
+            this.step == 2
+          ) {
             return true;
           } else {
             return false;

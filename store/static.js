@@ -62,6 +62,7 @@ export const state = () => ({
   festival_type,
   festival_status,
   type_gift,
+  status_return_product,
 });
 
 let status_type = [
@@ -799,4 +800,7 @@ let type_gift = [
   { text: "کد تخفیف", value: "coupon" },
   { text: "شارژ کیف پول نقدی", value: "cash_walet" },
   { text: "اعتباری", value: "credit_wallt" },
+];let status_return_product = [
+  { text: "افزودن به انبار", value: "add_stock" },
+  { text: "بازگشت", value: "return_fac" },
 ];
