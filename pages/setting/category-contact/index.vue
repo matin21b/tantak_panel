@@ -2,7 +2,7 @@
   <div>
     <BaseTable
       url="/setting"
-      :filters="filters" 
+      :filters="filters"
       :headers="headers"
       autoDelete="/setting/delete"
       autoUpdate="/setting/category-contact"
@@ -21,9 +21,11 @@ export default {
     title: "دسته بندی  مخاطبین",
   }),
   beforeMount() {
+    this.headers = [
+      { text: "عنوان ", value: "value" },
+      { text: "توضیحات ", value: "value_2" },
+    ];
     this.$store.dispatch("setPageTitle", this.title);
-
-    this.headers = [{ text: "عنوان ", value: "value" }];
   },
 };
 </script>

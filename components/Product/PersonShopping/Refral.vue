@@ -2,24 +2,27 @@
   <v-dialog v-model="dialog" width="380" persistent>
     <v-card class="pa-3">
       <v-col cols="12" class="text-center d-flex align-center">
-        <h1 class=""> روال ارجاعات</h1>
+        <h1 class=""> برسی روند ارجاع</h1>
+        <v-spacer></v-spacer>
+ 
+     
       </v-col>
       <v-col cols="12">
         <v-form v-model="valid">
           <amp-select
-            text="مرحله"
+            text="وضعیت محصول"
             v-model="form.status"
             :items="$store.state.static.status_return_product"
             rules="require"
           />
-          <!-- <amp-input
+          <amp-input
             text="تعداد"
             v-model="form.number"
             cClass="ltr-item"
             rules="number,require"
-          /> -->
+          />
         </v-form>
-        <v-row class="d-flex justify-center mt-5">
+        <v-row class="d-flex justify-center">
           <v-col cols="12" md="4">
             <amp-button
               text="تایید"

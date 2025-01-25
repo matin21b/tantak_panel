@@ -800,7 +800,22 @@ let type_gift = [
   { text: "کد تخفیف", value: "coupon" },
   { text: "شارژ کیف پول نقدی", value: "cash_walet" },
   { text: "اعتباری", value: "credit_wallt" },
-];let status_return_product = [
+]; let status_return_product = [
   { text: "افزودن به انبار", value: "add_stock" },
   { text: "بازگشت", value: "return_fac" },
 ];
+
+let step_reterned_product = [
+  { text: "از مدیر نمایندگی به سفیر", value: "agency_manager_to_sefir" },
+  { text: "از سفیر به مدیرنمایندگی", value: "sefir_to_agency_manager" },
+  { text: "از سفیر به مدیر انبار", value: "sefir_to_storage_manager" },
+  { text: "از مدیر انبار به سفیر", value: "storage_manager_to_sefir" },
+  { text: "", value: "storage_manager_to_employee" },
+  { text: "", value: "storage_employee_to_manager" },
+  { text: "", value: "storage_employee_to_financial" },
+  { text: "", value: "financial_to_storage_employee" },
+  { text: "", value: "manager_to_supervisor_financial" },
+  { text: "", value: "supervisor_to_manager_financial" },
+  { text: "", value: "supervisor_to_financial" },
+  { text: "", value: "financial_to_supervisor" },
+]

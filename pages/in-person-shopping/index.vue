@@ -41,7 +41,15 @@
           v-if="change_status_item"
           :dialog="change_status_item"
           :data="data"
+          @reload="refresh"
           @closeDialog="change_status_item = false"
+        />  
+              <Refral
+          v-if="refreal_dialog"
+          :dialog="refreal_dialog"
+          :data="data"
+          @reload="refresh"
+          @closeDialog="refreal_dialog = false"
         />
       </v-window-item>
     </v-window>
@@ -51,9 +59,10 @@
 import DetailsBasket from "@/components/Product/PersonShopping/DetailsBasket.vue";
 import PaymentCompletion from "@/components/Product/PersonShopping/PaymentCompletion.vue";
 import ChangeStatus from "@/components/Product/PersonShopping/ChangeStatus.vue";
+import Refral from "@/components/Product/PersonShopping/Refral.vue";
 
 export default {
-  components: { DetailsBasket, PaymentCompletion, ChangeStatus },
+  components: { DetailsBasket, PaymentCompletion, ChangeStatus , Refral },
   data: () => ({
     headers: [],
     btn_actions: [],
@@ -67,6 +76,7 @@ export default {
     completion: false,
     change_status_item: false,
     show_transactions: false,
+    refreal_dialog: false,
     basket_id: "",
     product_id: "",
     user_id: "",
@@ -107,6 +117,28 @@ export default {
             Boolean(
               this.$store.state.auth.action.indexOf(
                 "return_products/change_status"
+              ) > -1
+            ) &&
+            this.step == 2
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },   {
+        text: "روال ارجاعات",
+        icon: "sync_alt",
+        color: "teal",
+        fun: (body) => {
+          this.refreal_dialog
+          = true;
+        },
+        show_fun: (body) => {
+          if (
+            Boolean(
+              this.$store.state.auth.action.indexOf(
+                "return_factories/referral"
               ) > -1
             ) &&
             this.step == 2
