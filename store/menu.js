@@ -147,6 +147,7 @@ let mnue_tree = [
     access: "coupons/index",
     route: "/discount-code",
   },
+
   {
     id: 13,
     name: "محصولات",
@@ -243,6 +244,25 @@ let mnue_tree = [
       },
     ],
   },
+  {
+    id: 48646,
+    name: "محصولات معوقه",
+    children: [
+      {
+        id: 200568522597564,
+        name: "لیست محصولات",
+        access: "return_factories/index",
+        route: "/in-person-shopping/refral-list",
+      },
+      {
+        id: 29847884,
+        name: "تاریخچه",
+        access: "return_factories/logs",
+        route: "/in-person-shopping/all-history",
+      },
+    ],
+  },
+
   {
     id: 444452,
     name: "سبد های خرید",
@@ -532,7 +552,8 @@ let mnue_tree = [
         name: "دسته بندی کاربران ",
         access: "setting/root",
         route: "/setting/category-user",
-      },      {
+      },
+      {
         id: 261515468254213,
         name: "دسته بندی مخاطبین ",
         access: "setting/root",

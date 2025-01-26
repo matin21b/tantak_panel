@@ -63,6 +63,7 @@ export const state = () => ({
   festival_status,
   type_gift,
   status_return_product,
+  step_reterned_product,
 });
 
 let status_type = [
@@ -631,6 +632,9 @@ let status_basket_refral = [
   {
     text: "کنسل شده",
     value: "canceled",
+  },  {
+    text: "کنسل شده",
+    value: "cancel",
   },
   {
     text: "ترکیبی ",
@@ -806,16 +810,18 @@ let type_gift = [
 ];
 
 let step_reterned_product = [
-  { text: "از مدیر نمایندگی به سفیر", value: "agency_manager_to_sefir" },
-  { text: "از سفیر به مدیرنمایندگی", value: "sefir_to_agency_manager" },
-  { text: "از سفیر به مدیر انبار", value: "sefir_to_storage_manager" },
-  { text: "از مدیر انبار به سفیر", value: "storage_manager_to_sefir" },
-  { text: "", value: "storage_manager_to_employee" },
-  { text: "", value: "storage_employee_to_manager" },
-  { text: "", value: "storage_employee_to_financial" },
-  { text: "", value: "financial_to_storage_employee" },
-  { text: "", value: "manager_to_supervisor_financial" },
-  { text: "", value: "supervisor_to_manager_financial" },
-  { text: "", value: "supervisor_to_financial" },
-  { text: "", value: "financial_to_supervisor" },
+  { text: "ثبت اولیه", value: "init" , key:"" },
+  { text: "بستن", value: "close" , key:"agency_manager" },
+  { text: "از مدیر نمایندگی به سفیر", value: "agency_manager_to_sefir" , key:"agency_manager" },
+  { text: "از سفیر به مدیرنمایندگی", value: "sefir_to_agency_manager" , key:"sefir" },
+  { text: "از سفیر به سرپرست انبار مرکزی", value: "sefir_to_storage_manager"  , key:"sefir"},
+  { text: "از سرپرست انبار مرکزی به سفیر", value: "storage_manager_to_sefir", key:"storage_manager" },
+  { text: "سرپرست انبار مرکزی به کارمند", value: "storage_manager_to_employee" , key:"storage_manager"},
+  { text: "کارمند انبار مرکزی به سرپرست انبار مرکزی", value: "storage_employee_to_manager" , key:"storage_employee"},
+  { text: "کارمند انبار مرکزی به واحد مالی", value: "storage_employee_to_financial", key:"storage_employee" },
+  { text: "تایید", value: "done" , key:"financial"},
+  { text: " واحد مالی به سرپرست واحد مالی", value: "financial_to_supervisor" , key:"financial"},
+  { text: "مدیر واحد مالی به سرپرست واحد مالی", value: "manager_to_supervisor_financial", key:"manager_financial" },
+  { text: "سرپرست واحد مالی به مدیر واحد مالی", value: "supervisor_to_manager_financial" , key:"supervisor"},
+  { text: "سرپرست واحد مالی به واحد مالی", value: "supervisor_to_financial", key:"supervisor" },
 ]

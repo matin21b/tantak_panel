@@ -6,7 +6,6 @@
       :extraBtn="extra_btn"
       :rootBody="root_body"
       :BTNactions="btn_actions"
-      :rowColor="rowColor"
     />
   </div>
 </template>
@@ -140,20 +139,7 @@ export default {
     backStep() {
       this.$emit("backStep");
     },
-    rowColor(body) {
-      if (body.item.step == "done") {
-        return "green lighten-4";
-      } else if (
-        body.item.step == "fiscal_to_fiscal_supervisor" ||
-        body.item.step == "fiscal_supervisor_to_manager" ||
-        body.item.step == "fiscal_manager_to_debtor" ||
-        body.item.step == "not_accept_reviewer" ||
-        body.item.step == "cancel" ||
-        body.item.step == "reviewer_to_debtor"
-      ) {
-        return "red lighten-4";
-      }
-    },
+  
   },
 };
 </script>

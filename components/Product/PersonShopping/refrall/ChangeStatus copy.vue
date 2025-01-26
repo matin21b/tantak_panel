@@ -1,8 +1,19 @@
 <template>
   <v-dialog v-model="dialog" width="380" persistent>
-    <v-card class="pa-3">
-      <v-col cols="12" class="text-center d-flex align-center">
-        <h1 class=""> روال ارجاعات</h1>
+    <v-card class="pa-3 " >
+      <div class="pb-6" style="border: 7px double #8585858a;">
+        <v-col cols="12" class="text-center">
+        <h1 class="">تعیین وضعیت</h1>
+        <h1>
+          <small v-if="data.user && Boolean(data.user.first_name)">
+            {{ data.user.first_name }} {{ data.user.last_name }}
+          </small>
+          <br />
+          <small class="grey--text" style="border-bottom: 1px solid #8585858a;">
+            شماره فاکتور
+            {{ data.basket.factor_number }}
+          </small>
+        </h1>
       </v-col>
       <v-col cols="12">
         <v-form v-model="valid">
@@ -19,7 +30,7 @@
             rules="number,require"
           /> -->
         </v-form>
-        <v-row class="d-flex justify-center mt-5">
+        <v-row class="d-flex justify-center mt-8">
           <v-col cols="12" md="4">
             <amp-button
               text="تایید"
@@ -44,6 +55,8 @@
           </v-col>
         </v-row>
       </v-col>
+      </div>
+    
     </v-card>
   </v-dialog>
 </template>
@@ -66,12 +79,13 @@ export default {
     submit() {
       this.loading = true;
       let form = { ...this.form };
-      form["return_product_id"] = this.data.basket_item_id;
+      form["return_product_id"] = this.data.id;
       this.$reqApi("return-product/change-status", form)
         .then((res) => {
           this.loading = false;
           this.$emit("reload");
           this.closeDialog();
+          this.$toast.success("عملیات با موفقیت انجام شد");
         })
         .catch((err) => {
           this.loading = false;

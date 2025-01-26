@@ -41,10 +41,10 @@
           v-if="change_status_item"
           :dialog="change_status_item"
           :data="data"
-          @reload="refresh"
+          @reload="refresh('ReternedTabel')"
           @closeDialog="change_status_item = false"
-        />  
-              <Refral
+        />
+        <Refral
           v-if="refreal_dialog"
           :dialog="refreal_dialog"
           :data="data"
@@ -58,11 +58,11 @@
 <script>
 import DetailsBasket from "@/components/Product/PersonShopping/DetailsBasket.vue";
 import PaymentCompletion from "@/components/Product/PersonShopping/PaymentCompletion.vue";
-import ChangeStatus from "@/components/Product/PersonShopping/ChangeStatus.vue";
+import ChangeStatus from "~/components/Product/PersonShopping/refrall/ChangeStatus.vue";
 import Refral from "@/components/Product/PersonShopping/Refral.vue";
 
 export default {
-  components: { DetailsBasket, PaymentCompletion, ChangeStatus , Refral },
+  components: { DetailsBasket, PaymentCompletion, ChangeStatus, Refral },
   data: () => ({
     headers: [],
     btn_actions: [],
@@ -84,6 +84,7 @@ export default {
     transactions: {},
   }),
   beforeMount() {
+ 
     this.$store.dispatch("setPageTitle", this.title);
     this.btn_actions = [
       {
@@ -126,29 +127,29 @@ export default {
             return false;
           }
         },
-      },   {
-        text: "روال ارجاعات",
-        icon: "sync_alt",
-        color: "teal",
-        fun: (body) => {
-          this.refreal_dialog
-          = true;
-        },
-        show_fun: (body) => {
-          if (
-            Boolean(
-              this.$store.state.auth.action.indexOf(
-                "return_factories/referral"
-              ) > -1
-            ) &&
-            this.step == 2
-          ) {
-            return true;
-          } else {
-            return false;
-          }
-        },
       },
+      // {
+      //   text: "روال ارجاعات",
+      //   icon: "sync_alt",
+      //   color: "teal",
+      //   fun: (body) => {
+      //     this.refreal_dialog = true;
+      //   },
+      //   show_fun: (body) => {
+      //     if (
+      //       Boolean(
+      //         this.$store.state.auth.action.indexOf(
+      //           "return_factories/referral"
+      //         ) > -1
+      //       ) &&
+      //       this.step == 2
+      //     ) {
+      //       return true;
+      //     } else {
+      //       return false;
+      //     }
+      //   },
+      // },
       {
         text: "تکیمل  پرداخت",
         icon: "receipt",
@@ -178,6 +179,26 @@ export default {
       },
     ];
     this.extra_btn2 = [
+      {
+        text: "روند ارجاعات",
+        icon: "sync_alt",
+        color: "blue-grey",
+        fun: (body) => {
+          this.$router.push(`/in-person-shopping/refral-list?action=${true}`);
+        },
+        show_fun: (body) => {
+          if (
+            Boolean(
+              this.$store.state.auth.action.indexOf("return_factories/index") >
+                -1
+            )
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
       {
         text: "برگشت",
         icon: "redo",
@@ -398,9 +419,19 @@ export default {
       },
     ];
   },
+  mounted(){
+    if (Boolean(this.$route.query.step)) {
+      this.step = +Number(this.$route.query.step)
+      console.log(this.step );
+      
+    }
+  },
   methods: {
-    refresh() {
+    refresh(key = null) {
       this.$refs.RefreshTabel.getDataFromApi();
+      if (Boolean(key)) {
+        this.$refs[key].getDataFromApi();
+      }
     },
     refreshAllTabels() {
       this.refresh();

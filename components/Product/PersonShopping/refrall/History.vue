@@ -1,0 +1,181 @@
+<template>
+  <div class="text-center">
+    <v-dialog v-model="dialog" persistent fullscreen>
+      <v-card>
+        <v-col cols="12" class="primary white--text d-flex align-center">
+          <h1 class="font_18">تاریخچه استفاده ا ز کد تخفیف</h1>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="closeDialog">
+            <v-icon color="white"> close </v-icon>
+          </v-btn>
+        </v-col>
+        <BaseTable
+          url="/return-factory/referral-history/return_factories/logs "
+          :headers="headers"
+          :extraBtn="extra_btn"
+          :rootBody="root_body"
+          :rowColor="rowColor"
+        />
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    dialog: {
+      require: false,
+      default: false,
+    },
+
+    modelId: {
+      require: false,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      panel: 1,
+      continue_form: false,
+      loading: false,
+      filters: {},
+      response: [],
+      headers: [],
+      btn_actions: [],
+      extra_btn: [],
+      product: { product_id: "" },
+      root_body: {},
+      url: "",
+      product_var_info: "",
+      valid: true,
+      update: false,
+      form: {
+        skock: "",
+        description: "",
+        save_skock: "",
+        sale_agency_id: "",
+        product_var_id: "",
+      },
+    };
+  },
+  beforeMount() {
+    this.root_body = {
+      section_name: "ReturnFactory",
+      section_id: this.modelId,
+    };
+  },
+  mounted() {
+    this.headers = [
+      {
+        text: "تاریخ ثبت",
+        filterCol: "created_at",
+        filterType: "date",
+        value: (body) => {
+          if (body.created_at) {
+            return this.$toJalali(
+              body.created_at,
+              "YYYY-MM-DDTHH:mm:ss",
+              "jYYYY/jMM/jDD"
+            );
+          } else {
+            return "فعال نشده";
+          }
+        },
+      },
+
+      {
+        text: " نام ارسال کننده",
+        filterCol: "send_user_first_name",
+        value: "send_user_first_name",
+      },
+      {
+        text: " نام خانوادگی ارسال کننده",
+        filterCol: "send_user_last_name",
+        value: "send_user_last_name",
+      },
+      {
+        text: "شماره همراه",
+        filterCol: "send_user_last_name",
+        value: "send_user_last_name",
+      },
+      {
+        text: "پیام",
+        filterable: false,
+        type: "tooltip",
+        function: (body) => {
+          if (body.text_log) {
+            return body.text_log;
+          }
+        },
+        value: (body) => {
+          if (typeof body.text_log == "string") {
+            if (body.text_log.length < 25) {
+              return `<h1 class='font_12'>${body.text_log}</h1>`;
+            }
+            return `<h1 class='font_12'>${body.text_log.slice(0, 25) }"..."</h1>`;
+          } else {
+            return "-";
+          }
+        },
+      },
+      {
+        text: " نام گیرنده ",
+        filterCol: "get_user_first_name",
+        value: "get_user_first_name",
+      },
+      {
+        text: " نام خانوادگی گیرنده ",
+        filterCol: "get_user_last_name",
+        value: "get_user_username",
+      },
+      {
+        text: "شماره همراه",
+        filterCol: "send_user_last_name",
+        value: "send_user_last_name",
+      },
+  
+
+      {
+        text: "وضعیت",
+        filterType: "select",
+        filterCol: "status",
+        value: "status",
+        items: this.$store.state.static.status_basket_refral,
+      },
+    ];
+
+    this.btn_actions = [
+      //     {
+      //       icon: "visibility",
+      //       color: "red",
+      //       text: "نمایش فایل",
+      //       fun: (body) => {
+      //         if (body.file) {
+      //           window.open(this.$getImage(body.file));
+      //         }
+      //       },
+      //       show_fun: (body) => (body.file ? true : false),
+      //     },
+    ];
+  },
+  methods: {
+    closeDialog() {
+      this.$emit("closeDialog");
+    },
+    rowColor(body) {
+      if (body.item.step == "done") {
+        return "green lighten-4";
+      } else if (
+        body.item.step == "fiscal_to_fiscal_supervisor" ||
+        body.item.step == "fiscal_supervisor_to_manager" ||
+        body.item.step == "fiscal_manager_to_debtor" ||
+        body.item.step == "not_accept_reviewer" ||
+        body.item.step == "cancel" ||
+        body.item.step == "reviewer_to_debtor"
+      ) {
+        return "red lighten-4";
+      }
+    },
+  },
+};
+</script>
