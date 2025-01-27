@@ -2,7 +2,7 @@
   <div class="text-center">
 
         <BaseTable
-          url="/return-factory/referral-history/return_factories/logs "
+          url="/return-factory/referral-history-all/return_factories/logs"
           :headers="headers"
           :extraBtn="extra_btn"
           :rootBody="root_body"
