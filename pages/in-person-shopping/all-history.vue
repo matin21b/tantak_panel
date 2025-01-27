@@ -1,21 +1,17 @@
 <template>
   <div class="text-center">
-
-        <BaseTable
-          url="/return-factory/referral-history-all/return_factories/logs"
-          :headers="headers"
-          :extraBtn="extra_btn"
-          :rootBody="root_body"
-          :rowColor="rowColor"
-        />
- 
+    <BaseTable
+      url="/return-factory/referral-history-all/return_factories/logs "
+      :headers="headers"
+      :extraBtn="extra_btn"
+      :rootBody="root_body"
+      :rowColor="rowColor"
+    />
   </div>
 </template>
 <script>
 export default {
-  props: {
-
-  },
+  props: {},
   data() {
     return {
       panel: 1,
@@ -94,7 +90,10 @@ export default {
             if (body.text_log.length < 25) {
               return `<h1 class='font_12'>${body.text_log}</h1>`;
             }
-            return `<h1 class='font_12'>${body.text_log.slice(0, 25) }"..."</h1>`;
+            return `<h1 class='font_12'>${body.text_log.slice(
+              0,
+              25
+            )}"..."</h1>`;
           } else {
             return "-";
           }
@@ -115,7 +114,6 @@ export default {
         filterCol: "send_user_last_name",
         value: "send_user_last_name",
       },
-  
 
       {
         text: "وضعیت",
