@@ -148,11 +148,21 @@
                       cols="12"
                     >
                       <v-avatar size="35" class="mx-2">
-                        <img contain v-if="product.img && Boolean(product.img)" :src="$getImage(product.img)" />
-                        <img contain v-else :src="$getImage(product.variation1.product.main_image)" />
+                        <img
+                          contain
+                          v-if="product.img && Boolean(product.img)"
+                          :src="$getImage(product.img)"
+                        />
+                        <img
+                          contain
+                          v-else
+                          :src="
+                            $getImage(product.variation1.product.main_image)
+                          "
+                        />
                       </v-avatar>
                       <h1>
-                        <small>  {{ product.variation1.product.name}} </small>
+                        <small> {{ product.variation1.product.name }} </small>
                       </h1>
                       <v-spacer></v-spacer>
                       <h1>
@@ -180,9 +190,7 @@
                           "
                         >
                           قیمت محصول :‌
-                          {{
-                            $price(product.variation1.product.base_price)
-                          }}
+                          {{ $price(product.variation1.product.base_price) }}
                           ریال
                         </small>
                       </h1>
@@ -269,7 +277,7 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <v-dialog persistent width="500" v-model="dialog">
+    <v-dialog persistent width="550" v-model="dialog">
       <v-card class="pa-0">
         <v-col cols="12" class="d-flex align-center justify-center">
           <v-divider></v-divider>
@@ -311,6 +319,14 @@
                 </template>
               </v-autocomplete>
             </v-col>
+          </div>
+          <div v-if="dialog_key == 'not_system_product_ids'">
+            <NotSystemProducts
+            ref="NotSystemProductsItems"
+            @selectedIItems="getData($event, 'not_system_product')"
+            :data="not_system_products"
+            :load-items="[]"
+          />
           </div>
           <div
             v-if="dialog_key == 'cash' || dialog_key == 'credit'"
@@ -360,8 +376,10 @@
 <script>
 import Packages from "@/components/Product/Festival/LotteryGift/Packages.vue";
 import Products from "@/components/Product/Festival/LotteryGift/Products.vue";
+import NotSystemProducts from "@/components/Product/Festival/LotteryGift/NotSystemProducts.vue";
+
 export default {
-  components: { Products, Packages },
+  components: { Products, Packages, NotSystemProducts },
   props: {
     usersCount: {
       default: "",
@@ -374,11 +392,12 @@ export default {
   },
   data: () => ({
     types: [
-      { text: "محصول ", value: "product_var_com_items" },
+      { text: "اعتباری", value: "credit" },
       { text: "پکیج ", value: "package_items" },
       { text: "کد تخفیف", value: "coupon_items" },
       { text: "شارژ کیف پول نقدی", value: "cash" },
-      { text: "اعتباری", value: "credit" },
+      { text: "محصول ", value: "product_var_com_items" },
+      { text: "محصولات سیستمی ", value: "not_system_product_ids" },
     ],
     dialog: false,
     step: 1,
@@ -393,10 +412,12 @@ export default {
     products: [],
     coupon_list: [],
     package: [],
+    not_system_products: [],
   }),
   mounted() {
     this.loadPackages();
     this.loadProduct();
+    this.getProductsSetting();
     this.loadFestivalCoupon();
     if (Boolean(this.loadData) && this.loadData.length > 0) {
       this.peoples = this.loadData;
@@ -430,6 +451,7 @@ export default {
       }
 
       this.dialog = true;
+      console.log("key >> ", key, [this.dialog]);
       this.dialog_title = `${type.text} ( نفر ${user.number} )`;
       this.dialog_key = key;
       this.dialog_user = user;
@@ -443,6 +465,12 @@ export default {
           break;
         case "package_items":
           this.$refs.LattryPackage.addPackage();
+          this.dialog = false;
+
+          break;
+        case "not_system_product_ids":
+          this.$refs.NotSystemProductsItems.callSubmit();
+
           this.dialog = false;
 
           break;
@@ -501,7 +529,27 @@ export default {
           break;
       }
     },
-
+    getProductsSetting() {
+      let filter = {
+        op: "=",
+        key: "not_system_products",
+      };
+      this.$reqApi("/setting", { filters: filter, row_number: 30000 })
+        .then((res) => {
+          let data = res.model.data;
+          let items = [];
+          for (let index = 0; index < data.length; index++) {
+            const x = data[index];
+            items.push({
+              text: x.value,
+              value: x.id,
+            });
+          }
+          
+          this.not_system_products = items;
+        })
+        .catch((err) => {});
+    },
     deleteItem(key_user, type, item_index = null) {
       if (item_index != null) {
         let items = this.peoples[key_user].gift_items.find(
@@ -609,13 +657,11 @@ export default {
         });
     },
     getData(data, type) {
-
       if (type == "package") {
         let package_key = this.dialog_user.gift_items.find(
           (f) => f.type == this.dialog_key
         );
         if (Boolean(package_key)) {
-          
           package_key.items.push(data);
         } else {
           this.dialog_user.gift_items.push({
@@ -639,6 +685,23 @@ export default {
             items: [data],
           });
         }
+      } else if (type == "not_system_product") {
+        console.log("ssdatass", data);
+
+        let product_key = this.dialog_user.gift_items.find(
+          (f) => f.type == this.dialog_key
+        );
+        if (Boolean(product_key)) {
+          product_key.items.push(data);
+        } else {
+          this.dialog_user.gift_items.push({
+            type: this.dialog_key,
+            user_number: this.dialog_user.number,
+            type_name: this.dialog_title,
+            items: [data],
+          });
+        }
+        console.log("this.dialog_user.gift_items", this.dialog_user.gift_items);
       }
     },
     callSubmit() {

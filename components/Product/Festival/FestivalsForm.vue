@@ -16,6 +16,7 @@
             v-model="form.type_gift"
           ></amp-select>
         </v-col>
+
         <v-col
           cols="12"
           md="3"
@@ -70,6 +71,7 @@
             :items="$store.state.static.festival_type"
           />
         </v-col>
+
         <v-col cols="12" md="3">
           <amp-jdate
             text="تاریخ شروع  جشنواره"
@@ -159,7 +161,7 @@
         </v-col>
       </v-row>
       <v-row class="align-center justify-center">
-        <v-col cols="10">
+        <v-col cols="12" md="10">
           <FestivalAwards
             v-if="
               products.length > 0 &&
@@ -174,6 +176,25 @@
           />
         </v-col>
       </v-row>
+      <v-row class="justify-center align-center">
+        <v-col
+          cols="12"
+          md="10"
+          v-if="
+            form.type_gift == 'not_system_products' &&
+            not_system_products.length > 0
+          "
+        >
+        <NotSystemProducts
+            v-if="!loading"
+            ref="NotSystemProductsItems"
+            @selectedIItems="selectedIItems($event)"
+            :data="not_system_products"
+            :load-items="prop_not_system_products"
+          />
+        </v-col>
+      </v-row>
+
       <v-row dense>
         <v-col cols="12" md="12">
           <v-divider />
@@ -205,8 +226,9 @@
 
 <script>
 import FestivalAwards from "@/components/Product/Festival/FestivalAwards.vue";
+import NotSystemProducts from "@/components/Product/Festival/LotteryGift/NotSystemProducts.vue";
 export default {
-  components: { FestivalAwards },
+  components: { FestivalAwards, NotSystemProducts },
   props: {
     modelId: { default: null },
   },
@@ -218,7 +240,9 @@ export default {
     updateUrl: "/festival/update",
     showUrl: "/festival/show",
     products: [],
+    not_system_products: [],
     coupon_list: [],
+    prop_not_system_products: [],
     package: [],
     for_typs: [
       { text: "پکیج ها", value: "Package" },
@@ -241,6 +265,7 @@ export default {
       package_items: [],
       product_items: [],
       coupon_ids: [],
+      not_system_product_ids: [],
       start_at_buy: "",
       amount_start_use: "",
       end_at_buy: "",
@@ -251,6 +276,7 @@ export default {
   beforeMount() {
     this.loadPackages();
     this.loadProduct();
+    this.getProductsSetting();
     this.loadFestivalCoupon();
   },
   mounted() {
@@ -261,10 +287,35 @@ export default {
 
   methods: {
     submit() {
+      if (this.form.type_gift == "not_system_products") {
+        this.$refs.NotSystemProductsItems.callSubmit();
+        return;
+      }
       if (this.form.type_gift == "product_package") {
+        this.$refs.FestivalAwards.callSubmit();
       } else {
         this.selectedIItems();
       }
+    },
+    getProductsSetting() {
+      let filter = {
+        op: "=",
+        key: "not_system_products",
+      };
+      this.$reqApi("/setting", { filters: filter, row_number: 30000 })
+        .then((res) => {
+          let data = res.model.data;
+          let items = [];
+          for (let index = 0; index < data.length; index++) {
+            const x = data[index];
+            items.push({
+              text: x.value,
+              value: x.id,
+            });
+          }
+          this.not_system_products = items;
+        })
+        .catch((err) => {});
     },
     loadData() {
       this.loading = true;
@@ -283,6 +334,13 @@ export default {
           data.coupons.map((x) => {
             this.form.coupon_ids.push(x.id);
           });
+          if (data.type_gift == "not_system_products") {
+            let items = [];
+            data.not_system_products.map((x) => {
+              items.push(x.id);
+            });
+            this.prop_not_system_products = items;
+          }
           this.loading = false;
         })
         .catch((error) => {
@@ -372,9 +430,14 @@ export default {
         });
     },
     selectedIItems(event) {
+      console.log("event >>>>>> ", event);
+
       if (this.form.type_gift == "product_package" && event) {
         this.form.package_items = event.packages;
         this.form.product_items = event.products;
+      }
+      if (this.form.type_gift == "not_system_products" && event) {
+        this.form.not_system_product_ids = event;
       }
 
       let form = { ...this.form };

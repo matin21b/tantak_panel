@@ -801,6 +801,7 @@ let festival_type = [
 
 let type_gift = [
   { text: "محصول یا پکیج ها", value: "product_package" },
+  { text: "محصولات غیر سیستمی", value: "not_system_products" },
   { text: "کد تخفیف", value: "coupon" },
   { text: "شارژ کیف پول نقدی", value: "cash_walet" },
   { text: "اعتباری", value: "credit_wallt" },

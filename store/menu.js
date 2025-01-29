@@ -565,6 +565,11 @@ let mnue_tree = [
         name: "دسته بندی مخاطبین ",
         access: "setting/root",
         route: "/setting/category-contact",
+      },    {
+        id: 99852,
+        name: "محصولات غیر سیستمی",
+        access: "setting/root",
+        route: "/setting/not-system-products",
       },
     ],
   },

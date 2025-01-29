@@ -27,15 +27,19 @@
               />
             </v-col>
 
-            <v-col cols="12" md="3" v-if="type_send == 'multi' || step_ref =='supervisor_to_manager'">
+            <v-col
+              cols="12"
+              md="3"
+              v-if="type_send == 'multi' || step_ref == 'supervisor_to_manager'"
+            >
               <amp-input
                 cClass="ltr-item"
                 rules="number"
-                v-model="count"
-                text=" تعداد"
+                v-model="number_refer"
+                text=" تعداد (سیستمی)"
               />
             </v-col>
-    
+
             <v-spacer></v-spacer>
             <v-btn
               :disabled="!valid_step1 || loading"
@@ -60,12 +64,6 @@
             </v-btn>
           </v-row>
         </v-form>
-        <v-col class="text-center" cols="12">
-              <small class="pt-1 primary--text" v-if="type_send == 'multi'">
-                چنانچه نوع تخصیص دستی باشد و تعداد پیام را مشخص نمایید , ارجاع
-                با تعداد وارد شده و به صورت رندم انجام میگیرد
-              </small>
-            </v-col>
       </v-stepper-content>
       <v-stepper-step
         v-if="Boolean(check_steps || !chek_number_step)"
@@ -73,14 +71,26 @@
         step="2"
       >
         انتخاب پیام
-        <small class="pt-1">
+        <small class="pt-1" v-if="!Boolean(number_refer)">
           پیام هایی را که قصد تخصیص یا بستن آن را دارید از لیست پایین انتخاب
           کنید
         </small>
+        <div v-if="Boolean(number_refer)">
+          <small class="pt-1 primary--text">
+            به دلیل انتخاب ارجاع پیام ها به تعداد سیستمی شما امکان انتخاب پییام
+            را ندارید
+          </small>
+          <small class="pt-1 grey--text" v-if="type_send == 'multi'">
+            چنانچه نوع تخصیص دستی باشد و تعداد پیام را مشخص نمایید , ارجاع با
+            تعداد وارد شده و به صورت رندم انجام میگیرد
+          </small>
+        </div>
       </v-stepper-step>
       <v-stepper-content
         step="2"
-        v-if="Boolean(check_steps || !chek_number_step)"
+        v-if="
+          Boolean(check_steps || !chek_number_step) && !Boolean(number_refer)
+        "
       >
         <v-col cols="12">
           <v-row>
@@ -168,7 +178,6 @@
 
 <script>
 import UserSelectForm from "@/components/User/UserSelectForm";
-import { ref } from "vue";
 
 export default {
   props: {
@@ -195,6 +204,7 @@ export default {
     oprator_list: "user/list-employee",
     type_send: "",
     count: "",
+    number_refer: "",
     step_ref: "",
     valid_step1: true,
     valid_step2: true,
@@ -259,7 +269,7 @@ export default {
       let form = {};
       let step = "";
       let role_user = "";
-  
+
       // //////////////////////////////////////////////////////////////
       if (Boolean(this.is_admin_call_center)) {
         if (this.type_send == "close") {
@@ -289,8 +299,11 @@ export default {
         form["step"] = this.step_ref;
       }
       /////////////////////////////////////////////////////////
-      if (this.selected_item.length > 0) {
+      if (this.selected_item.length > 0 && !Boolean(this.number_refer)) {
         form["message_ids"] = this.selected_item;
+      }
+      if (Boolean(this.number_refer)) {
+        form["number_refer"] = this.number_refer;
       }
 
       this.$reqApi("/message/refer", form)
@@ -373,6 +386,9 @@ export default {
   computed: {
     chek_number_step() {
       let check = false;
+      if (Boolean(this.number_refer)) {
+        check = true
+      }
       if (
         this.is_admin_call_center &&
         (this.type_send == "auto" || this.type_send == "sale")
@@ -385,6 +401,7 @@ export default {
       ) {
         check = true;
       }
+
       return check;
     },
     show_type_send() {

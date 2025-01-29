@@ -1,58 +1,60 @@
 <template>
-  <div>
-    <v-expansion-panels>
-      <v-expansion-panel class="expan-style">
-        <v-expansion-panel-header>
-          <h1 class="font_17">جوایز جشنواره</h1>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <v-row class="d-flex align-center justify-center">
-            <v-col cols="12" md="4">
-              <amp-autocomplete
-                text="انتخاب محصول"
-                :items="products"
-                v-model="product_id"
-              />
-            </v-col>
-            <v-col cols="12" md="4">
-              <amp-autocomplete
-                text="انتخاب پکیج"
-                :items="package"
-                v-model="package_id"
-              />
-            </v-col>
-            <v-col cols="3">
-              <amp-button text="تایید" color="green" @click="addItem" />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" md="6" v-for="(x, i) in list_item" :key="i">
-              <v-card
-                style="border-right: 3px solid orange"
-                outlined
-                class="d-flex elevation-1 px-4 align-center"
-              >
-                <h1>{{ i + 1 }} - {{ x.text }}</h1>
-                <v-spacer></v-spacer>
-                <v-col cols="4">
-                  <amp-input
-                    text="تعداد"
-                    cClass="ltr-item"
-                    rules="number"
-                    v-model="x.number"
-                  />
-                </v-col>
-                <v-spacer></v-spacer>
-                <v-btn icon @click="deleteItem(i)">
-                  <v-icon size=""> delete</v-icon>
-                </v-btn>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-  </div>
+  <v-card class="pa-15 elevation-1" outlined>
+    <div class="d-flex align-center">
+      <v-divider style="border: 1px dashed #bababa"></v-divider>
+
+      <h1 class="font_17 mx-4">جوایز جشنواره</h1>
+      <v-divider style="border: 1px dashed #bababa"></v-divider>
+    </div>
+    <v-col cols="12" class="d-flex align-center justify-center">
+      <v-col cols="12" md="5">
+        <amp-autocomplete
+          text="انتخاب محصول"
+          :items="products"
+          v-model="product_id"
+        />
+      </v-col>
+      <v-col cols="12" md="5">
+        <amp-autocomplete
+          text="انتخاب پکیج"
+          :items="package"
+          v-model="package_id"
+        />
+      </v-col>
+      <v-col cols="3" md="2">
+        <amp-button text="تایید" color="green" @click="addItem" />
+      </v-col>
+    </v-col>
+
+    <v-row>
+      <v-col cols="12" md="4" v-for="(x, i) in list_item" :key="i">
+        <v-card outlined>
+          <v-col
+            cols="12"
+            class="text-center align-center elevation-1 d-flex"
+            outlined
+          >
+            <v-spacer></v-spacer>
+            <h1>{{ x.text }}</h1>
+            <v-spacer></v-spacer>
+
+            <v-btn icon @click="deleteItem(i)">
+              <v-icon size="20"> delete</v-icon>
+            </v-btn>
+          </v-col>
+
+          <v-col cols="12">
+            <amp-input
+              text="تعداد"
+              cClass="ltr-item"
+              rules="number"
+              v-model="x.number"
+            />
+          </v-col>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 <script>
 export default {
@@ -89,7 +91,8 @@ export default {
             value: x.id,
           });
         });
-      }if (this.loadItems.products && this.loadItems.products.length > 0) {
+      }
+      if (this.loadItems.products && this.loadItems.products.length > 0) {
         this.loadItems.products.map((x) => {
           this.list_item.push({
             number: x.number,
@@ -103,7 +106,6 @@ export default {
   },
   methods: {
     addItem() {
-
       let selected_item_pack = {};
       let selected_item_product = {};
       let dublicate_pack = {};
@@ -198,10 +200,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.expan-style {
-  border: 1px solid rgba(26, 25, 25, 0.473) !important;
-  border-radius: 15px;
-  background-color: rgb(252, 244, 234) !important;
-}
-</style>
