@@ -200,6 +200,24 @@ export default {
     title: "لیست پیام ها",
   }),
   beforeMount() {
+    if (
+      (Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) ||
+        Boolean(
+          this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
+        ) ||
+        Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) &&
+      this.$store.state.auth.action.indexOf("messages/insert") > -1
+    ) {
+      this.extra_btn.push({
+        text: "گزارشات",
+        icon: "pending_actions",
+        color: "info ",
+        fun: () => {
+          this.refral_logs = true;
+        },
+      });
+    }
+
     this.now = jmoment().format("YYYY-MM-DD");
     if (this.$route.query.filter == "my_today_work") {
       this.tab_time = "my_today_work";
@@ -375,32 +393,6 @@ export default {
           // this.getDoneExcel();
 
           // let done_messeage =
-        },
-      },
-      {
-        text: "گزارشات",
-        icon: "pending_actions",
-        color: "info ",
-        fun: (body) => {
-          this.refral_logs = true;
-          // this.$reqApi("message/refer/history-report")
-          //   .then((res) => {})
-          //   .catch((err) => {});
-        },
-        show_fun: (body) => {
-          if (
-            Boolean(
-              this.$checkRole(this.$store.state.auth.role.superviser_id)
-            ) ||
-            Boolean(
-              this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
-            ) ||
-            Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))
-          ) {
-            return true;
-          } else {
-            return false;
-          }
         },
       },
     ];
