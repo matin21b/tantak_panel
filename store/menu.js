@@ -55,8 +55,14 @@ let mnue_tree = [
     id: 1122334,
     name: "شرکت ها",
     access: "companies/index",
-    // access: "*",
     route: "/companies",
+  },
+  
+  {
+    id: 112285489334,
+    name: "شکایات",
+    access: "complaints/index",
+    route: "/complaint",
   },
   {
     id: 618564558145,
@@ -80,24 +86,14 @@ let mnue_tree = [
         access: "wholesale_form/index",
         name: "فروش تلفنی",
         route: "/product/buy-person",
+      },   
+      
+      {
+        id: 5632,
+        access: "complaint_categories/index",
+        name: "دسته بندی شکایات",
+        route: "/new-call-center/complaint-categories",
       },
-      // {
-      //   id: 52,
-      //   access: (state) => {
-      //     if (state.auth) {
-      //       if (
-      //         state.auth.action.indexOf(
-      //           "call_center/index-superviser-messages"
-      //         ) > -1 ||
-      //         state.auth.action.indexOf("recived_message/index") > -1
-      //       ) {
-      //         return true;
-      //       }
-      //     }
-      //   },
-      //   name: "لیست کارکنان",
-      //   route: "/call-center/list",
-      // },
       {
         id: 53,
         access: "messages/index",

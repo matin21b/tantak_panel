@@ -66,6 +66,7 @@ export const state = () => ({
   step_reterned_product,
   type_questions,
   register_type,
+  complaint_step,
 });
 
 let status_type = [
@@ -881,4 +882,11 @@ let step_reterned_product = [
 let type_questions = [
   { text: "متن", value: "text" },
   { text: "دراپ دان", value: "option" },
+];
+let complaint_step = [
+  { text: "ثبت اولیه", value: "init" },
+  { text: "ارجاع از واحد پیگیری شکایت به واحد مربوطه", value: "referral_from_complaint_follow_up" },
+  { text: "مرجوع از واحد مربوطه به واحد پیگیری شکایت", value: "referred_to_complaint_follow_up" },
+  { text: "بستن شکایت", value: "close" },
+  { text: "تایید شکایت", value: "done" },
 ];

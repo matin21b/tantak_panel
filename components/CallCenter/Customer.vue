@@ -59,7 +59,19 @@
                 <small class="pt-2">
                   لیست سفارشات باز مشتری
                 </small></v-stepper-step
+              >     <v-stepper-step
+                complete
+                editable
+                edit-icon="fmd_bad
+"
+                step="5"
               >
+                <span class="font_16"> شکایات </span>
+                <small class="pt-2">
+               شکایات ثبت شده برای مشتری
+                </small></v-stepper-step
+              >
+              
             </v-row>
 
             <v-row class="justify-center">
@@ -636,6 +648,9 @@
                   :filters="filters"
                   ref="listPersonal"
                 />
+              </v-stepper-content>     
+                  <v-stepper-content step="5">
+     <ComplaintsForCustomer v-if="Boolean(customer.id)" :user-id="customer.id" />
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
@@ -740,6 +755,7 @@ import CoordinatorDialog from "@/components/CallCenter/CoordinatorDialog.vue";
 import RefralDialog from "@/components/CallCenter/RefralDialog.vue";
 import DeliveryInfo from "@/components/Product/DeliveryInfo.vue";
 import OrderTransactions from "@/components/NewCallCenter/OrderTransactions.vue";
+import ComplaintsForCustomer from "@/components/NewCallCenter/Complaint/ComplaintsForCustomer.vue";
 
 export default {
   components: {
@@ -749,6 +765,7 @@ export default {
     RefralDialog,
     DeliveryInfo,
     OrderTransactions,
+    ComplaintsForCustomer,
   },
   props: {
     DialogCustomer: {

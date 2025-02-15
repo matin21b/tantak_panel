@@ -28,7 +28,6 @@
         <v-col cols="12" md="3" >
           <amp-autocomplete
             text="نوع شخص"
-            multiple
             rules="require"
             v-model="form.person_type"
             :items="$store.state.static.person_type"
@@ -269,7 +268,6 @@ export default {
       region_id: "",
       branch_id: "",
       first_name: "",
-      person_type: "",
       company_id: "",
       post: "",
       email: "",
@@ -423,7 +421,6 @@ for (let i = 0; i < res.model.data.length; i++) {
           this.form.username = response.model.username;
           this.form.password = response.model.password;
           this.form.birth_date = response.model.birth_date;
-          this.form.person_type = response.model.person_type;
           this.form.company_id = response.model.company_id;
           this.form.post = response.model.post;
           this.form.last_name = response.model.last_name;
