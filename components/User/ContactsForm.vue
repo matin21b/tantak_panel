@@ -1,8 +1,8 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-container fluid class="px-8">
-      <v-row dense class="d-flex justify-center">
-        <v-col cols="12" md="4">
+      <v-row dense>
+        <v-col cols="12" md="3">
           <amp-input
             text="شماره همراه"
             v-model="form.phone_number"
@@ -10,7 +10,7 @@
             cClass="ltr-item"
           />
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="3">
           <amp-select
             text=" دسته بندی"
             v-model="form.category_id"
@@ -18,36 +18,50 @@
             :items="category_contact"
           />
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="3">
           <amp-input
             text=" نام مخاطب"
             v-model="form.first_name"
             rules="require"
           />
-        </v-col>        <v-col cols="12" md="4">
+        </v-col>        <v-col cols="12" md="3">
           <amp-autocomplete
             text="نوع شخص"
-            multiple
             rules="require"
             v-model="form.person_type"
-            :items="$store.state.staticstatic.person_type"
+            :items="$store.state.static.person_type"
           />
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="3">
           <amp-input
             text="نام خانوادگی"
             v-model="form.last_name"
             rules="require"
           />
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="3">
           <amp-input text="طریقه آشنایی" v-model="form.how_know" />
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="3">
           <amp-select
             text=" داخلی"
             :items="internal_items"
             v-model="form.internal_id"
+          />
+        </v-col>
+        <v-col cols="12" md="3" v-if="form.person_type == 'legal'">
+          <amp-select
+            text="شرکت"
+            rules="require"
+            v-model="form.company_id"
+            :items="companies"
+          />
+        </v-col>   
+          <v-col cols="12" md="3" v-if="form.person_type == 'legal'">
+            <amp-input
+            text="سمت (پست)"
+            rules="require"
+            v-model="form.post"
           />
         </v-col>
         <v-col cols="12">
@@ -95,6 +109,7 @@ export default {
     createUrl: "/contact/insert",
     updateUrl: "/contact/update",
     showUrl: "/contact/show",
+    companies: [],
     settings: [],
     category_contact: [],
     internal_items: [],
@@ -108,12 +123,15 @@ export default {
       how_know: "",
       internal_id: "",
       person_type: "",
+      company_id: "",
+      post: "",
     },
   }),
 
   beforeMount() {
     this.loadInternals();
     this.loadCategouryes();
+    this.companiesList();
   },
   mounted() {
     if (this.modelId) {
@@ -195,6 +213,24 @@ export default {
           this.redirectPage();
           this.loading = false;
         });
+    },
+    companiesList(){
+      this.loading = true
+this.$reqApi("company").then((res)=>{
+let items  = []
+for (let i = 0; i < res.model.data.length; i++) {
+  const x = res.model.data[i];
+  items.push({
+    text:x.fa_name + " | " + x.en_name,
+    value:x.id
+  })
+  this.companies = items
+  this.loading = false
+
+}
+}).catch((err)=>{
+  this.loading = false
+})
     },
     redirectPage() {
       if (window.history.length > 2) {

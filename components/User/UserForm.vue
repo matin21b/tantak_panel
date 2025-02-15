@@ -33,7 +33,8 @@
             v-model="form.person_type"
             :items="$store.state.static.person_type"
           />
-        </v-col>        <v-col cols="12" md="3" v-if="!Boolean(roleId)">
+        </v-col>    
+            <v-col cols="12" md="3" v-if="!Boolean(roleId)">
           <amp-autocomplete
             text="نقش"
             chips
@@ -89,7 +90,6 @@
             <amp-input
             text="سمت (پست)"
             rules="require"
-            :is-number="true"
             v-model="form.post"
           />
         </v-col>

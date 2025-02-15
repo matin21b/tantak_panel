@@ -26,11 +26,11 @@
                 text="نوع تخصیص"
               />
             </v-col>
-
+       
             <v-col
               cols="12"
               md="3"
-              v-if="type_send == 'multi' || step_ref == 'supervisor_to_manager'"
+              v-if="type_send == 'multi' || step_ref == 'supervisor_to_manager'|| step_ref == 'operator_to_supervisor' "
             >
               <amp-input
                 cClass="ltr-item"
@@ -41,6 +41,7 @@
             </v-col>
 
             <v-spacer></v-spacer>
+           
             <v-btn
               :disabled="!valid_step1 || loading"
               class="mt-10 ml-4"
@@ -50,6 +51,7 @@
             >
               تایید
             </v-btn>
+            
             <v-btn
               v-else
               class="mt-10 ml-4"
@@ -116,6 +118,7 @@
               </v-btn>
 
               <v-btn color="info" @click="e1 = 1"> برگشت </v-btn>
+              
             </v-col>
           </v-row>
         </v-col>
@@ -134,6 +137,7 @@
         :step="chek_number_step ? 2 : 3"
         v-if="!Boolean(back_ref) || Boolean(check_steps)"
       >
+ 
         <v-row>
           <v-col cols="12" md="6">
             <UserSelectForm
@@ -429,6 +433,9 @@ export default {
           show_step = true;
         }
       }
+      if (this.is_oprator && Boolean(this.number_refer)) {
+        show_step = true;
+      }
       return show_step;
     },
     back_ref() {
@@ -451,5 +458,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

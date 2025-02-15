@@ -368,25 +368,27 @@ export default {
           }
         },
       },
-      {
+   
+    ];
+    if (!Boolean(this.$checkRole(this.$store.state.auth.role.oprator_id))) {
+      this.extra_btn.push({
         text: "خروجی اکسل",
         icon: "download",
         color: "teal ",
         fun: (body) => {
           this.excel_message = true;
-          // this.getDoneExcel();
-
-          // let done_messeage =
         },
-      },
-    ];
-    if (
-      (Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) ||
-        Boolean(
-          this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
-        ) ||
-        Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) &&
+      })
+    }
+
+    if (Boolean(
       this.$store.state.auth.action.indexOf("messages/insert") > -1
+
+    )) {
+      if (   Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) ||
+      Boolean(
+          this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
+        ) ||Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))
     ) {
       this.extra_btn.push({
         text: "گزارشات",
@@ -396,8 +398,9 @@ export default {
           this.refral_logs = true;
         },
       });
-
+      }
     }
+
     this.$store.dispatch("setPageTitle", this.title);
   },
   watch: {

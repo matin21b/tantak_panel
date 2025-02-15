@@ -11,9 +11,11 @@ export default {
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
+
   },
   mounted() {
     this.redirect();
+   
   },
   methods: {
     redirect() {
@@ -108,4 +110,32 @@ export default {
   },
 };
 </script>
-
+<style scoped>
+.card-style {
+  opacity: 0;
+  background-color: rgb(232, 232, 255);
+}
+.card-style:nth-child(1) {
+  opacity: 1;
+  transition: all 8s ease !important;
+}
+.card-style:nth-child(2) {
+  opacity: 1;
+  transition: all 1.5s ease !important;
+}
+.card-style:nth-child(3) {
+  background-color: rgb(178, 178, 248);
+  opacity: 1;
+  transition: all 2s eases !important;
+}
+.card-style:nth-child(4) {
+  background-color: rgb(178, 178, 248);
+  opacity: 1;
+  transition: all 2.5s ease !important;
+}
+.card-style:nth-child(5) {
+  background-color: rgb(178, 178, 248);
+  opacity: 1;
+  transition: all 3s ease !important;
+}
+</style>

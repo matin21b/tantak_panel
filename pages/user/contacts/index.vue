@@ -43,6 +43,12 @@ components:{
           }
         },
       },
+      {
+        text: "نوع شخص",
+        value: "person_type",
+        filterType: "select",
+        items: this.$store.state.static.person_type,
+      },
     ];
     this.extra_btn = [
       {
