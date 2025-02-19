@@ -77,10 +77,7 @@ export default {
   },
   watch: {
     "$store.state.ws.caller_id"(newVall, oldVall) {
-      console.log(
-        "newVall ==> ",
-        newVall  ,[this.show_list_call, this.caller_id_dialog.show]
-      );
+  
       if (newVall && (this.show_list_call || this.caller_id_dialog.show)) {
         return;
       }
