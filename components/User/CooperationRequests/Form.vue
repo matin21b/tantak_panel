@@ -1,10 +1,4 @@
 <template>
-  <v-form
-    v-model="valid"
-    @submit.prevent="submit()"
-    :disabled="loading"
-    class="pb-15"
-  >
     <v-row class="justify-center my-10">
       <v-col cols="12" md="7" class="pa-0">
         <v-stepper v-model="e1" class="elevation-0">
@@ -414,7 +408,6 @@
         </v-stepper>
       </v-col>
     </v-row>
-  </v-form>
 </template>
 
 <script>
@@ -509,6 +502,9 @@ export default {
   watch: {
     e1(){
     console.log("e1 ==> ", this.e1);
+    let text = `valid_step${this.e1}`
+    console.log("text ==> ", text);
+      console.log("this ---> " , this);
       
     },
     user: {

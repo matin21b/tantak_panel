@@ -49,12 +49,12 @@ let mnue_tree = [
         access: "contacts/index",
         route: "/user/contacts",
       },  
-        {
-        id: 55656857554,
-        name: "درخواست های همکاری",
-        access: "contacts/index",
-        route: "/user/cooperation-requests",
-      },
+      //   {
+      //   id: 55656857554,
+      //   name: "درخواست های همکاری",
+      //   access: "contacts/index",
+      //   route: "/user/cooperation-requests",
+      // },
     ],
   },
   {
@@ -155,12 +155,12 @@ let mnue_tree = [
         access: "region/index",
         route: "/new-call-center/center-stocks",
       },
-      {
-        id: 5489561236,
-        name: "درخواست نمایندگی",
-        access: "agency_requests/index",
-        route: "/new-call-center/agency-request",
-      },
+      // {
+      //   id: 5489561236,
+      //   name: "درخواست نمایندگی",
+      //   access: "agency_requests/index",
+      //   route: "/new-call-center/agency-request",
+      // },
     ],
   },
   {
@@ -503,12 +503,13 @@ let mnue_tree = [
         name: "تنظیمات عمومی",
         access: "setting/root",
         route: "/setting/public/1",
-      },    {
-        id: 24187888887,
-        name: "عنوان های شغلی",
-        access: "setting/root",
-        route: "/setting/job-titles",
-      },
+      },   
+      //  {
+      //   id: 24187888887,
+      //   name: "عنوان های شغلی",
+      //   access: "setting/root",
+      //   route: "/setting/job-titles",
+      // },
       {
         id: 29541,
         name: "علل های کنسلی",
