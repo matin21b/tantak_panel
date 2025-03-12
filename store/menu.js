@@ -64,30 +64,30 @@ let mnue_tree = [
     access: "companies/index",
     route: "/companies",
   },
-  // {
-  //   id: 484521111,
-  //   name: "شکایات",
-  //   children: [
-  //   {
-  //     id: 5632,
-  //     access: "complaint_categories/index",
-  //     name: "دسته بندی شکایات",
-  //     route: "/new-call-center/complaint-categories",
-  //   },
-  //     {
-  //       id: 112285489334,
-  //       name: "لیست شکایات",
-  //       access: "complaints/index",
-  //       route: "/complaint",
-  //     },
-  //     {
-  //       id: 787546588888,
-  //       name: "تاریخچه",
-  //       access: "complaints/logs",
-  //       route: "/complaint/history",
-  //     },
-  //   ],
-  // },
+  {
+    id: 484521111,
+    name: "شکایات",
+    children: [
+    {
+      id: 5632,
+      access: "complaint_categories/index",
+      name: "دسته بندی شکایات",
+      route: "/new-call-center/complaint-categories",
+    },
+      {
+        id: 112285489334,
+        name: "لیست شکایات",
+        access: "complaints/index",
+        route: "/complaint",
+      },
+      {
+        id: 787546588888,
+        name: "تاریخچه",
+        access: "complaints/logs",
+        route: "/complaint/history",
+      },
+    ],
+  },
 
   {
     id: 618564558145,
