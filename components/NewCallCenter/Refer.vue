@@ -26,11 +26,15 @@
                 text="نوع تخصیص"
               />
             </v-col>
-       
+
             <v-col
               cols="12"
               md="3"
-              v-if="type_send == 'multi' || step_ref == 'supervisor_to_manager'|| step_ref == 'operator_to_supervisor' "
+              v-if="
+                type_send == 'multi' ||
+                step_ref == 'supervisor_to_manager' ||
+                step_ref == 'operator_to_supervisor'
+              "
             >
               <amp-input
                 cClass="ltr-item"
@@ -39,9 +43,25 @@
                 text=" تعداد (سیستمی)"
               />
             </v-col>
+            <v-col cols="12" md="3" v-if="type_send == 'date_time'">
+              <amp-jdate
+                text="تاریخ شروع"
+                :is-number="true"
+                rules="require"
+                v-model="start_at"
+              />
+            </v-col>
+            <v-col cols="12" md="3" v-if="type_send == 'date_time'">
+              <amp-jdate
+                rules="require"
+                text="تاریخ پایان"
+                :is-number="true"
+                v-model="end_at"
+              />
+            </v-col>
 
             <v-spacer></v-spacer>
-           
+
             <v-btn
               :disabled="!valid_step1 || loading"
               class="mt-10 ml-4"
@@ -51,15 +71,33 @@
             >
               تایید
             </v-btn>
-            
             <v-btn
-              v-else
+              v-if="type_send == 'date_time'"
+              :disabled="!Boolean(end_at) || !Boolean(start_at)"
+              class="mt-10 ml-4"
+              color="primary"
+              @click="submit()"
+            >
+              تایید
+            </v-btn>
+
+            <v-btn
+              v-else-if="step_ref != 'supervisor_to_manager'"
               class="mt-10 ml-4"
               color="primary"
               @click="e1 = 2"
               :disabled="!valid_step1"
             >
               بعدی
+            </v-btn>
+            <v-btn
+              v-if="step_ref == 'supervisor_to_manager'"
+              color="primary"
+              class="mt-10 ml-4"
+              :disabled="!Boolean(number_refer)"
+              @click="submit()"
+            >
+              تایید
             </v-btn>
             <v-btn class="mt-10 ml-4" color="info" @click="clearAll()">
               انصراف
@@ -68,7 +106,7 @@
         </v-form>
       </v-stepper-content>
       <v-stepper-step
-        v-if="Boolean(check_steps || !chek_number_step)"
+        v-if="Boolean(check_steps || !chek_number_step) &&  type_send != 'date_time'"
         :complete="e1 > 2"
         step="2"
       >
@@ -91,7 +129,7 @@
       <v-stepper-content
         step="2"
         v-if="
-          Boolean(check_steps || !chek_number_step) && !Boolean(number_refer)
+          Boolean(check_steps || !chek_number_step) && !Boolean(number_refer) &&  type_send != 'date_time'
         "
       >
         <v-col cols="12">
@@ -118,13 +156,15 @@
               </v-btn>
 
               <v-btn color="info" @click="e1 = 1"> برگشت </v-btn>
-              
             </v-col>
           </v-row>
         </v-col>
       </v-stepper-content>
       <v-stepper-step
-        v-if="!Boolean(back_ref) || Boolean(check_steps)"
+        v-if="
+          (!Boolean(back_ref) || Boolean(check_steps)) &&
+          type_send != 'date_time'
+        "
         :step="chek_number_step ? 2 : 3"
       >
         انتخاب مرکز تماس
@@ -135,9 +175,11 @@
 
       <v-stepper-content
         :step="chek_number_step ? 2 : 3"
-        v-if="!Boolean(back_ref) || Boolean(check_steps)"
+        v-if="
+          (!Boolean(back_ref) || Boolean(check_steps)) &&
+          type_send != 'date_time'
+        "
       >
- 
         <v-row>
           <v-col cols="12" md="6">
             <UserSelectForm
@@ -209,6 +251,8 @@ export default {
     type_send: "",
     count: "",
     number_refer: "",
+    end_at: "",
+    start_at: "",
     step_ref: "",
     valid_step1: true,
     valid_step2: true,
@@ -241,6 +285,8 @@ export default {
       this.select_type_send = [
         { text: "تخصیص خودکار", value: "auto" },
         { text: "دستی", value: "multi" },
+        { text: " بر اساس تاریخ ", value: "date_time" },
+
         { text: "بر اساس سابقه فروش", value: "sale" },
       ];
     }
@@ -261,8 +307,11 @@ export default {
       this.url_list = this.superviser_list;
       this.select_type_send = [
         { text: "تخصیص خودکار", value: "auto" },
+        { text: "تخصیص خودکار", value: "auto" },
         { text: "دستی", value: "multi" },
         { text: "بر اساس سابقه فروش", value: "sale" },
+        { text: " بر اساس تاریخ ", value: "date_time" },
+
         { text: "بستن", value: "close" },
       ];
     }
@@ -309,7 +358,10 @@ export default {
       if (Boolean(this.number_refer)) {
         form["number_refer"] = this.number_refer;
       }
-
+if (this.type_send == "date_time") {
+  form["start_at"] = this.start_at;
+  form["end_at"] = this.end_at;
+}
       this.$reqApi("/message/refer", form)
         .then((response) => {
           let name = "";
@@ -391,7 +443,7 @@ export default {
     chek_number_step() {
       let check = false;
       if (Boolean(this.number_refer)) {
-        check = true
+        check = true;
       }
       if (
         this.is_admin_call_center &&

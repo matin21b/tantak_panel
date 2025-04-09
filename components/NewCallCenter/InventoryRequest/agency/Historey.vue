@@ -131,13 +131,13 @@
               },
           
         
-              {
-                text: "وضعیت",
-                filterType: "select",
-                filterCol: "status",
-                value: "status",
-                items: this.$store.state.static.status_basket_refral,
-              },
+
+      {
+        text: "وضعیت",
+        value: "status",
+        filterType: "select",
+        items: this.$store.state.static.complaint_status,
+      },
             ];
         
             this.btn_actions = [

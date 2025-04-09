@@ -52,12 +52,12 @@ let mnue_tree = [
 
     ],
   },
-  // {
-  //   id: 55656857554,
-  //   name: "درخواست های همکاری",
-  //   access: "employment_forms/referral",
-  //   route: "/user/cooperation-requests",
-  // },
+  {
+    id: 55656857554,
+    name: "درخواست های همکاری",
+    access: "employment_forms/referral",
+    route: "/user/cooperation-requests",
+  },
   {
     id: 1122334,
     name: "شرکت ها",

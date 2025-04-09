@@ -2,6 +2,7 @@
   <div>
     <BaseTable
       url="/agency-request"
+      ref="AgencyRequest"
       :headers="headers"
       :BTNactions="btn_actions"
       autoDelete="/agency-request/delete"
@@ -55,11 +56,18 @@ export default {
         items: this.$store.state.static.ownership_type_agancy,
       },
       {
+        text: "مرحله",
+        value: "step",
+        filterType: "select",
+        items: this.$store.state.static.agency_request_step,
+      },
+      {
         text: "وضعیت",
         value: "status",
         filterType: "select",
         items: this.$store.state.static.complaint_status,
       },
+
       {
         text: "شهر",
         value: (body) => {
@@ -105,18 +113,27 @@ export default {
           this.refral = true;
         },
         show_fun: (body) => {
+          if(     this.$checkRole(
+              this.$store.state.auth.role.admin_id
+            )){
+              return false
+            }
           if (
-            this.$checkRole(this.$store.state.auth.role.representative_affairs_manager) &&
-            (body.step == "init" || body.step == "representative_affairs_supervisor_to_manager")
+            this.$checkRole(
+              this.$store.state.auth.role.representative_affairs_manager
+            )
           ) {
+            if (
+              body.step == "init" ||
+              body.step == "representative_affairs_supervisor_to_manager"
+            ) {
             return true;
-          } else if (
-            this.$checkRole(this.$store.state.auth.role.sales_manager) &&
-            body.step == "sale_manager_to_supervisor"
-          ) {
-            return true;
+
+            } else {
+              return false;
+            }
           } else {
-            return false;
+            return true;
           }
         },
       },
@@ -133,7 +150,7 @@ export default {
   },
   methods: {
     refreshTabel() {
-      this.$refs.refreshTabel.getDataFromApi();
+      this.$refs.AgencyRequest.getDataFromApi();
     },
   },
 };
