@@ -9,7 +9,6 @@ export default ({ redirect, store, $toast }, inject) => {
             } else if (permission === "default") {
                 requestAndShowPermission();
             } else {
-                console.log("Use normal alert");
             }
 
             function showNotification() {

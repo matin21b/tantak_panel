@@ -71,15 +71,7 @@
             >
               تایید
             </v-btn>
-            <v-btn
-              v-if="type_send == 'date_time'"
-              :disabled="!Boolean(end_at) || !Boolean(start_at)"
-              class="mt-10 ml-4"
-              color="primary"
-              @click="submit()"
-            >
-              تایید
-            </v-btn>
+       
 
             <v-btn
               v-else-if="step_ref != 'supervisor_to_manager'"
@@ -106,7 +98,7 @@
         </v-form>
       </v-stepper-content>
       <v-stepper-step
-        v-if="Boolean(check_steps || !chek_number_step) &&  type_send != 'date_time'"
+        v-if="Boolean(check_steps || !chek_number_step) "
         :complete="e1 > 2"
         step="2"
       >
@@ -129,7 +121,7 @@
       <v-stepper-content
         step="2"
         v-if="
-          Boolean(check_steps || !chek_number_step) && !Boolean(number_refer) &&  type_send != 'date_time'
+          Boolean(check_steps || !chek_number_step) && !Boolean(number_refer) 
         "
       >
         <v-col cols="12">
@@ -162,8 +154,8 @@
       </v-stepper-content>
       <v-stepper-step
         v-if="
-          (!Boolean(back_ref) || Boolean(check_steps)) &&
-          type_send != 'date_time'
+          (!Boolean(back_ref) || Boolean(check_steps))
+   
         "
         :step="chek_number_step ? 2 : 3"
       >
@@ -176,8 +168,8 @@
       <v-stepper-content
         :step="chek_number_step ? 2 : 3"
         v-if="
-          (!Boolean(back_ref) || Boolean(check_steps)) &&
-          type_send != 'date_time'
+          (!Boolean(back_ref) || Boolean(check_steps)) 
+    
         "
       >
         <v-row>
