@@ -19,7 +19,6 @@
               />
             </v-col>
             <v-col cols="12" md="3" v-if="Boolean(show_type_send)">
-       
               <amp-select
                 rules="require"
                 v-model="type_send"
@@ -30,9 +29,10 @@
 
             <v-col
               cols="12"
-              md="3"
+              md="2"
               v-if="
                 type_send == 'multi' ||
+                type_send == 'supervisor_to_manager' ||
                 step_ref == 'supervisor_to_manager' ||
                 step_ref == 'operator_to_supervisor'
               "
@@ -44,7 +44,13 @@
                 text=" تعداد (سیستمی)"
               />
             </v-col>
-            <v-col cols="12" md="3" v-if="type_send == 'date_time'">
+            <v-col
+              cols="12"
+              md="2"
+              v-if="
+                type_send == 'date_time' && step_ref != 'operator_to_supervisor'
+              "
+            >
               <amp-jdate
                 text="تاریخ شروع"
                 :is-number="true"
@@ -52,7 +58,13 @@
                 v-model="start_at"
               />
             </v-col>
-            <v-col cols="12" md="3" v-if="type_send == 'date_time'">
+            <v-col
+              cols="12"
+              md="2"
+              v-if="
+                type_send == 'date_time' && step_ref != 'operator_to_supervisor'
+              "
+            >
               <amp-jdate
                 rules="require"
                 text="تاریخ پایان"
@@ -72,10 +84,13 @@
             >
               تایید
             </v-btn>
-       
 
             <v-btn
-              v-else-if="step_ref != 'supervisor_to_manager'"
+              v-else-if="
+                step_ref != 'supervisor_to_manager' &&
+                type_send != 'supervisor_to_manager' &&
+                step_ref != 'operator_to_supervisor'
+              "
               class="mt-10 ml-4"
               color="primary"
               @click="e1 = 2"
@@ -84,7 +99,11 @@
               بعدی
             </v-btn>
             <v-btn
-              v-if="step_ref == 'supervisor_to_manager'"
+              v-if="
+                (step_ref == 'operator_to_supervisor' && is_superviser) ||
+                step_ref == 'supervisor_to_manager' ||
+                type_send == 'supervisor_to_manager'
+              "
               color="primary"
               class="mt-10 ml-4"
               :disabled="!Boolean(number_refer)"
@@ -99,7 +118,11 @@
         </v-form>
       </v-stepper-content>
       <v-stepper-step
-        v-if="Boolean(check_steps || !chek_number_step) "
+        v-if="
+          Boolean(check_steps || !chek_number_step) &&
+          type_send != 'supervisor_to_manager' &&
+          step_ref != 'operator_to_supervisor'
+        "
         :complete="e1 > 2"
         step="2"
       >
@@ -122,7 +145,10 @@
       <v-stepper-content
         step="2"
         v-if="
-          Boolean(check_steps || !chek_number_step) && !Boolean(number_refer) 
+          Boolean(check_steps || !chek_number_step) &&
+          !Boolean(number_refer) &&
+          type_send != 'supervisor_to_manager' &&
+          step_ref != 'operator_to_supervisor'
         "
       >
         <v-col cols="12">
@@ -155,8 +181,9 @@
       </v-stepper-content>
       <v-stepper-step
         v-if="
-          (!Boolean(back_ref) || Boolean(check_steps))
-   
+          (!Boolean(back_ref) || Boolean(check_steps)) &&
+          type_send != 'supervisor_to_manager' &&
+          step_ref != 'operator_to_supervisor'
         "
         :step="chek_number_step ? 2 : 3"
       >
@@ -169,8 +196,9 @@
       <v-stepper-content
         :step="chek_number_step ? 2 : 3"
         v-if="
-          (!Boolean(back_ref) || Boolean(check_steps)) 
-    
+          (!Boolean(back_ref) || Boolean(check_steps)) &&
+          type_send != 'supervisor_to_manager' &&
+          step_ref != 'operator_to_supervisor'
         "
       >
         <v-row>
@@ -270,7 +298,14 @@ export default {
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
       this.is_superviser = true;
       this.step_items = [
-        { text: "ارجاع به مدیر (مرجوع کردن)", value: "supervisor_to_manager" },
+        {
+          text: "ارجاع به مدیر ( مرجوع کردن )",
+          value: "supervisor_to_manager",
+        },
+        {
+          text: "برگشت پیام های تخصیص داده شده",
+          value: "operator_to_supervisor",
+        },
         { text: "  ارجاع به فروشنده", value: "supervisor_to_operator" },
       ];
       this.url_list = this.oprator_list;
@@ -303,7 +338,10 @@ export default {
         { text: "دستی", value: "multi" },
         { text: "بر اساس سابقه فروش", value: "sale" },
         { text: " بر اساس تاریخ ", value: "date_time" },
-
+        {
+          text: "برگشت پیام های تخصیص داده شده",
+          value: "supervisor_to_manager",
+        },
         { text: "بستن", value: "close" },
       ];
     }
@@ -316,28 +354,44 @@ export default {
       let role_user = "";
 
       // //////////////////////////////////////////////////////////////
+
       if (Boolean(this.is_admin_call_center)) {
-        if (this.type_send == "close") {
-          step = "close";
+        form["step"] = "";
+        if (this.type_send == "supervisor_to_manager") {
+          form.step = "supervisor_to_manager";
+        } else if (this.type_send == "close") {
+          form.step = "close";
           form["step"] = step;
-        } else {
+        } else if (this.type_send == "date_time") {
           form["supervisor_id"] = this.user[0].id;
-          step = "manager_to_supervisor";
+          form.step = "manager_to_supervisor";
+        } else if (
+          this.type_send != "date_time" &&
+          this.type_send != "supervisor_to_manager" &&
+          this.type_send == "close"
+        ) {
+          form["supervisor_id"] = this.user[0].id;
+          form.step = "manager_to_supervisor";
         }
+
         form["type_send"] = this.type_send;
-        form["step"] = step;
       }
+
       ///////////////////////////////////////////////////////////      // //////////////////////////////////////////////////////////////
       if (Boolean(this.is_superviser)) {
         if (
           this.step_ref == "supervisor_to_operator" &&
-          (this.type_send == "multi" || this.type_send == "auto"|| this.type_send == "date_time")
+          (this.type_send == "multi" ||
+            this.type_send == "auto" ||
+            this.type_send == "date_time")
         ) {
           form["operator_id"] = this.user[0].id;
         }
 
         form["step"] = this.step_ref;
-        form["type_send"] = this.type_send;
+        if (form.step != "operator_to_supervisor") {
+          form["type_send"] = this.type_send;
+        }
       }
       ///////////////////////////////////////////////////////////
       if (Boolean(this.is_oprator)) {
@@ -350,14 +404,21 @@ export default {
       if (Boolean(this.number_refer)) {
         form["number_refer"] = this.number_refer;
       }
-if (this.type_send == "date_time") {
-  form["start_at"] = this.start_at;
-  form["end_at"] = this.end_at;
-}
+      if (
+        this.type_send == "date_time" &&
+        form.step != "operator_to_supervisor"
+      ) {
+        form["start_at"] = this.start_at;
+        form["end_at"] = this.end_at;
+      }
       this.$reqApi("/message/refer", form)
         .then((response) => {
           let name = "";
-          if (Boolean(this.user) && Boolean(this.user[0])) {
+          if (
+            Boolean(this.user) &&
+            Boolean(this.user[0]) &&
+            this.type_send != "supervisor_to_manager"
+          ) {
             if (
               Boolean(this.user[0].first_name) &&
               Boolean(this.user[0].last_name)
@@ -439,13 +500,17 @@ if (this.type_send == "date_time") {
       }
       if (
         this.is_admin_call_center &&
-        (this.type_send == "auto" ||this.type_send == "date_time" || this.type_send == "sale")
+        (this.type_send == "auto" ||
+          this.type_send == "date_time" ||
+          this.type_send == "sale")
       ) {
         check = true;
       }
       if (
         this.is_superviser &&
-        (this.type_send == "auto" ||this.type_send == "date_time" || this.type_send == "sale")
+        (this.type_send == "auto" ||
+          this.type_send == "date_time" ||
+          this.type_send == "sale")
       ) {
         check = true;
       }
