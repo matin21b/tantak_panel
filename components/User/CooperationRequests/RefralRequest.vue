@@ -22,7 +22,13 @@
               url="user/list-employee"
               rules="require"
             />
-
+            <amp-autocomplete
+              v-if="form.step == 'human_resources_supervisor_to_expert'"
+              text="واحد مرتبط"
+              rules="require"
+              v-model="relevant_role_id"
+              :items="$store.state.setting.roles"
+            />
             <amp-textarea
               text=" توضیحات"
               rules="require"
@@ -76,6 +82,7 @@ export default {
     return {
       user: [],
       role: "",
+      relevant_role_id: "",
       valid: true,
       loading: false,
       show_select_user: false,
@@ -99,6 +106,7 @@ export default {
           break;
         case "human_resources_supervisor_to_expert":
           this.select_user_title = "کارشناس استخدام را انتخاب کنید";
+          this.$store.dispatch("setting/getRoleServer");
           this.show_select_user = true;
 
           break;
@@ -150,7 +158,9 @@ export default {
       ) {
         form["user_refer_id"] = this.user[0].id;
       }
-
+      if (this.form.step == "human_resources_supervisor_to_expert") {
+        form["relevant_role_id"] = this.relevant_role_id;
+      }
       this.$reqApi("employment-form/referral", form)
         .then((res) => {
           if (

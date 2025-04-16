@@ -909,6 +909,7 @@ let complaint_status = [
   { text: "انجام شده", value: "done" },
   { text: "لغو شده", value: "cancel" },
   { text: "لغو شده", value: "reject" },
+  { text: "رد درخواست استخدام", value: "close" },
 ];
 let agency_request_step = [
   { text: "ثبت اولیه", value: "init" },
@@ -935,6 +936,7 @@ let cooperation_req = [
   { text: "انجام شده", value: "done" },
   { text: "لغو شده", value: "reject" },
   { text: "ثبت اولیه", value: "init" },
+  { text: "رد درخواست", value: "close" },
 
   {
     text: "از مدیر منابع انسانی به سرپرست",

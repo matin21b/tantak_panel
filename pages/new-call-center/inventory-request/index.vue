@@ -1,7 +1,11 @@
 <template>
   <v-row class="d-flex justify-center mt-5">
     <v-col>
-      <v-row cols="12" class="center-div mt-5" v-if="Boolean(this.$route.query.filter)">
+      <v-row
+        cols="12"
+        class="center-div mt-5"
+        v-if="Boolean(this.$route.query.filter)"
+      >
         <v-chip
           dark
           label
@@ -233,15 +237,16 @@ export default {
         show_fun: (body) => {
           if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
             return false;
-          } else if (Boolean(this.$checkRole(this.$store.state.auth.role.sale_manager))) {
-            return true;
+          } else if (
+            Boolean(this.$checkRole(this.$store.state.auth.role.sale_manager))
+          ) {
+            return false;
           } else if (
             Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
           ) {
             if (
               body.step == "init" ||
-              ((
-                body.step == "accept_employee_sale" ||
+              ((body.step == "accept_employee_sale" ||
                 body.step == "accept_fiscal" ||
                 body.step == "fiscal_manager_to_manager") &&
                 body.status_payment == "payed")
@@ -377,7 +382,9 @@ export default {
   computed: {
     extra_btn() {
       if (
-        Boolean(this.$store.state.auth.action.indexOf("product_requests/insert") > -1)
+        Boolean(
+          this.$store.state.auth.action.indexOf("product_requests/insert") > -1
+        )
       ) {
         return [
           {

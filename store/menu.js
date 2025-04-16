@@ -40,7 +40,7 @@ let mnue_tree = [
       {
         id: 56554,
         name: "نمایندگی برتر",
-        access: "product_requests/root",
+        access: "user/root",
         route: "/user/top-sale-agency",
       },
       {
@@ -338,30 +338,30 @@ let mnue_tree = [
     route: "/new-call-center/my-staff",
   },
 
-  {
-    id: 26,
-    name: "فرم های دریافتی",
-    children: [
-      {
-        id: 27,
-        name: "تماس با ما",
-        access: "contact_us_form/index",
-        route: "/forms/contact-us-form",
-      },
-      // {
-      //   id: 28,
-      //   name: "درخواست فرم نمایندگی",
-      //   access: "representation_request_form/index",
-      //   route: "/forms/representation-request-form",
-      // },
-      {
-        id: 29,
-        name: "شکایات",
-        access: "complaint_form/index",
-        route: "/forms/complaint",
-      },
-    ],
-  },
+  // {
+  //   id: 26,
+  //   name: "فرم های دریافتی",
+  //   children: [
+  //     {
+  //       id: 27,
+  //       name: "تماس با ما",
+  //       access: "contact_us_form/index",
+  //       route: "/forms/contact-us-form",
+  //     },
+  //     // {
+  //     //   id: 28,
+  //     //   name: "درخواست فرم نمایندگی",
+  //     //   access: "representation_request_form/index",
+  //     //   route: "/forms/representation-request-form",
+  //     // },
+  //     {
+  //       id: 29,
+  //       name: "شکایات",
+  //       access: "complaint_form/index",
+  //       route: "/forms/complaint",
+  //     },
+  //   ],
+  // },
   {
     id: 1373,
     access: "small_stocks/index",

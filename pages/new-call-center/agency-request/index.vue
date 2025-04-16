@@ -152,6 +152,7 @@ export default {
     refreshTabel() {
       this.$refs.AgencyRequest.getDataFromApi();
     },
+    
   },
 };
 </script>
