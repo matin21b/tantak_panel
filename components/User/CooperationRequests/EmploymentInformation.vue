@@ -333,9 +333,7 @@ export default {
     };
   },
 
-  mounted() {
-    console.log("item", this.item);
-  },
+
   methods: {
     closeRequestForm() {
       this.loading = true;

@@ -352,7 +352,6 @@ export default {
       let form = {};
       let step = "";
       let role_user = "";
-
       // //////////////////////////////////////////////////////////////
 
       if (Boolean(this.is_admin_call_center)) {
@@ -361,14 +360,14 @@ export default {
           form.step = "supervisor_to_manager";
         } else if (this.type_send == "close") {
           form.step = "close";
-          form["step"] = step;
+          form.step = step;
         } else if (this.type_send == "date_time") {
           form["supervisor_id"] = this.user[0].id;
           form.step = "manager_to_supervisor";
         } else if (
           this.type_send != "date_time" &&
           this.type_send != "supervisor_to_manager" &&
-          this.type_send == "close"
+          (this.type_send == "close"|| this.type_send == "multi")
         ) {
           form["supervisor_id"] = this.user[0].id;
           form.step = "manager_to_supervisor";

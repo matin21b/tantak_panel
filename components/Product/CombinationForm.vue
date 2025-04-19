@@ -48,8 +48,6 @@
                     "
                     rules="require"
                   />
-                  {{ variation_3_id }}
-
                 </v-col>
                 <v-col cols="12" md="3">
                   <amp-input
