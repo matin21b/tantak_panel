@@ -50,6 +50,13 @@ export default {
     main_data: [],
     body_bastable: null,
     title: "گزارشات تماس جدید",
+    status_items: [
+      { text: "مشغول", value: "BUSY" },
+      { text: "بدون پاسخ", value: "NO ANSWER" },
+      { text: "از دست رفته", value: "MISSED" },
+      { text: "عدم موفقیت", value: "FAILED" },
+      { text: "پاسخ داده شده", value: "ANSWERED" },
+    ],
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -76,10 +83,10 @@ export default {
       {
         filterable: true,
         disableSort: true,
-        filterCol: "src",
+        filterCol: "cnum",
         text: " مبدا تماس",
         value: (body) => {
-          return body.src;
+          return body.cnum;
         },
       },
       {
@@ -97,26 +104,23 @@ export default {
           }
         },
       },
-
       {
         text: "وضعیت",
-        filterable: false,
+        filterType: "select",
+        items: this.status_items,
         disableSort: true,
+        value: "disposition",
+      },
+      {
+        text: "مرکز تماس",
+        filterable: false,
         value: (body) => {
-          if (body.disposition == "CONGESTION") {
-            return "مشغول";
-          } else if (body.disposition == "BUSY") {
-            return "مشغول";
-          } else if (body.disposition == "NO ANSWER") {
-            return "بدون پاسخ";
-          } else if (body.disposition == "MISSED") {
-            return "از دست رفته";
-          } else if (body.disposition == "FAILED") {
-            return "عدم موفقیت";
-          } else if (body.disposition == "s") {
-            return "قطع شده در IVR";
-          } else if (body.disposition == "ANSWERED") {
-            return "پاسخ داده شده";
+          if (body.src == "2191008028 ") {
+            return "بیمچه";
+          } else if (body.src == "2191008029") {
+            return "ساو";
+          } else {
+            return body.src;
           }
         },
       },
