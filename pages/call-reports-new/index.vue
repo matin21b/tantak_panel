@@ -50,13 +50,6 @@ export default {
     main_data: [],
     body_bastable: null,
     title: "گزارشات تماس جدید",
-    status_items: [
-      { text: "مشغول", value: "BUSY" },
-      { text: "بدون پاسخ", value: "NO ANSWER" },
-      { text: "از دست رفته", value: "MISSED" },
-      { text: "عدم موفقیت", value: "FAILED" },
-      { text: "پاسخ داده شده", value: "ANSWERED" },
-    ],
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -107,7 +100,7 @@ export default {
       {
         text: "وضعیت",
         filterType: "select",
-        items: this.status_items,
+        items: this.$store.state.static.status_call,
         disableSort: true,
         value: "disposition",
       },
@@ -157,18 +150,6 @@ export default {
   methods: {
     getData(event) {
       this.body_bastable = event;
-    },
-    setStatusFilter(event) {
-      let data = [];
-      this.loading2 = true;
-      setTimeout(() => {
-        if (event[0] == "all") {
-          this.isabel_data = JSON.parse(JSON.stringify(this.main_data));
-        } else {
-          this.isabel_data = event[1];
-        }
-        this.loading2 = false;
-      }, 800);
     },
     downloadCallRecord(value, show = false) {
       let url = "/message/issabel-request-call/get-rec-file";
