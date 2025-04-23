@@ -66,8 +66,8 @@ export default {
     settings: [],
     selected: {},
     value_2 : [
-      {text : 'روشن' , value : true},
-      {text : 'خاموش' , value : false},
+      {text : 'روشن' , value : 'on'},
+      {text : 'خاموش' , value : 'off'},
     ],
     form: {
       id: "",
@@ -85,14 +85,14 @@ export default {
   },
   computed: {
     value2_formatter() {
-      return this.form.value_2 ? 'on' : 'off';
+      return this.form.value_2 == 'on' ? 'on' : 'off';
     }
   },
 
   methods: {
     submit() {
       let form = { ...this.form };
-      form.value_2 = this.form.value_2 ? 'on' : 'off';
+      form.value_2 = this.form.value_2 == 'on' ? 'on' : 'off';
       this.loading = true;
       let url = this.createUrl;
       if (this.modelId) {
@@ -120,7 +120,7 @@ export default {
           this.form["id"] = response.id;
           this.form.key = response.key;
           this.form.value = response.value;
-          this.form.value_2 = response.value_2 === 'on';
+          this.form.value_2 = response.value_2;
           this.loading = false;
         })
         .catch((error) => {
