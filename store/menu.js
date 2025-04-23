@@ -87,14 +87,18 @@ let mnue_tree = [
       },
     ],
   },
-
+  {
+    id: 12455545,
+    name: "گزارشات تماس (جدید)",
+    access: "messages/issabel_request_call/history",
+    route: "/call-reports-new",
+  },
   {
     id: 618564558145,
     name: "گزارشات تماس",
     access: "messages/issabel_request_call/history",
     route: "/call-reports",
   },
-
   {
     id: 50,
     name: "مرکز فروش تلفنی",
