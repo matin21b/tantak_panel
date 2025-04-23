@@ -488,6 +488,12 @@ let mnue_tree = [
         access: "setting/root",
         route: "/setting/delete-basket",
       },
+      {
+        id: 977,
+        name: "تعداد ساعات مهلت برسی پیام ",
+        access: "setting/root",
+        route: "/setting/hour-limit-review-message",
+      },
 
       {
         id: 101209,

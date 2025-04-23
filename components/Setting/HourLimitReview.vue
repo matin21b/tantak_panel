@@ -1,55 +1,26 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-container fluid class="px-8">
-      <v-row dense>
-        <v-col cols="12" md="3">
+      <v-row dense class="d-flex justify-center">
+        <v-col cols="12" md="5">
           <amp-input
-            text="عنوان روش ارسال"
-            v-model="form.value.title"
-            rules="require"
-          />
-        </v-col>
-        <v-col cols="12" md="3">
-          <amp-input
-            is-price
+            text="ساعت مهلت برسی پیام؟"
+            v-model="form.value"
+            rules="require,number"
             cClass="ltr-item"
-            text="هزینه پایه به تومان"
-            v-model="form.value.base"
-            rules="require"
-          />
-        </v-col>
-        <v-col cols="12" md="3">
-          <amp-input
-            cClass="ltr-item"
-            text="هزینه برای هر کیلوگرم"
-            v-model="form.value.ratio"
-            rules="require"
-          />
-        </v-col>
-
-        <v-col cols="12" md="3">
-          <amp-select
-            help_text="با انتخاب این گزینه هزینه ارسال مصاحبه  می شود اما به سبد خرید کاربر اضافه نخواهد شد"
-            text="پرداخت در محل"
-            rules="require"
-            v-model="form.value.payatdelivery"
-            :items="this.$store.state.static.bool_number_enum"
-          />
-        </v-col>
-
-        <v-col cols="12" md="3">
-          <amp-input
-            :help_text="help_text"
-            is-number
-            is-price
-            cClass="ltr-item"
-            text="حداقل قیمت برای ارسال رایگان تومان"
-            v-model="form.value.send_free_threshold"
-            rules="require"
           />
         </v-col>
       </v-row>
-
+      <v-row>
+        <v-col dans class="d-flex justify-center">
+          <amp-select
+          v-model="form.value_2"
+          placeholder="وضعیت را انتخاب کنید"
+          :items="value_2"
+          @input="update_value2"
+          />
+        </v-col>
+      </v-row>
       <v-row dense>
         <v-col cols="12" md="12">
           <v-divider />
@@ -80,7 +51,9 @@
 </template>
 
 <script>
+import AmpSelect from '../Base/AmpSelect.vue';
 export default {
+  components: { AmpSelect },
   props: {
     modelId: { default: null },
   },
@@ -90,20 +63,17 @@ export default {
     createUrl: "/setting/insert",
     updateUrl: "/setting/update",
     showUrl: "/setting/show",
-    help_text:
-      "اگر می خواهید در صورتی که مجموع سبد خرید کاربر از یک قیمت بیشتر شد ارسال رایگان باشد، مبلغ سبد را اینجا وارد کنید، در غیر این صورت مقدار را روی 0 تنظیم کنید.",
     settings: [],
     selected: {},
+    value_2 : [
+      {text : 'روشن' , value : 'on'},
+      {text : 'خاموش' , value : 'off'},
+    ],
     form: {
       id: "",
-      key: "delivery_method",
-      value: {
-        title: "",
-        payatdelivery: "",
-        base: "", // ==> هزینه پایه بر حسب تومان
-        ratio: "", //==> هزینه برای هر کیلوگرم اضافه
-        send_free_threshold: "0",
-      },
+      key: "hour_limit_review_message",
+      value: "",
+      value_2: false,
     },
   }),
 
@@ -113,18 +83,22 @@ export default {
       this.loadData();
     }
   },
+  computed: {
+    value2_formatter() {
+      return this.form.value_2 == 'on' ? 'on' : 'off';
+    }
+  },
 
   methods: {
     submit() {
       let form = { ...this.form };
+      form.value_2 = this.form.value_2 == 'on' ? 'on' : 'off';
       this.loading = true;
       let url = this.createUrl;
       if (this.modelId) {
         url = this.updateUrl;
         form["id"] = this.modelId;
       }
-      form.value = JSON.stringify(form.value);
-
       this.$reqApi(url, form)
         .then((response) => {
           if (!this.modelId) {
@@ -145,7 +119,8 @@ export default {
           response = response.model;
           this.form["id"] = response.id;
           this.form.key = response.key;
-          this.form.value = JSON.parse(response.value);
+          this.form.value = response.value;
+          this.form.value_2 = response.value_2;
           this.loading = false;
         })
         .catch((error) => {
@@ -160,6 +135,10 @@ export default {
         this.$router.push(this.path);
       }
     },
+    update_value2(data){
+      this.form.value_2 = data
+      console.log(this.form.value_2)
+    }
   },
 };
 </script>
