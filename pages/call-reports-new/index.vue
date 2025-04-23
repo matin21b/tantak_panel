@@ -76,10 +76,10 @@ export default {
       {
         filterable: true,
         disableSort: true,
-        filterCol: "src",
+        filterCol: "cnum",
         text: " مبدا تماس",
         value: (body) => {
-          return body.src;
+          return body.cnum;
         },
       },
       {
@@ -97,26 +97,23 @@ export default {
           }
         },
       },
-
       {
         text: "وضعیت",
-        filterable: false,
+        filterType: "select",
+        items: this.$store.state.static.status_call,
         disableSort: true,
+        value: "disposition",
+      },
+      {
+        text: "مرکز تماس",
+        filterable: false,
         value: (body) => {
-          if (body.disposition == "CONGESTION") {
-            return "مشغول";
-          } else if (body.disposition == "BUSY") {
-            return "مشغول";
-          } else if (body.disposition == "NO ANSWER") {
-            return "بدون پاسخ";
-          } else if (body.disposition == "MISSED") {
-            return "از دست رفته";
-          } else if (body.disposition == "FAILED") {
-            return "عدم موفقیت";
-          } else if (body.disposition == "s") {
-            return "قطع شده در IVR";
-          } else if (body.disposition == "ANSWERED") {
-            return "پاسخ داده شده";
+          if (body.src == "2191008028 ") {
+            return "بیمچه";
+          } else if (body.src == "2191008029") {
+            return "ساو";
+          } else {
+            return body.src;
           }
         },
       },
@@ -153,18 +150,6 @@ export default {
   methods: {
     getData(event) {
       this.body_bastable = event;
-    },
-    setStatusFilter(event) {
-      let data = [];
-      this.loading2 = true;
-      setTimeout(() => {
-        if (event[0] == "all") {
-          this.isabel_data = JSON.parse(JSON.stringify(this.main_data));
-        } else {
-          this.isabel_data = event[1];
-        }
-        this.loading2 = false;
-      }, 800);
     },
     downloadCallRecord(value, show = false) {
       let url = "/message/issabel-request-call/get-rec-file";

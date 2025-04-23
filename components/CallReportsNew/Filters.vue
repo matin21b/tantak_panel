@@ -15,9 +15,9 @@
           firstSelect
         />
       </v-col>
-      <v-col v-if="!show_input_number" class="d-flex" cols="12" md="5">
+      <v-col v-if="!show_input_number" class="d-flex" cols="12" md="4">
         <amp-input
-          v-model="src"
+          v-model="cnum"
           cClass="ltr-item"
           text="مبدا تماس"
           prepend-inner-icon="phone_callback"
@@ -94,7 +94,7 @@ export default {
     from: "",
     to: "",
     dst: "",
-    src: "",
+    cnum: "",
     selected: "",
   }),
   methods: {
@@ -120,10 +120,10 @@ export default {
       if (this.call_type && this.call_type !== "all") {
         filter.type = this.call_type;
         if (this.dst) {
-          filter.getter = this.dst.length === 11 ? `9${this.dst}` : this.dst;
+          filter.getter = this.dst;
         }
-        if (this.src) {
-          filter.caller = this.src;
+        if (this.cnum) {
+          filter.caller = this.cnum;
         }
       } else if (this.call_type === "all") {
         filter.type = "all";
