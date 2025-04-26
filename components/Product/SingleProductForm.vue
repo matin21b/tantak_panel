@@ -373,6 +373,8 @@ export default {
       this.loading = true;
       let product_id = this.product.id;
       this.$reqApi("product-variation-combination/variety-list", {
+        row_number: 200,
+
         product_id: product_id,
       })
         .then((res) => {

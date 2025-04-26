@@ -500,7 +500,7 @@ export default {
           } else {
             this.$toast.success("اطلاعات ویرایش شد");
             if (this.step_number > 2) {
-              this.redirectPage();
+              this.$router.push("/product");
             }
             this.step_number += 1;
             this.loading = false;

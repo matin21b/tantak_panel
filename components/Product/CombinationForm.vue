@@ -13,9 +13,16 @@
             <v-card class="elevation-0 mt-4" :disabled="loading">
               <v-row v-if="!loading">
                 <v-col cols="12">
-                  <amp-title text="افزودن تنوع فروش جدید برای این محصول"></amp-title>
+                  <amp-title
+                    text="افزودن تنوع فروش جدید برای این محصول"
+                  ></amp-title>
                 </v-col>
-                <v-col cols="12" md="3" v-for="(v, index) in variations" :key="v.index">
+                <v-col
+                  cols="12"
+                  md="3"
+                  v-for="(v, index) in variations"
+                  :key="v.index"
+                >
                   <amp-select
                     multiple
                     v-if="v.sort == 1"
@@ -23,7 +30,12 @@
                     :items="v.items"
                     v-model="variation_1_ids"
                     @change="
-                      setVariationId(variation_1_ids, v.sort, v.variation_type_id, v)
+                      setVariationId(
+                        variation_1_ids,
+                        v.sort,
+                        v.variation_type_id,
+                        v
+                      )
                     "
                     rules="require"
                   />
@@ -34,7 +46,12 @@
                     :items="v.items"
                     v-model="variation_2_ids"
                     @change="
-                      setVariationId(variation_2_ids, v.sort, v.variation_type_id, v)
+                      setVariationId(
+                        variation_2_ids,
+                        v.sort,
+                        v.variation_type_id,
+                        v
+                      )
                     "
                     rules="require"
                   />
@@ -44,7 +61,12 @@
                     :items="v.items"
                     v-model="variation_3_id"
                     @change="
-                      setVariationId(variation_3_id, v.sort, v.variation_type_id, v)
+                      setVariationId(
+                        variation_3_id,
+                        v.sort,
+                        v.variation_type_id,
+                        v
+                      )
                     "
                     rules="require"
                   />
@@ -251,7 +273,7 @@ export default {
           this.$emit("reloadVaritoinsForm");
           this.loadData();
           this.$refs.formReset.reset();
-          this.selected_variations = []
+          this.selected_variations = [];
           this.$emit("insertVariationCombination");
           this.loading = false;
         })
@@ -283,7 +305,11 @@ export default {
             let find_var2 = data.find((f) => f.variation_type.sort == 2);
             let find_var3 = data.find((f) => f.variation_type.sort == 3);
 
-            if (Boolean(find_var1) && Boolean(find_var2) && Boolean(find_var3)) {
+            if (
+              Boolean(find_var1) &&
+              Boolean(find_var2) &&
+              Boolean(find_var3)
+            ) {
               for (let index = 0; index < data.length; index++) {
                 const x = data[index];
 
@@ -375,7 +401,6 @@ export default {
           items["variation_type_id"] = variation_type_id;
         } else {
           let find = v.items.find((t) => t.value == value);
-
           if (Boolean(find)) {
             items["sort"] = sort;
             items["type"] = v.value_2;
@@ -420,7 +445,6 @@ export default {
       this.loading = true;
       return new Promise(async (res, rej) => {
         let form = {};
-
         let variations = this.selected_variations.filter((x) => x.sort == 1);
         for (let i = 0; i < variations.length; i++) {
           const variation = variations[i];
@@ -433,13 +457,15 @@ export default {
                 product_id: this.product_id,
                 value: id,
               };
-            } else {
-              form = {
-                variation_type_id: variation.variation_type_id,
-                product_id: this.product_id,
-                value: variation.value_id,
-              };
             }
+            
+            // else {
+            //   form = {
+            //     variation_type_id: variation.variation_type_id,
+            //     product_id: this.product_id,
+            //     value: variation.value_id,
+            //   };
+            // }
 
             let response = await this.$reqApi("/product-variation/insert", {
               ...form,
