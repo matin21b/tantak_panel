@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="d-flex justify-center px-4">
-      <v-col col="12" md="10" class="mt-5">
+      <v-col col="12" md="10" class="mt-5" v-if="!$checkRole(this.$store.state.auth.role.admin_id)">
         <v-expansion-panels variant="poput" v-model="panel" accordion>
           <v-expansion-panel class="class-bg">
             <v-expansion-panel-header dark expand-icon="published_with_changes">
@@ -25,7 +25,7 @@
         </v-expansion-panels>
       </v-col>
     </v-row>
-    <v-col cols="12">
+    <v-col cols="12" v-if="!$checkRole(this.$store.state.auth.role.admin_id)">
       <v-row class="d-flex justify-center pt-4">
         <v-chip
           dark
