@@ -64,7 +64,6 @@ export default {
         disableSort: true,
         text: "زمان ثبت تماس",
         filterType: "date",
-        filterCol: "calldate",
         value: (body) => {
           if (body.created_at) {
             return this.$toJalali(body.created_at);
