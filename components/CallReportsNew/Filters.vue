@@ -15,7 +15,7 @@
           firstSelect
         />
       </v-col>
-      <v-col v-if="!show_input_number" class="d-flex" cols="12" md="4">
+      <v-col v-if="!show_input_number" class="d-flex justify-content-center" cols="12" md="4">
         <amp-input
           v-model="cnum"
           cClass="ltr-item"
@@ -42,7 +42,7 @@
           firstSelect
         />
       </v-col>
-      <v-col v-if="show_date_picker" class="d-flex" cols="12" md="3">
+      <v-col v-if="show_date_picker" class="d-flex justify-content-center" cols="12" md="3">
         <amp-jdate text="زمان ثبت تماس از" v-model="from" />
         <amp-jdate text="تا تاریخ" v-model="to" />
       </v-col>
