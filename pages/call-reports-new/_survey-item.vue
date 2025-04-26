@@ -38,7 +38,7 @@ export default {
   },
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
-    this.body_survey.cdr_id = this.$route.params.survey_item;
+    this.body_survey.cdr_id = this.$route.params.survey-item;
   },
 };
 </script>
