@@ -64,7 +64,6 @@ export default {
         disableSort: true,
         text: "زمان ثبت تماس",
         filterType: "date",
-        filterCol: "calldate",
         value: (body) => {
           if (body.created_at) {
             return this.$toJalali(body.created_at);
@@ -108,9 +107,9 @@ export default {
         text: "مرکز تماس",
         filterable: false,
         value: (body) => {
-          if (body.src == "2191008028 ") {
+          if(body.src == "2191008028") {
             return "بیمچه";
-          } else if (body.src == "2191008029") {
+          }if (body.src == "2191008029") {
             return "ساو";
           } else {
             return body.src;
