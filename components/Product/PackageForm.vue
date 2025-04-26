@@ -5,7 +5,9 @@
       <v-row dense>
         <v-col cols="12" md="3">
           <amp-input
-            :text="this.$route.query.type == 'Package' ? 'عنوان پکیج' : 'عنوان جعبه'"
+            :text="
+              this.$route.query.type == 'Package' ? 'عنوان پکیج' : 'عنوان جعبه'
+            "
             v-model="form.name"
             rules="require"
           />
@@ -58,7 +60,11 @@
             v-model="discount_value"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="Boolean(check_sale_type) && !Boolean(is_box)">
+        <v-col
+          cols="12"
+          md="3"
+          v-if="Boolean(check_sale_type) && !Boolean(is_box)"
+        >
           <amp-select
             text="نوع پیش پرداخت "
             rules="require"
@@ -71,7 +77,9 @@
           cols="12"
           md="3"
           v-if="
-            Boolean(check_sale_type) && form.prepay_type != 'none' && !Boolean(is_box)
+            Boolean(check_sale_type) &&
+            form.prepay_type != 'none' &&
+            !Boolean(is_box)
           "
         >
           <amp-input
@@ -98,7 +106,11 @@
             v-model="form.licence_break"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="form.licence_break == 'no' && !Boolean(is_box)">
+        <v-col
+          cols="12"
+          md="3"
+          v-if="form.licence_break == 'no' && !Boolean(is_box)"
+        >
           <amp-autocomplete
             text="نقش های مثتثنا"
             chips
@@ -108,10 +120,18 @@
           />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input text="ترتیب" v-model="form.sort" cClass="ltr-item" rules="number" />
+          <amp-input
+            text="ترتیب"
+            v-model="form.sort"
+            cClass="ltr-item"
+            rules="number"
+          />
         </v-col>
         <v-col cols>
-          <amp-textarea text="توضیحات" v-model="form.description"></amp-textarea>
+          <amp-textarea
+            text="توضیحات"
+            v-model="form.description"
+          ></amp-textarea>
         </v-col>
       </v-row>
       <v-row dense>
@@ -177,7 +197,6 @@ export default {
     pay_type_item: [
       { text: "درصد", value: "percent" },
       { text: "مقدار", value: "amount" },
-      { text: "* ندارد", value: "none" },
     ],
     product_varcomb_id: "",
     products: [],
@@ -219,10 +238,11 @@ export default {
   },
 
   mounted() {
+    this.$store.dispatch("setting/getRoleServer");
+
     if (Boolean(this.$route.query.type)) {
       this.form.type = this.$route.query.type;
     }
-    ;
     if (this.modelId) {
       this.loadData();
     }
@@ -321,7 +341,10 @@ export default {
               this.discount_value = response.discount_amount;
             }
 
-            if (response.product_varcoms && response.product_varcoms.length > 0) {
+            if (
+              response.product_varcoms &&
+              response.product_varcoms.length > 0
+            ) {
               this.product_varcoms = response.product_varcoms;
             }
             if (Boolean(response.sale_online)) {
