@@ -381,6 +381,16 @@ export default {
       let url = this.createUrl;
       if (this.modelId) {
         url = this.updateUrl;
+        let ids = []
+        if (form.category_id.length > 0 ) {
+          for (let i = 0; i < form.category_id.length; i++) {
+            const x = form.category_id[i];
+            if (typeof x == 'object') {
+              ids.push(x.value)
+            }
+          }
+        }
+        form.category_id = ids
         form["id"] = this.modelId;
       } else {
         form["manual"] = "manual";

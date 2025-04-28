@@ -137,7 +137,6 @@ export default {
     },
     update_value2(data){
       this.form.value_2 = data
-      console.log(this.form.value_2)
     }
   },
 };

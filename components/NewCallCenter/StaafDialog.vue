@@ -243,7 +243,6 @@ export default {
       this.form.last_name = Boolean(user.last_name) ? user.last_name : "";
       this.form.username = Boolean(user.username) ? user.username : "";
       this.form.password = Boolean(user.password) ? user.password : "";
-      console.log("this.staaf ==> ", this.staaf);
     }
   },
   methods: {
