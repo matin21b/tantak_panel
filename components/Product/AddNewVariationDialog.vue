@@ -74,7 +74,7 @@
                 class="my-1"
                 color="red darken-1"
                 text="انصراف"
-                @click="cloasDialog()"
+                @click="closeDialog()"
               />
               <amp-button
                 class="my-1"
@@ -179,7 +179,7 @@ export default {
       this.$reqApi(url, form)
         .then((response) => {
           this.$toast.success("ویژگی مورد نظر با موفقیت ثبت شد");
-          this.cloasDialog();
+          this.closeDialog();
           this.$emit("reload")
           this.loading = false;
         })
@@ -188,8 +188,8 @@ export default {
         });
     },
 
-    cloasDialog() {
-      this.$emit("cloasDialog");
+    closeDialog() {
+      this.$emit("closeDialog");
     },
     
     getCategories() {

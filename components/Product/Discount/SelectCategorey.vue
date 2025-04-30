@@ -122,7 +122,7 @@
             v-if="show_catalog"
             :catgoryId="catgory_id"
             :catgorysName="catgory_catalog"
-            @cloasDialog="closeDialog()"
+            @closeDialog="closeDialog()"
           />
           <BaseTable
             :filters="filters"

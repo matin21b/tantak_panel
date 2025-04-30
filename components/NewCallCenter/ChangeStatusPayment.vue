@@ -41,7 +41,7 @@
               :disabled="!valid"
               :loading="loading"
             />
-            <amp-button text="انصراف" color="error" @click="cloasDialog" />
+            <amp-button text="انصراف" color="error" @click="closeDialog" />
           </v-card-actions>
         </v-form>
       </v-card>
@@ -101,7 +101,7 @@ export default {
           .then((res) => {
             this.overlay = false;
             this.relod();
-            this.cloasDialog();
+            this.closeDialog();
             this.$toast.success("عملیات با موفقیت انجام شد");
             this.loading = false;
           })
@@ -115,8 +115,8 @@ export default {
     relod() {
       this.$emit("relod");
     },
-    cloasDialog() {
-      this.$emit("cloasDialog");
+    closeDialog() {
+      this.$emit("closeDialog");
     },
   },
 };

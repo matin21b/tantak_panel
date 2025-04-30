@@ -5,7 +5,7 @@
         <v-card-title class="elevation-0 primary">
           <span class="white--text font_17"> تراکنش های سبد خرید </span>
           <v-spacer></v-spacer>
-          <v-btn icon text @click="cloasDialog">
+          <v-btn icon text @click="closeDialog">
             <v-icon color="white"> close </v-icon>
           </v-btn>
         </v-card-title>
@@ -13,7 +13,7 @@
           :dialog="show_pay_dialog"
           v-if="show_pay_dialog"
           :paymentId="payment_id"
-          @cloasDialog="show_pay_dialog = false"
+          @closeDialog="show_pay_dialog = false"
           @relod="relod"
         />
         <div class="text-center mt-3">
@@ -193,8 +193,8 @@ export default {
     },
   },
   methods: {
-    cloasDialog() {
-      this.$emit("cloasDialog");
+    closeDialog() {
+      this.$emit("closeDialog");
     },
     selectItem(item) {
       this.tab = item.value;

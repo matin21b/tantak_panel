@@ -39,7 +39,7 @@
       :data="data"
       :dialog="show_debt"
       v-if="show_debt"
-      @cloasDialog="show_debt = false"
+      @closeDialog="show_debt = false"
     />
     <DialogRefral
       :model-id="id"

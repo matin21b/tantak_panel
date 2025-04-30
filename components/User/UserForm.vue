@@ -155,14 +155,14 @@
         <v-col cols="12" md="3">
           <amp-upload-file v-model="form.avatar" />
         </v-col>
-        <v-col cols="12" md="3" v-if="!is_user">
+        <v-col cols="12" md="3" v-if="!is_user && form.role_id.length > 0">
           <amp-select
             text="انتخاب داخلی"
             v-model="form.internal_id"
             :items="internal_items"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="!is_user">
+        <v-col cols="12" md="3" v-if="!is_user && form.role_id.length > 0">
           <amp-input
             text="شمار پورت داخلی"
             v-model="form.internal_port"
@@ -233,7 +233,6 @@ export default {
   data: () => ({
     valid: false,
     loading: false,
-    is_user: false,
     supervisor_status: "",
     supervisor: [],
     internal_items: [],
@@ -282,6 +281,13 @@ export default {
     //     );
     //   }
     // },
+    is_user() {
+      if (this.form.role_id.indexOf(this.$store.state.auth.role.user_id) > -1 && this.form.role_id.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    },
     sales_manager() {
       if (
         Boolean(
@@ -335,9 +341,7 @@ export default {
   // },
   mounted() {
     this.$store.dispatch("setting/getRoleServer");
-    if (this.form.role_id.indexOf(this.$store.state.auth.role.user_id) > -1) {
-      this.is_user = true;
-    }
+
     if (this.modelId) {
       this.loadData();
     }
@@ -381,16 +385,16 @@ export default {
       let url = this.createUrl;
       if (this.modelId) {
         url = this.updateUrl;
-        let ids = []
-        if (form.category_id.length > 0 ) {
+        let ids = [];
+        if (form.category_id.length > 0) {
           for (let i = 0; i < form.category_id.length; i++) {
             const x = form.category_id[i];
-            if (typeof x == 'object') {
-              ids.push(x.value)
+            if (typeof x == "object") {
+              ids.push(x.value);
             }
           }
         }
-        form.category_id = ids
+        form.category_id = ids;
         form["id"] = this.modelId;
       } else {
         form["manual"] = "manual";

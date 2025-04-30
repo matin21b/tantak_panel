@@ -137,6 +137,12 @@ let mnue_tree = [
     ],
   },
   {
+    id: 7788521,
+    name: "تخصیص محصولات",
+    access: "product_allocations/index",
+    route: "/new-call-center/product-allocation",
+  },
+  {
     id: 610,
     name: "نمایندگی ها",
     children: [
@@ -339,7 +345,6 @@ let mnue_tree = [
     name: "لیست کارکنان",
     route: "/new-call-center/my-staff",
   },
-  
 
   // {
   //   id: 26,

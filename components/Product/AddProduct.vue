@@ -357,7 +357,7 @@ export default {
     },
     loadProduct() {
       this.load_item = true;
-      this.$reqApi("/product/list-by-personnel", { row_number: 50000 })
+      this.$reqApi("product-allocation/product-list", { row_number: 50000 })
         .then((response) => {
           let items = [];
           for (let index = 0; index < response.model.data.length; index++) {
@@ -382,7 +382,7 @@ export default {
           value: "Package"
         }
       }
-      this.$reqApi("/package", { filters: filters, row_number: 50000 })
+      this.$reqApi("/product-allocation/package-list", { filters: filters, row_number: 50000 })
         .then((response) => {
           let items = [];
           for (let index = 0; index < response.model.data.length; index++) {

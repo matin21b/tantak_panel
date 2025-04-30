@@ -5,7 +5,7 @@
         <v-row class="mx-2 mt-1 align-center mb-4">
           <h1 class="font_15 mr-2">بدهکاری های سفارش</h1>
           <v-spacer></v-spacer>
-          <v-btn icon text @click="cloasDialog">
+          <v-btn icon text @click="closeDialog">
             <v-icon class="mr-3"> cancel </v-icon>
           </v-btn>
           <v-col cols="12">
@@ -60,8 +60,8 @@ export default {
     this.items = this.data;
   },
   methods: {
-    cloasDialog() {
-      this.$emit("cloasDialog");
+    closeDialog() {
+      this.$emit("closeDialog");
     },
   },
 };

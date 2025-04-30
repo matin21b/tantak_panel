@@ -25,7 +25,7 @@
               </h1>
             </v-col>
             <v-col cosl="1" class="text-start">
-              <v-btn icon text @click="cloasDialog">
+              <v-btn icon text @click="closeDialog">
                 <v-icon>close</v-icon>
               </v-btn>
             </v-col>
@@ -146,8 +146,8 @@ export default {
           this.loading = false;
         });
     },
-    cloasDialog() {
-      this.$emit("cloasDialog");
+    closeDialog() {
+      this.$emit("closeDialog");
     },
   },
 };

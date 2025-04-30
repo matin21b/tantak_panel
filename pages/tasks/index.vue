@@ -2,6 +2,7 @@
   <div>
     <v-col>
       <v-row cols="12" class="center-div mt-5">
+        
         <v-chip
           dark
           label

@@ -4,7 +4,7 @@
       v-if="insert_variation"
       :dialog="insert_variation"
       :productId="product_id"
-      @cloasDialog="insert_variation = false"
+      @closeDialog="insert_variation = false"
       @reload="loadAgain()"
     />
     <v-expansion-panels variant="popout" class="my-4 elevation-0 style-class">
