@@ -1,6 +1,6 @@
 <template>
     <AddTemplate
-    update-url="/sms-template"
+    update-url="/sms-template/update"
     :template-id="$route.params.id"
     />
   </template>

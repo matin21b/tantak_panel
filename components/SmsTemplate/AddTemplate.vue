@@ -27,10 +27,10 @@
         </v-col>
         <v-col cols="12" md="2">
           <UserSelectForm
-            text="انتخابگر"
-            :multi="false"
-            :roleId="['791d1b02-3610-4177-9051-eb7ae6b72def']"
-            v-model="selecteduser"
+            rules="require"
+            v-model="selected_admin"
+            url="/user/searchByRole"
+            :role-id="role_id"
           />
         </v-col>
         <v-col cols="12" md="2">
@@ -90,8 +90,8 @@ export default {
     return {
       loading: false,
       valid: false,
-      admin_id: [],
-      selecteduser: "",
+      role_id: [],
+      selected_admin: "",
       form: {
         user_id: "",
         status: "",
@@ -102,16 +102,9 @@ export default {
       },
     };
   },
-  watch: {
-    selecteduser(new_al) {
-      console.log(new_al)
-    },
-  },
   beforeMount() {
     this.loadData();
-    this.admin_id.push(this.$store.state.auth.role.admin_call_center_id);
-    console.log(this.$store.state.auth.role.admin_call_center_id);
-    console.log(this.admin_id);
+    this.role_id.push(this.$store.state.auth.role.admin_id);
   },
   methods: {
     loadData() {
@@ -121,7 +114,7 @@ export default {
           .then((response) => {
             let data = response.model;
             // console.log(data);
-            this.form.user_id = data.id;
+            this.form.role_id = data.user_id;
             this.form.fa_name = data.fa_name;
             this.form.en_name = data.en_name;
             this.form.status = data.status;
@@ -139,7 +132,7 @@ export default {
       console.log(this.selecteduser);
       this.loading = true;
       const form = { ...this.form };
-      form.user_id = this.$store.state.auth.user.id;
+      form.user_id = this.selected_admin[0].id
       let url = Boolean(this.templateId) ? this.updateUrl : this.createUrl;
       this.$reqApi(url, form)
         .then((response) => {
