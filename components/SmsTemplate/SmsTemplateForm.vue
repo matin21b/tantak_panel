@@ -138,7 +138,7 @@ export default {
       this.$reqApi("sms-template/show", { id: this.templateId })
         .then((response) => {
           let data = response.model;
-          // this.selected_admin.push(data)
+          this.selected_admin.push(data.user);
           this.form.user_id = data.id;
           this.form.fa_name = data.fa_name;
           this.form.en_name = data.en_name;
