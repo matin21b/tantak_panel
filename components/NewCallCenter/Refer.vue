@@ -127,7 +127,7 @@
               "
               color="primary"
               class="mt-10 ml-4"
-              :disabled="!Boolean(number_refer)"
+              :disabled="!Boolean(number_refer) || selected_item.length == 0"
               @click="submit()"
             >
               تایید
@@ -381,9 +381,9 @@ export default {
         if (this.type_send == "supervisor_to_manager") {
           form.step = "supervisor_to_manager";
           form.supervisor_id = this.user_back_message[0].id;
-        } else if (this.type_send == "close") {
+        }else if (this.type_send == "close") {
           form.step = "close";
-          form.step = step;
+          
         } else if (this.type_send == "date_time") {
           form["supervisor_id"] = this.user[0].id;
           form.step = "manager_to_supervisor";
@@ -567,7 +567,7 @@ export default {
           show_step = true;
         }
       }
-      if (this.is_oprator && Boolean(this.number_refer)) {
+      if (this.is_oprator && (Boolean(this.number_refer) || Boolean(this.selected_item.length > 0))) {
         show_step = true;
       }
       return show_step;
