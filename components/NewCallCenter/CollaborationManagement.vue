@@ -84,7 +84,7 @@
                       :items="transfer_items"
                     />
                   </v-col>
-                  <v-col cols="12" md="12" v-if="transfer == 'me'">
+                  <v-col cols="12" md="12" v-if="transfer == 'me' || (this.$checkRole(this.$store.state.auth.role.admin_call_center_id) && Boolean(selected.value == 'termination'))">
                     <UserSelectForm
                       text="کاربر فعلی"
                       v-model="from_personnel_id"
