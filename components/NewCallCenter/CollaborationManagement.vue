@@ -60,7 +60,7 @@
             </v-window-item>
 
             <v-window-item :value="2">
-              <v-form v-model="valid">
+              <v-form v-model="valid" v-if="step == 2">
                 <v-col v-if="step == 2" cols="12" class="pa-0">
                   <CreateUserForm
                     @backStep="step--"
@@ -84,7 +84,7 @@
                       :items="transfer_items"
                     />
                   </v-col>
-                  <v-col cols="12" md="12" v-if="transfer =='me'">
+                  <v-col cols="12" md="12" v-if="transfer == 'me'">
                     <UserSelectForm
                       text="کاربر فعلی"
                       v-model="from_personnel_id"
@@ -93,11 +93,11 @@
                       :role-id="filter_role"
                     />
                   </v-col>
-                  <!-- <v-col
+                  <v-col
                     cols="12"
-                    md="6"
+                    md="12"
                     v-if="
-                      transfer == 'other' || selected.value == 'termination'
+                   this.$checkRole(this.$store.state.auth.role.admin_id) ||  (this.$checkRole(this.$store.state.auth.role.admin_call_center_id) && Boolean(selected.value == 'termination')  )
                     "
                   >
                     <UserSelectForm
@@ -107,10 +107,11 @@
                       rules="require"
                       :role-id="filter_role"
                     />
-                  </v-col> -->
+                  </v-col>
                 </v-row>
                 <v-col cols="12" v-if="step == 2">
                   <Subordinates
+                    @sendForm="getData($event)"
                     v-if="
                       Boolean(selected) &&
                       selected.value == 'transfer_message' &&
@@ -235,6 +236,18 @@ export default {
   },
 
   methods: {
+    getData(form) {
+      if (Boolean(form.operator_id) && Boolean(form.new_operator_id)) {
+        this.form.from_personnel_id = form.operator_id;
+        this.form.to_personnel_id = form.new_operator_id;
+      } else if (
+        Boolean(form.new_supervisor_id) &&
+        Boolean(form.supervisor_id)
+      ) {
+        this.form.from_personnel_id = form.supervisor_id;
+        this.form.to_personnel_id = form.new_supervisor_id;
+      }
+    },
     handelerClick(item) {
       this.step++;
       this.selected = item;
@@ -242,8 +255,13 @@ export default {
     submit(url) {
       this.loading = true;
       let form = { ...this.form };
-      form.from_personnel_id = this.from_personnel_id[0].id;
-      form.to_personnel_id = this.to_personnel_id[0].id;
+      if (this.from_personnel_id.length > 0) {
+        form.from_personnel_id = this.from_personnel_id[0].id;
+      }
+      if (this.to_personnel_id.length > 0) {
+        form.to_personnel_id = this.to_personnel_id[0].id;
+      }
+
       if (Boolean(this.selected)) {
         form["stop_cooperation"] =
           this.selected.value == "transfer_message" ? false : true;
