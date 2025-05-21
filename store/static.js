@@ -72,6 +72,8 @@ export const state = () => ({
   ownership_type_agancy,
   agency_request_step,
   cooperation_req,
+  sms_template_status,
+  sms_template_kind_set,
 });
 
 let status_type = [
@@ -278,7 +280,7 @@ let status_call = [
   { text: "بدون پاسخ", value: "NO ANSWER" },
   { text: "از دست رفته", value: "MISSED" },
   { text: "عدم موفقیت", value: "FAILED" },
-  { text: "پاسخ داده شده", value: "ANSWERED" }
+  { text: "پاسخ داده شده", value: "ANSWERED" },
 ];
 let sell_type = [
   { text: "فروش تکی", value: "sell" },
@@ -969,5 +971,47 @@ let cooperation_req = [
   {
     text: " از مصاحبه  گر به کارشناس منابع انسانی",
     value: "interviewer_to_human_resources_expert",
+  },
+];
+let sms_template_status = [
+  { text: "فعال", value: "active" },
+  { text: "غیر فعال", value: "in_active" },
+];
+let sms_template_kind_set = [
+  {
+    text: "درگاه بانکی",
+    value: "bank",
+  },
+  {
+    text: "دستی ",
+    value: "manual",
+  },
+  {
+    text: "کارت به کارت ",
+    value: "cardToCard",
+  },
+  {
+    text: "نقد",
+    value: "naghd",
+  },
+  {
+    text: "چک",
+    value: "check",
+  },
+  {
+    text: "کارتخوان",
+    value: "pos",
+  },
+  {
+    text: "لینک پرداخت",
+    value: "send_pay_link",
+  },
+  {
+    text: "پست",
+    value: "post",
+  },
+  {
+    text: "سفته",
+    value: "demand_note",
   },
 ];
