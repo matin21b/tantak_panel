@@ -84,7 +84,7 @@
                       :items="transfer_items"
                     />
                   </v-col>
-                  <v-col cols="12" md="12" v-if="transfer == 'me' || (this.$checkRole(this.$store.state.auth.role.admin_call_center_id) && Boolean(selected.value == 'termination'))">
+                  <v-col cols="12" md="12" v-if="!this.$checkRole(this.$store.state.auth.role.admin_call_center_id)">
                     <UserSelectForm
                       text="کاربر فعلی"
                       v-model="from_personnel_id"
@@ -93,11 +93,12 @@
                       :role-id="filter_role"
                     />
                   </v-col>
+                  <!-- ||  (this.$checkRole(this.$store.state.auth.role.admin_call_center_id) && Boolean(selected.value == 'termination')  ) -->
                   <v-col
                     cols="12"
                     md="12"
                     v-if="
-                   this.$checkRole(this.$store.state.auth.role.admin_id) ||  (this.$checkRole(this.$store.state.auth.role.admin_call_center_id) && Boolean(selected.value == 'termination')  )
+                   this.$checkRole(this.$store.state.auth.role.admin_id) 
                     "
                   >
                     <UserSelectForm
@@ -113,10 +114,8 @@
                   <Subordinates
                     @sendForm="getData($event)"
                     v-if="
-                      Boolean(selected) &&
-                      selected.value == 'transfer_message' &&
-                      Boolean(transfer) &&
-                      transfer == 'other'
+                    this.$checkRole(this.$store.state.auth.role.admin_call_center_id) 
+                   
                     "
                   />
                 </v-col>

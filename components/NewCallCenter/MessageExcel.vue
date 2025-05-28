@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" persistent width="980">
+    <v-dialog v-model="dialog" persistent width="750">
       <v-card
         style="overflow: hidden !important"
         class="align-center card-style justify-center pa-8"
@@ -12,34 +12,76 @@
         >
           <v-form v-model="valid">
             <v-row class="justify-center">
-              <v-col cols="12" :md="role == 'all' ? 6 : 3">
+              <v-col cols="12" :md="role == 'all' ? 12 : 12">
                 <amp-select text="نقش" :items="roles" v-model="role" />
               </v-col>
-              <v-col cols="12" md="3" v-if="role != 'all'">
+
+              <v-col
+                cols="12"
+                md="6"
+                v-if="
+                  role != 'all' &&
+                  role != this.$store.state.auth.role.oprator_id ||
+                  $checkRole(this.$store.state.auth.role.admin_id)
+                  ||
+                  ($checkRole(this.$store.state.auth.role.superviser_id) &&  role == this.$store.state.auth.role.oprator_id )
+                "
+              >
                 <UserSelectForm
                   :disabled="!Boolean(role)"
                   text="انتخاب کاربر"
                   v-model="user"
-                  url="user/searchByRole"
+                  :url="url_users"
                   :rules="Boolean(role) ? 'require' : ''"
                   :role-id="[role]"
                 />
               </v-col>
-              <v-col cols="12" md="3">
+
+              <v-col
+                cols="12"
+                md="6"
+                v-if="role == this.$store.state.auth.role.oprator_id &&
+                 !$checkRole(this.$store.state.auth.role.superviser_id)
+                 &&   !$checkRole(this.$store.state.auth.role.admin_id)
+                 "
+              >
+                <UserSelectForm
+                  text="انتخاب سرپرست مربوطه"
+                  v-model="supervizor"
+                  url="user/list-employee"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+                v-if="role == this.$store.state.auth.role.oprator_id &&
+                 !$checkRole(this.$store.state.auth.role.superviser_id)
+                 &&   !$checkRole(this.$store.state.auth.role.admin_id)
+                 "
+              >
+                <amp-select
+                  :disabled="Boolean(supervizor.length == 0)"
+                  text="انتخاب فروشنده"
+                  v-model="selected_operator"
+                  rules="require"
+                  :items="operator_list"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
                 <amp-jdate
                   text="تاریخ شروع"
                   :is-number="true"
                   v-model="start_date"
                 />
               </v-col>
-              <v-col cols="12" md="3">
+              <v-col cols="12" md="6">
                 <amp-jdate
                   text="تاریخ پایان"
                   :is-number="true"
                   v-model="end_date"
                 />
               </v-col>
-              <v-col cols="12" md="10">
+              <v-col cols="12" md="12">
                 <amp-autocomplete
                   rules="require"
                   text=" وضعیت"
@@ -50,7 +92,7 @@
                 />
               </v-col>
 
-              <v-col cols="12" md="2" class="mt-8">
+              <v-col cols="12" md="6" class="mt-8">
                 <amp-button
                   text="تایید"
                   height="38"
@@ -131,11 +173,15 @@ export default {
       end: false,
       last_page: 10000000,
       total_data: [],
+      selected_operator: "",
+      supervizor: [],
+      operator_list: [],
       user: [],
       roles: [],
       role: "all",
       valid: true,
       start_date: "",
+      url_users: "",
       end_date: "",
       set_filters: {},
       status: [],
@@ -183,6 +229,11 @@ export default {
     };
   },
   beforeMount() {
+    if (this.$checkRole(this.$store.state.auth.role.admin_id)) {
+      this.url_users = "user/searchByRole";
+    } else {
+      this.url_users = "user/list-employee";
+    }
     this.roles = [
       {
         text: "همه",
@@ -200,12 +251,33 @@ export default {
         value: this.$store.state.auth.role.oprator_id,
       },
     ];
+    if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
+      this.roles = [
+      {
+        text: "همه",
+        key: "all",
+        value: "all",
+      },
+
+      {
+        text: "فروشنده",
+        key: "oprator",
+        value: this.$store.state.auth.role.oprator_id,
+      },
+    ];
+    }
   },
   watch: {
     total_data: {
       deep: true,
       handler() {
         this.value = (this.total_data.length * 100) / this.total_length;
+      },
+    },
+    supervizor: {
+      deep: true,
+      handler() {
+        this.listOperator();
       },
     },
     role() {
@@ -228,23 +300,34 @@ export default {
       if (Boolean(this.end)) {
         return;
       }
+console.log("#" , [this.last_page , this.page_number]);
 
       if (this.last_page < this.page_number) {
         this.total_data.length = this.total_length;
         this.value = 100;
         let name = "";
         let file_name = "";
-        if (this.role != "all") {
+      
+
+
+        if (this.role != "all" && this.user.length >0) {
           name =
             this.user[0].first_name && this.user[0].last_name
               ? this.user[0].first_name + " " + this.user[0].last_name
               : this.user[0].username;
+        }else if (Boolean(this.selected_operator)) {
+        let find = this.operator_list.find((x)=>this.selected_operator == x.value )
+        if (Boolean(find)) {
+          name = find.text
         }
+        }
+
         if (Boolean(name)) {
           file_name = ` ( ${name} )  پیام های  دریافتی `;
         } else {
           file_name = "پیام های  دریافتی";
         }
+        
         this.$exportCSV(this.excel_hed, this.total_data, file_name);
         this.disabled = false;
         this.last_page = 10000000;
@@ -334,7 +417,9 @@ export default {
           }
         }
       }
-
+      if (Boolean(this.selected_operator)) {
+        filter["operator_id"] = this.selected_operator;
+      }
       if (this.status.length == 1) {
         key = "=";
         value = this.status[0];
@@ -365,6 +450,29 @@ export default {
         };
       }
       this.set_filters = filter;
+    },
+    listOperator() {
+      if (this.supervizor.length > 0) {
+        this.$reqApi("user/list-operator", {
+          supervisor_id: this.supervizor[0].id,
+        })
+          .then((res) => {
+            let sub_users = [];
+            for (let i = 0; i < res.length; i++) {
+              const x = res[i];
+              let name =
+                Boolean(x.first_name) && Boolean(x.last_name)
+                  ? `${x.first_name} ${x.last_name} | ${x.username}`
+                  : x.username;
+              sub_users.push({
+                text: name,
+                value: x.id,
+              });
+            }
+            this.operator_list = sub_users;
+          })
+          .catch((err) => {});
+      }
     },
   },
 };

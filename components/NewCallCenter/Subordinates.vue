@@ -13,6 +13,24 @@
           </h1>
         </v-alert>
       </v-col>
+      <v-col cols="12">
+        <amp-autocomplete
+          :disabled="new_supervisor.length < 0 || loading"
+          text="قطع همکاری با چه نقشی صورت گیرد ؟‌"
+          v-model="change_empoly"
+          :items="change_message_items"
+          rules="require"
+        />
+      </v-col>  
+          <v-col cols="12">
+        <amp-autocomplete
+          :disabled="new_supervisor.length < 0 || loading"
+          text="پیام ها به کدام نقش منتقل شود‌؟‌"
+          v-model="change_message"
+          :items="change_message_items"
+          rules="require"
+        />
+      </v-col>
       <v-col cols="6">
         <UserSelectForm
           text="سرپرست فعلی"
@@ -23,16 +41,17 @@
       </v-col>
       <v-col cols="6">
         <amp-autocomplete
-          :disabled="seupervisor.length < 0 && loading"
+          :disabled="seupervisor.length < 0 ||  loading"
           text="کارشناس فعلی"
           v-model="form.operator_id"
           :items="operator_items"
           rules="require"
         />
       </v-col>
+
       <v-col cols="6">
         <UserSelectForm
-          :disabled="seupervisor.length < 0 && loading"
+          :disabled="seupervisor.length < 0 ||  loading"
           text="سرپرست جدید"
           v-model="new_supervisor"
           url="user/list-employee"
@@ -41,7 +60,8 @@
       </v-col>
       <v-col cols="6">
         <amp-autocomplete
-          :disabled="new_supervisor.length < 0 && loading"
+        v-if="operator"
+          :disabled="new_supervisor.length < 0 ||  loading"
           text="کارشناس جدید"
           v-model="form.new_operator_id"
           :items="new_operator_items"
@@ -63,7 +83,10 @@ export default {
     seupervisor: [],
     new_supervisor: [],
     operator_items: [],
+    change_message_items: [{text:"سرپرست",value:"nsupervisor"} , {text:"کارشناس",value:"operator"}],
     new_operator_items: [],
+    change_message: "",
+    change_empoly: "",
     operator: "",
     new_operator: "",
     form: {
@@ -119,7 +142,6 @@ export default {
               value: x.id,
             });
           }
-          console.log("items ==> ", sub_users);
           if (key == "old") {
             this.operator_items = sub_users;
             console.log("this.operator ==> ", this.operator);
