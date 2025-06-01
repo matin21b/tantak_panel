@@ -163,7 +163,6 @@ export default {
       this.is_admin = true;
     }
     if (this.$checkRole(this.$store.state.auth.role.admin_call_center_id)) {
-      console.log(true);
       this.url_list = "user/list-employee";
     }
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {

@@ -148,7 +148,6 @@ export default {
           this.loading = false;
         })
         .catch((e) => {
-          console.log(e);
           this.loading = false;
         });
     },
@@ -166,7 +165,6 @@ export default {
           this.redirectPage();
         })
         .catch((e) => {
-          console.log(e);
           this.loading = false;
         });
     },

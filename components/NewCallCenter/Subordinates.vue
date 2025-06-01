@@ -144,7 +144,6 @@ export default {
           }
           if (key == "old") {
             this.operator_items = sub_users;
-            console.log("this.operator ==> ", this.operator);
           } else {
             this.new_operator_items = sub_users;
           }

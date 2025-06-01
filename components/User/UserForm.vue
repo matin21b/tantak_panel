@@ -386,7 +386,6 @@ export default {
       if (this.modelId) {
         url = this.updateUrl;
         let ids = [];
-        console.log("form.category_id" , form.category_id)
         if (form.category_id.length > 0) {
           for (let i = 0; i < form.category_id.length; i++) {
             const x = form.category_id[i];
@@ -398,8 +397,6 @@ export default {
           }
         }
         form.category_id = ids;
-        console.log("form ==> ", form);
-        console.log("ids ==> ", ids);
         form["id"] = this.modelId;
       } else {
         form["manual"] = "manual";
