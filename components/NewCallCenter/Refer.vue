@@ -127,7 +127,7 @@
               "
               color="primary"
               class="mt-10 ml-4"
-              :disabled="!Boolean(number_refer) || selected_item.length == 0"
+              :disabled="!Boolean(number_refer) "
               @click="submit()"
             >
               تایید
