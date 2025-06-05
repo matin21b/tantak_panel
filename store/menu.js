@@ -344,12 +344,12 @@ let mnue_tree = [
     ],
   },
 
-  {
-    id: 34751,
-    name: "وظیفه ها",
-    access: "tasks/index",
-    route: "/tasks",
-  },
+  // {
+  //   id: 34751,
+  //   name: "وظیفه ها",
+  //   access: "tasks/index",
+  //   route: "/tasks",
+  // },
 
   {
     id: 545613,
