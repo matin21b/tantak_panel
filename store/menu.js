@@ -639,7 +639,13 @@ let mnue_tree = [
         name: "محصولات غیر سیستمی",
         access: "setting/root",
         route: "/setting/not-system-products",
-      },
+      },  
+      //   {
+      //   id: 992654852,
+      //   name: "گزارشات متابیس",
+      //   access: "setting/root",
+      //   route: "/setting/metabase-logs",
+      // },
     ],
   },
 ];

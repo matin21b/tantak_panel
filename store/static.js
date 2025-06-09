@@ -676,6 +676,7 @@ let step_basket_refral = [
   { text: "بسته شده", value: "reject" },
   { text: "ارجاع به مدیر واحد مالی", value: "refer_fiscal_manager" },
   { text: "یرگشت از مدیر واحد مالی", value: "reject_fiscal_manager" },
+  { text: "ارجاع به مدیر هماهنگ کننده", value: "fiscal_manager_coordinator" },
   {
     text: "ارجاع از مدیر واحد مالی به سرپرست",
     value: "manager_supervisor_fiscal",

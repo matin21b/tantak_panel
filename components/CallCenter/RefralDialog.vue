@@ -60,11 +60,11 @@
               </v-col>
 
               <v-col cols="12">
-                <amp-select
+                <!-- <amp-select
                   text="پیام های آماده"
                   :items="$store.state.setting.ready_messages"
                   v-model="ready_message"
-                />
+                /> -->
                 <amp-textarea
                   text="پیام"
                   v-model="form.message"
@@ -119,7 +119,7 @@ export default {
     delivery_code: "",
     message: "",
     cancel: "",
-    ready_message: "",
+    // ready_message: "",
     title_select: "",
     form: {
       step: "",
@@ -152,13 +152,12 @@ export default {
   }),
   mounted() {
     this.setOPtion();
-    this.$store.dispatch("setting/readyMessages");
+    // this.$store.dispatch("setting/readyMessages");
   },
   watch: {
-    ready_message() {
-      this.form.message = this.ready_message;
-      
-    },
+    // ready_message() {
+    //   this.form.message = this.ready_message;
+    // },
     "form.step"() {
       switch (this.form.step) {
         // STEP*****
@@ -230,6 +229,11 @@ export default {
           this.url = "user/list-employee";
           this.title_select = "انتخاب  به پیک";
 
+          break;
+           case "fiscal_manager_coordinator":
+          this.show_select_user = true;
+          this.url = "user/coordinator-manager";
+          this.title_select = "انتخاب  مدیر هماهنگ کننده";
           break;
         default:
           this.show_select_user = false;
@@ -395,7 +399,10 @@ export default {
       }
       if (Boolean(this.is_financial_unit)) {
         this.step_items = [
-          { text: "تایید سفارش", value: "accept_fiscal" },
+          {
+            text: "ارجاع به مدیر هماهنگ کننده",
+            value: "fiscal_manager_coordinator",
+          },
           { text: "عدم تایید و برگشت سفارش", value: "fiscal_to_supervisor" },
         ];
       }
