@@ -4,7 +4,7 @@
         <v-row dense class="d-flex justify-center">
           <v-col cols="12" md="6">
             <amp-input text= "نام داشبود  " v-model="form.value" rules="require" />
-            <!-- <amp-textarea text= "توضیحات " v-model="form.value_2"  /> -->
+            <amp-input text= "شناسه داشبورد" v-model="form.value_2"  rules="require,number" />
           </v-col>
         </v-row>
   
@@ -46,7 +46,7 @@
       selected: {},
       form: {
         id: '',
-        key: 'metabase ',
+        key: 'metabase',
         value: '',
         value_2: '',
       },

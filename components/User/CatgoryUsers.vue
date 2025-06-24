@@ -226,7 +226,6 @@ export default {
       this.$reqApi("/user/searchByRole", {
         role_id: [this.$store.state.auth.role.user_id],
         condition: "not_in",
-        row_number: 30000,
       })
         .then((res) => {
           this.pesonal_list = res.model.data;
@@ -254,7 +253,7 @@ export default {
     customerList() {
       this.$reqApi("/user/searchByRole", {
         role_id: [this.$store.state.auth.role.user_id],
-        row_number: 30000,
+       
       })
         .then((res) => {
           this.customer_list = JSON.parse(JSON.stringify(res.model.data));

@@ -24,7 +24,7 @@ export default {
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
 
-    this.headers = [{ text: "عنوان ", value: "value" }];
+    this.headers = [{ text: "عنوان ", value: "value" }, { text: "شناسه داشبورد", value: "value_2" }];
   },
 };
 </script>

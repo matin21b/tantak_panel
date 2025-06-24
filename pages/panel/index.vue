@@ -1,21 +1,25 @@
 <template>
   <div>
-
+    <MetabaseLogs
+      v-if="this.$checkRole(this.$store.state.auth.role.admin_id)"
+    />
   </div>
 </template>
 
 <script>
+import MetabaseLogs from "@/components/Cartabl/MetabaseLogs.vue";
 export default {
+  components: {
+    MetabaseLogs,
+  },
   data: () => ({
     title: "کارتابل",
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
-
   },
   mounted() {
     this.redirect();
-   
   },
   methods: {
     redirect() {

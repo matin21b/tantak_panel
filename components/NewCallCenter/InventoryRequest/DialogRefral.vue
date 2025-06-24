@@ -28,6 +28,7 @@
               v-model="form.file"
               class="mb-5"
             />
+    
             <amp-select
               text="پیام های اماده"
               :items="$store.state.setting.ready_messages"
@@ -154,7 +155,7 @@ export default {
           ];
         } else if (
           this.stepInvitor == "init" ||
-          this.stepInvitor == "supervisor_to_manager_sale" 
+          this.stepInvitor == "supervisor_to_manager_sale"
         ) {
           this.form.step = "manager_to_supervisor_sale";
           items = [
@@ -163,7 +164,10 @@ export default {
               value: "manager_to_supervisor_sale",
             },
           ];
-        } else if (this.stepInvitor == "accept_employee_sale" ||   this.stepInvitor == "fiscal_manager_to_manager" ) {
+        } else if (
+          this.stepInvitor == "accept_employee_sale" ||
+          this.stepInvitor == "fiscal_manager_to_manager"
+        ) {
           this.form.step = "manager_to_fiscal_manager";
           items = [
             {
@@ -291,12 +295,12 @@ export default {
   methods: {
     submit() {
       this.loading = true;
-      if (!Boolean(  this.show_select_user)) {
-        this.user = []
-        
+      if (!Boolean(this.show_select_user)) {
+        this.user = [];
       }
       let form = { ...this.form };
       form.id = this.basketId;
+ 
       switch (this.form.step) {
         case "supervisor_to_employee_sale":
           form["user_refer_id"] = this.user[0].id;
@@ -317,7 +321,6 @@ export default {
         default:
           break;
       }
-
 
       this.$reqApi("product-request/referral", form)
         .then((res) => {

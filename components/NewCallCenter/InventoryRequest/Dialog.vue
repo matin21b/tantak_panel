@@ -1,6 +1,11 @@
 <template>
-
-  <v-dialog v-model="dialog" persistent fullscreen hide-overlay transition="dialog-bottom-transition">
+  <v-dialog
+    v-model="dialog"
+    persistent
+    fullscreen
+    hide-overlay
+    transition="dialog-bottom-transition"
+  >
     <v-card style="overflow: hidden" class="b-color">
       <v-card-title class="primary d-flex justify-center py-5">
         <span class="white--text font_20">
@@ -9,6 +14,7 @@
         <v-icon color="white" large class="mr-1"> add_shopping_cart </v-icon>
 
         <v-spacer></v-spacer>
+      
         <v-btn text icon @click="closeDialog">
           <v-icon color="white" class="mr-1"> close </v-icon>
         </v-btn>
@@ -16,15 +22,30 @@
       <v-card-text>
         <v-row class="d-flex justify-center">
           <v-col cols="8">
-            <SelectVariation v-if="dialog" :basketId="basketId" @submit="InsertItem"
-              @getOnlyData="getSelectedItems($event)" @createFactor="getItems(true)" ref="selectVar" />
+            <SelectVariation
+              v-if="dialog"
+              :basketId="basketId"
+              @submit="InsertItem"
+              @isLoading="is_loading = $event"
+              @getOnlyData="getSelectedItems($event)"
+              @createFactor="getItems(true)"
+              ref="selectVar"
+             
+            />
           </v-col>
         </v-row>
 
-        <Factor v-if="show_factor" :dialog="show_factor" :selected-items="factor_items" :total-price="totalPrice"
-          @closeDialog="show_factor = false" @submit="getItems(false)" />
+        <Factor
+          @amaniShopping="setTypeShop($event)"
+          v-if="show_factor"
+          :dialog="show_factor"
+          :is-loading="is_loading"
+          :selected-items="factor_items"
+          :total-price="totalPrice"
+          @closeDialog="show_factor = false"
+          @submit="getItems(false)"
+        />
       </v-card-text>
-
     </v-card>
   </v-dialog>
 </template>
@@ -55,7 +76,9 @@ export default {
   data() {
     return {
       card_title: "",
+      amani_shopping: "",
       show_factor: false,
+      is_loading: false,
       products: [],
       factor_items: {},
     };
@@ -74,9 +97,9 @@ export default {
   methods: {
     getItems(show_factor) {
       if (Boolean(show_factor)) {
-        this.$refs.selectVar.callSubmit(true);
+        this.$refs.selectVar.callSubmit(true );
       } else {
-        this.$refs.selectVar.callSubmit();
+        this.$refs.selectVar.callSubmit(false , this.amani_shopping );
       }
     },
     getSelectedItems(event) {
@@ -89,6 +112,9 @@ export default {
     },
     closeDialog() {
       this.$emit("closeDialog");
+    },
+    setTypeShop(event) {
+      this.amani_shopping =  event;
     },
   },
 };

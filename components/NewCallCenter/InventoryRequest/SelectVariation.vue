@@ -2,8 +2,16 @@
   <v-card class="elevation-0" :disabled="loading">
     <v-col cols="12">
       <v-row cols="12" class="center-div mt-1 mx-4">
-        <v-chip dark label class="ma-2" color="grey darken-1" v-for="item in items" :key="item.key"
-          @click="tab = item.key" :outlined="tab != item.key">
+        <v-chip
+          dark
+          label
+          class="ma-2"
+          color="grey darken-1"
+          v-for="item in items"
+          :key="item.key"
+          @click="tab = item.key"
+          :outlined="tab != item.key"
+        >
           <span class="font_16">
             {{ item.text }}
           </span>
@@ -12,7 +20,14 @@
           </v-icon>
         </v-chip>
         <v-spacer></v-spacer>
-        <amp-button text="ثبت موارد انتخابی" icon="task_alt" @click="createFactor" color="green" class="ma-2" />
+        <amp-button
+          text="ثبت موارد انتخابی"
+          icon="task_alt"
+          @click="createFactor"
+          color="green"
+          :disabled="loading"
+          class="ma-2"
+        />
       </v-row>
     </v-col>
     <v-window v-model="step">
@@ -43,6 +58,10 @@ export default {
   },
   props: {
     basketId: {
+      require: false,
+      default: false,
+    },
+    amaniShopping: {
       require: false,
       default: false,
     },
@@ -101,7 +120,7 @@ export default {
       { text: "جعبه ", key: "box", icon: "inbox" },
     ],
   }),
-  beforeMount() { },
+  beforeMount() {},
   watch: {
     tab(new_value, old_value) {
       if (old_value == "products" && new_value == "packages") {
@@ -112,7 +131,8 @@ export default {
       }
       if (old_value == "packages" && new_value == "box") {
         this.step += 1;
-      } if (old_value == "packages" && new_value == "products") {
+      }
+      if (old_value == "packages" && new_value == "products") {
         this.step -= 1;
       }
       if (old_value == "box" && new_value == "products") {
@@ -122,7 +142,11 @@ export default {
         this.step -= 1;
       }
     },
+    loading() {
+      this.$emit("isLoading", this.loading);
+    },
   },
+
   methods: {
     sendVariation() {
       let variation_array = [];
@@ -141,16 +165,18 @@ export default {
     getData(data, type) {
       if (type == "package") {
         this.packages_items = data;
-      }
-      else if (type == "product") {
+      } else if (type == "product") {
         this.products_items = data;
-      }
-      else if (type == "boxes") {
+      } else if (type == "boxes") {
         this.boxes_items = data;
       }
     },
-    callSubmit(get_data) {
-      if (this.packages_items.length < 1 && this.products_items.length < 1 && this.boxes_items.length < 1) {
+    callSubmit(get_data, amani_shopping) {
+      if (
+        this.packages_items.length < 1 &&
+        this.products_items.length < 1 &&
+        this.boxes_items.length < 1
+      ) {
         this.$toast.error("موردی انتخاب نشده ");
         this.loading = false;
         return;
@@ -170,12 +196,17 @@ export default {
         });
         return;
       } else {
-        this.submit();
+        this.setAmaniShopping(amani_shopping);
       }
     },
-    submit() {
+    setAmaniShopping(amani_shopping) {
+      const is_amani = amani_shopping == "yes" ? true : false;
+      this.submit(is_amani);
+    },
+    submit(amani_shopping = false) {
       this.loading = true;
       let form = {};
+
       if (
         this.products_items &&
         Array.isArray(this.products_items) &&
@@ -213,6 +244,7 @@ export default {
         }
         form["box_ids"] = boxes;
       }
+      form["amani_shopping"] = amani_shopping;
       let url = this.basketId
         ? "product-request/update"
         : "product-request/insert";
@@ -236,8 +268,8 @@ export default {
         });
     },
     createFactor() {
-      this.$emit("createFactor")
-    }
+      this.$emit("createFactor");
+    },
   },
 };
 </script>
