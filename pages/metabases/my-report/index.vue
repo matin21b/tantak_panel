@@ -38,7 +38,7 @@
           </div>
 
           <v-col cols="12" class="mb-3">
-            <v-btn width="250" @click="getLog(x)" outlined color="blue-grey"
+            <v-btn width="250" @click="handleClick(x)" outlined color="blue-grey"
               ><strong class="font_15"> مشاهده گزارش </strong>
               <v-icon> whatshot </v-icon>
             </v-btn>
@@ -57,8 +57,8 @@
             <amp-input
               v-for="(x, i) in body"
               :key="i"
-              :text="x"
-              v-model="form[x]"
+              :text="x.fa_name"
+              v-model="form[x.en_name]"
               rules="require"
             />
           </v-col>
@@ -114,6 +114,16 @@ export default {
     this.getMetabaseList();
   },
   methods: {
+    handleClick(x){
+      this.form["id"] = x.id;
+      if (x.request_body.length == 0) {
+        this.getIfrem()
+      }else{
+        this.open_dialog = true;
+        this.body = x.request_body;
+        this.select_item = x;
+      }
+    },
     getMetabaseList() {
       this.$reqApi("metabase")
         .then((res) => {

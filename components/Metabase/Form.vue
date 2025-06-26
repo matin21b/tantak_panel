@@ -22,14 +22,6 @@
             v-model="form.status"
           />
         </v-col>
-        <v-col cols="12" md="4">
-          <amp-input
-            cClass="ltr-item"
-            text="شناسه داشبورد"
-            v-model="form.metabase_id"
-            rules="require,number"
-          />
-        </v-col>
     
 
         <v-col cols="12" md="4">
@@ -40,6 +32,29 @@
             :items="this.$store.state.static.metabase_type"
           />
         </v-col>
+
+        <v-col cols="12" md="4">
+          <amp-input
+            cClass="ltr-item"
+            text="شناسه"
+            v-model="form.metabase_id"
+            rules="require,number"
+          />
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <amp-select
+            text="فیلتر بر اساس شماره فرد استفاده کننده"
+            rules="require"
+            v-model="form.send_user_phone"
+            :items="this.$store.state.static.send_user_phone"
+          />
+        </v-col>
+        
+        <v-col cols="12" md="4">
+          <amp-input text="عنوان فیلتر شماره فرد در متابیس" v-model="form.body_user_phone" v-if="form.send_user_phone === true" rules="require" placeholder="مثال  : phone_number" />
+        </v-col> 
+
       </v-row>
       <v-row class="justify-center">
         <v-col cols="12" md="10">
@@ -64,8 +79,8 @@
             </v-banner>
             <v-row class="mt-3">
               <v-col
-                class="d-flex align-center px-0"
-                cols="6"
+                class=""
+                cols="6 "
                 md="4"
                 v-for="(x, i) in metabases_parameters"
                 :key="i"
@@ -77,9 +92,25 @@
                 </v-chip>
                 <v-col cols="9" class="pa-0 text-center">
                   <amp-input
-                    text="کلید را وارد کنید"
-                    v-model="x.value"
+                    text="عنوان فیلتر به انگلیسی"
+                    v-model="x.en_name"
                     placeholder="مثال  : phone_number"
+                    cClass="ltr-item"
+                  ></amp-input>
+                </v-col>
+                <v-col cols="9" class="pa-0 text-center">
+                  <amp-input
+                    text="عنوان فیلتر به فارسی"
+                    v-model="x.fa_name"
+                    placeholder="مثال  : شماره کاربر"
+                    cClass="ltr-item"
+                  ></amp-input>
+                </v-col>
+                <v-col cols="9" class="pa-0 text-center">
+                  <amp-input
+                    text="نوع"
+                    v-model="x.type"
+                    placeholder="مثال  : phone, text"
                     cClass="ltr-item"
                   ></amp-input>
                 </v-col>
@@ -91,6 +122,7 @@
           </v-card>
         </v-col>
       </v-row>
+      
       <v-row dense>
         <v-col cols="12" md="12">
           <v-divider />
@@ -138,6 +170,8 @@ export default {
       title: "",
       status: "",
       metabase_id: "",
+      metabase_type: "",
+      body_user_phone: "",
       request_body: [],
       role_ids: [],
     },
@@ -155,10 +189,8 @@ export default {
   methods: {
     submit() {
       let form = { ...this.form };
-      if (this.metabases_parameters.length > 0) {
-        form.request_body = this.metabases_parameters.map((x) => {
-          return x.value;
-        });
+      if (this.metabases_parameters) {
+        form.request_body = this.metabases_parameters;
       }
       this.loading = true;
       let url = this.createUrl;
@@ -185,19 +217,17 @@ export default {
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
           const res = response.model;
-          console.log("response ==> ", res);
+          res.request_body.map((item) =>{
+           this.metabases_parameters.push({ en_name: item.en_name , fa_name: item.fa_name , type: item.type });
+          })
           for (let key in res) {
             this.form[key] = res[key];
           }
           this.form.role_ids = res.roles.map((x) => x.id);
-          for (let i = 0; i < res.request_body.length; i++) {
-            const x = res.request_body[i];
-            this.metabases_parameters.push({ value: x });
-          }
-          console.log(
-            "  this.metabases_parameters ==> ",
-            this.metabases_parameters
-          );
+          // for (let i = 0; i < res.request_body.length; i++) {
+          //   const x = res.request_body[i];
+          //   this.metabases_parameters.push({ en_name: x.en_name , fa_name: x.fa_name , type: x.type });
+          // }
           this.loading = false;
           // this.form["id"] = response.id;
           // this.form.key = response.key;
@@ -210,7 +240,7 @@ export default {
         });
     },
     addParameter() {
-      this.metabases_parameters.push({ value: "" });
+      this.metabases_parameters.push({ en_name: "" , fa_name: "" , type: ""});
     },
     redirectPage() {
       if (window.history.length > 2) {

@@ -22,7 +22,6 @@ export default {
 
     this.headers = [
       { text: "عنوان ", value: "title" },
-
       {
         text: "وضعیت",
         value: "status",
@@ -42,6 +41,12 @@ export default {
       
             return body.roles.map((x) => x.name).join(" | ");
         },
+      },
+      { 
+        text: "فیلتر بر اساس شماره فرد استفاده کننده", 
+        value: "send_user_phone" ,
+        filterType: "select",
+        items: this.$store.state.static.send_user_phone,
       },
     ];
   },
