@@ -1,16 +1,16 @@
 <template>
   <div>
-    <MetabaseLogs
+    <!-- <MetabaseLogs
       v-if="this.$checkRole(this.$store.state.auth.role.admin_id)"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
-import MetabaseLogs from "@/components/Cartabl/MetabaseLogs.vue";
+// import MetabaseLogs from "@/components/Cartabl/MetabaseLogs.vue";
 export default {
   components: {
-    MetabaseLogs,
+    // MetabaseLogs,
   },
   data: () => ({
     title: "کارتابل",

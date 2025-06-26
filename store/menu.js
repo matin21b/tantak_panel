@@ -660,12 +660,12 @@ let mnue_tree = [
         access: "setting/root",
         route: "/setting/not-system-products",
       },
-      {
-        id: 992654852,
-        name: "گزارشات متابیس",
-        access: "setting/root",
-        route: "/setting/metabase-logs",
-      },
+      // {
+      //   id: 992654852,
+      //   name: "گزارشات متابیس",
+      //   access: "setting/root",
+      //   route: "/setting/metabase-logs",
+      // },
     ],
   },
 ];

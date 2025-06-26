@@ -1,4 +1,4 @@
-<template>
++<template>
     <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
       <v-container fluid class="px-8">
         <v-row dense class="d-flex justify-center">
