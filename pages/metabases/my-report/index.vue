@@ -7,7 +7,7 @@
         
       >
         <v-col cols="12" class="text-center my-2 mb-6">
-          <v-toolbar style="border-radius: 10px !important;" dark class="pa-5 d-flex align-center" color="blue-grey">
+          <v-toolbar  dark class="pa-5 d-flex align-center" color="blue-grey">
             <v-icon
               class="white lighten-1"
               style="border-radius: 100%"
@@ -57,7 +57,7 @@
             <amp-input
               v-for="(x, i) in body"
               :key="i"
-              :text="x"
+              :placeholder="x"
               v-model="form[x]"
               rules="require"
             />
