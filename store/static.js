@@ -75,6 +75,7 @@ export const state = () => ({
   sms_template_status,
   sms_template_kind_set,
   metabase_type,
+  send_user_phone,
 });
 
 let status_type = [
@@ -240,6 +241,10 @@ let bool_en = [
 let metabase_type = [
   { text: "سوال", value: "question" },
   { text: "داشبور", value: "dashboard" },
+];
+let send_user_phone = [
+  { text: "بله", value: true },
+  { text: "خیر", value: false },
 ];
 
 let gender = [

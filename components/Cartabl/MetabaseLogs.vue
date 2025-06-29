@@ -39,7 +39,7 @@
         <span class="mt-4">در حال بارگذاری داشبورد...</span>
       </div>
 
-      <div class="error-state" v-else-if="error">
+      <!-- <div class="error-state" v-else-if="error">
         <v-alert
           outlined
           text
@@ -59,7 +59,7 @@
             <small> تلاش مجدد </small>
           </v-btn>
         </v-alert>
-      </div>
+      </div> -->
     </v-col>
   </v-row>
 </template>
@@ -153,10 +153,10 @@ export default {
       );
       return result;
     },
-    // async newSetDashbord() {
-    //   const result = this.urlMetabase;
-    //   return result;
-    // },
+    async newSetDashbord() {
+      const result = this.urlMetabase;
+      return result;
+    },
     iframeLoaded() {
       this.$emit("loaded");
       this.$toast.success("اتصال به  متابیس  موفقیت آمیز بود");

@@ -32,7 +32,6 @@ export default {
     '~/plugins/ws',
     '~/plugins/browser',
     '~/plugins/helper',
-    '~/plugins/metabase-token',
     { src: '~/plugins/other.js', ssr: false },
     { src: '~/plugins/vue-persian-datetime-picker', ssr: false },
     { src: '~/plugins/leaflet', ssr: false },
