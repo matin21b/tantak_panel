@@ -326,7 +326,8 @@ export default {
           if (
             this.$checkRole(this.$store.state.auth.role.oprator_id) &&
             body.step == "supervisor_to_operator" &&
-            body.status != "done"
+            body.status != "done" &&
+            body.status != "regect"
           ) {
             return true;
           } else {
