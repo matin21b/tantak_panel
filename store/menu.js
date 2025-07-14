@@ -75,7 +75,7 @@ let mnue_tree = [
     children: [
       {
         id: 5632,
-        access: "complaint_categories/index",
+        access: "complaint_categories/root",
         name: "دسته بندی شکایات",
         route: "/new-call-center/complaint-categories",
       },
@@ -114,8 +114,8 @@ let mnue_tree = [
         name: "گزارشات متابیس",
         access: "metabases/index",
         route: "/metabases",
-      },    
-      
+      },
+
       {
         id: 9948972546058454852,
         name: "گزارشات من",
@@ -128,7 +128,7 @@ let mnue_tree = [
   {
     id: 49,
     name: "الگوی پیامک های پرداخت",
-    access: "sms_templates/index",
+    access: "sms_templates/root",
     route: "/sms-template",
   }, 
  
