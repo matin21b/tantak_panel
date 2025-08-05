@@ -541,7 +541,7 @@
                           height="40"
                           @click="pay(false)"
                           color="info  "
-                          :disabled="!Boolean(sms_id) || !Boolean(description)"
+                          :disabled="!Boolean(sms_id) "
                           class="ma-1"
                           text="پرداخت "
                         />
