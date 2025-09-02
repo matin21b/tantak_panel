@@ -360,9 +360,10 @@ export default {
         color: "grey darken-3",
         text: "ثبت فاکتور",
         fun: (body) => {
+          this.factor_message_id = body.id;
           this.dialog_basket.show = true;
           this.user_basket = body.user;
-          this.factor_message_id = body.id;
+          
         },
         show_fun: () => {
           if (
@@ -374,7 +375,7 @@ export default {
           ) {
             return true;
           } else {
-            return this.factor_message_id;
+            return false;
           }
         },
       },
