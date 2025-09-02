@@ -4,6 +4,7 @@
     <BaseTable
       url="/api-call-log"
       ref="BaseTable"
+      :rowColor="rowColor"
       :headers="headers"
       :autoLoad="false"
       :BTNactions="btn_actions"
@@ -119,6 +120,11 @@ export default {
     reload() {
       this.$refs.BaseTable.getDataFromApi();
     },
+    rowColor(body) {
+      if (body.item.status != "200") {
+        return "red lighten-5";
+      }
+    }
   },
 };
 </script>
