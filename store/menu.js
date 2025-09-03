@@ -678,6 +678,12 @@ let mnue_tree = [
         name: "محصولات غیر سیستمی",
         access: "setting/root",
         route: "/setting/not-system-products",
+      },    
+       {
+        id: 9985452,
+        name: "کلید فینوتک",
+        access: "setting/root",
+        route: "/setting/finotech",
       },
       // {
       //   id: 992654852,
