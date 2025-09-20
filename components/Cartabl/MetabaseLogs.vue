@@ -19,8 +19,8 @@
     </v-col>
     <v-col cols="12" v-if="Boolean(select_dashbord) || Boolean(urlMetabase)">
       <v-card class="show-card pa-8">
-     
         <iframe
+          id="TantakMetabase"
           :src="
             Boolean(this.urlMetabase) ? this.urlMetabase : current_dashboardUrl
           "
@@ -158,8 +158,36 @@ export default {
       return result;
     },
     iframeLoaded() {
+      console.log("-----");
+
       this.$emit("loaded");
-      this.$toast.success("اتصال به  متابیس  موفقیت آمیز بود");
+      this.$toast.success("اتصال به متابیس موفقیت‌آمیز بود");
+      const iframe = document.getElementById("TantakMetabase");
+      console.log("---iframe-->" , iframe.contentWindow?.document);
+      
+      // console.log("iframe ==> ", iframe)
+      //       console.log("this.href ==> ", this.href);
+      ;
+      try {
+        const iframeDoc =
+          iframe.contentDocument || iframe.contentWindow.document;
+      
+        console.log(" iframe.contentDocument  ==> ", iframe.contentDocument);
+        console.log("iframeDoc ==> ", iframeDoc);
+        const downloadLink = iframeDoc.querySelector("a[download]");
+        console.log("downloadLink ==> ", downloadLink);
+        if (downloadLink) {
+          downloadLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            // window.open(, "_blank");
+          });
+        }
+      } catch (e) {
+        console.warn(
+          "Cannot access iframe content due to CORS restrictions:",
+          e
+        );
+      }
     },
   },
 };
