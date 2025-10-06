@@ -117,6 +117,7 @@ export default {
       },
       { text: "کد ملی", filterCol: "national_code", value: "national_code" },
       { text: "داخلی", filterCol: "internal_port", value: "internal_port" },
+      { text: "کد معرف", filterCol: "reagent_code", value: "reagent_code" },
       {
         text: "کد پرسنلی",
         filterCol: "personnel_code",
