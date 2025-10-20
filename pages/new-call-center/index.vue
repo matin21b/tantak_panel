@@ -412,7 +412,7 @@ export default {
         icon: "settings",
         text: "مدیریت مالی",
         fun: (body) => {
-    this.$router.push('/new-call-center/setting-fee')
+          this.$router.push("/new-call-center/setting-fee");
         },
         show_fun: (body) => {
           if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {

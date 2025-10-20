@@ -6,7 +6,7 @@
           <v-row>
             <v-col cols="12">
               <v-row>
-                <v-col cols="6" md="3" class="py-0">
+                <v-col cols="6" md="6" class="py-0">
                   <UserSelectForm
                     text="انتخاب مدیر"
                     v-model="manager"
@@ -15,7 +15,7 @@
                     :role-id="role_id"
                   />
                 </v-col>
-                <v-col cols="6" md="3" class="py-0">
+                <v-col cols="6" md="6" class="py-0">
                   <amp-input
                     text="سقف درصد کارمز"
                     v-model="form.fee_cap"
@@ -23,7 +23,7 @@
                     cClass="ltr-item"
                   />
                 </v-col>
-                <v-col cols="6" md="3" class="py-0">
+                <v-col cols="6" md="4" class="py-0">
                   <amp-select
                     :items="$store.state.static.status"
                     text="وضعیت"
@@ -31,12 +31,20 @@
                     v-model="form.status"
                   />
                 </v-col>
-                <v-col cols="6" md="3" class="py-0">
+                <v-col cols="6" md="4" class="py-0">
                   <amp-autocomplete
                     :disabled="manager.length == 0"
                     text="انتخاب محصول"
                     :items="items_product"
                     v-model="form.product_id"
+                  ></amp-autocomplete>
+                </v-col>
+                <v-col cols="6" md="4" class="py-0">
+                  <amp-autocomplete
+                    :disabled="manager.length == 0"
+                    text="انتخاب پکیج"
+                    :items="package_items"
+                    v-model="form.package_id"
                   ></amp-autocomplete>
                 </v-col>
               </v-row>
@@ -142,11 +150,13 @@ export default {
     role_id: [],
     manager: [],
     items_product: [],
+    package_items: [],
     selected: {},
     form: {
       manager_id: "",
       fee_cap: "",
       status: "",
+      package_id: "",
       fee_manager: "",
       fee_supervisor: "",
       fee_operator: "",
@@ -178,7 +188,7 @@ export default {
     manager: {
       deep: true,
       handler() {
-        if (this.manager.length > 0) this.loadProduct();
+        if (this.manager.length > 0) this.loadProduct(), this.loadPackages();
       },
     },
   },
@@ -212,7 +222,7 @@ export default {
     loadProduct() {
       this.loading = true;
       let filters = {
-        geter_id: {
+        getter_id: {
           op: "=",
           value: this.manager[0].id,
         },
@@ -220,16 +230,50 @@ export default {
       this.$reqApi("/product-allocation", {
         row_number: 30000,
         filters: filters,
-        section_name:'Product'
+        section_name: "Product",
       })
         .then((res) => {
+          let items = []
           res.model.data.map((x) => {
-            this.items_product.push({
+            items.push({
               text: x.product.name,
               value: x.product.id,
             });
-            this.loading = false;
           });
+            this.items_product = items
+            this.loading = false;
+
+        })
+        .catch((err) => {
+          this.loading = false;
+          return err;
+        });
+    },
+    loadPackages() {
+      this.loading = true;
+      let filters = {
+        getter_id: {
+          op: "=",
+          value: this.manager[0].id,
+        },
+      };
+      this.$reqApi("/product-allocation", {
+        row_number: 30000,
+        filters: filters,
+        section_name: "Package",
+      })
+        .then((res) => {
+          let items = []
+          res.model.data.map((x) => {
+           items.push({
+              text: x.package.name,
+              value: x.package.id,
+            });
+       
+
+          });
+          this.package_items = items
+               this.loading = false;
         })
         .catch((err) => {
           this.loading = false;
@@ -241,7 +285,6 @@ export default {
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
           const data = response.model;
-          console.log("data ==> ", data);
           for (let i in data) {
             this.form[i] = data[i];
           }

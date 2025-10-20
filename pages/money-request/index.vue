@@ -3,6 +3,7 @@
     <BaseTable
       url="/money-request"
       :headers="headers"
+      :createUrl="insert_url"
       :BTNactions="btn_actions"
       ref="MoneyRequest"
     />
@@ -25,6 +26,7 @@ export default {
     headers: [],
     btn_actions: [],
     request_id: "",
+    insert_url: "/money-request/insert",
     show_dialog: false,
     title: "درخواست وجه",
   }),

@@ -1,13 +1,10 @@
 <template>
   <div>
     <BaseTable
-      url="/fee"
+      url="/fee-log"
       :headers="headers"
-        :extraBtn="extra_btn"
 
-      autoDelete="/fee/delete"
-      autoUpdate="/new-call-center/setting-fee"
-      createUrl="/new-call-center/setting-fee/insert"
+
     >
     </BaseTable>
   </div>
@@ -21,7 +18,7 @@ export default {
     headers: [],
     extra_btn: [],
 
-    title: "کارمزد ها",
+    title: "تاریخچه کارمزد ها",
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -77,21 +74,10 @@ export default {
           }
         },
       },
-      { text: "سقف درصد", value: "fee_cap" },
-      { text: "درصد کارمزد مدیر ", value: "fee_manager" },
-      { text: "درصد کارمزد سرپرست  ", value: "fee_supervisor" },
-      { text: "درصد کارمزد فروشنده  ", value: "fee_operator" },
+      { text: "مبلغ واریزی    (ریال)", value: "amount" ,  type:"price" },
+    
     ];
-    this.extra_btn = [
-      {
-        text: "تاریخچه کارمز ها",
-        icon: "history",
-        color: "teal",
-        fun: () => {
-          this.$router.push("/new-call-center/setting-fee/history")
-        },
-      },
-    ];
+ 
   },
 };
 </script>
