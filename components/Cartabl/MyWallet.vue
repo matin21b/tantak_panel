@@ -7,96 +7,95 @@
       <v-col cols="12" md="12">
         <div class="pa-5" v-if="!loading">
           <v-card class="elevation-0 card-style">
-            <v-card-title class="  d-flex align-center justify-center elevation-0">
-     
-          
-              <v-btn   dark color="primary darken-1" class="ma-3">
-                           کیف پول نقدی : <b>
-                {{ $price(user.cash_wallt) }} (ریال)
-                </b>
-              </v-btn>    
-                  <v-btn   outlined color="primary darken-1" class="ma-3">
-                    کیف پول اعتباری: <b>
-                 {{ $price(user.credit_wallt) }} (ریال)
-                </b>
-              </v-btn>   
-          
-              <v-btn v-if="user.reagent_code"  dark color="primary darken-1" class="ma-3">
-                کد معرف : <b>
-                  {{ user.reagent_code }}
-                </b>
-              </v-btn>    
-                 <v-btn v-if="user.personnel_code" outlined class="ma-3" color="primary darken-1">
-                کد پرسنلی : <b>
-                  {{ user.personnel_code }}
-                </b>
-              </v-btn>
-            </v-card-title>
+    
             <v-col cols="12" v-if="wallet_items.length > 0">
               <v-divider v-for="i in 5" :key="i"></v-divider>
             </v-col>
             <v-card-text>
               <v-row>
                 <v-col
+                  class="pa-8"
                   cols="12"
-                  md="6"
+                  md="4"
                   v-for="(item, index) in wallet_items"
                   :key="index"
                 >
-                  <v-card class="pa-5 ma-1 card-style2 elevation-2"  >
-                    <div class="d-flex align-center py-1">
-                      <h1 class="font_14">
-                        {{ index + 1 }} - {{ item.pay_text }} (
-                        {{
-                          $getItemEnum(
-                            $store.state.static.wallet_type,
-                            item.type
-                          )
-                        }}
+                  <v-alert
+                    class="ma-1 pa-0 pl-4 elevation-2"
+                    border="right"
+                    text
+                    dense
+                    icon="trip_origin"
+                    :color="item.type == 'put' ? 'green' : 'blue darken-2'"
+                  >
+                    <v-card class="elevation-0">
+                      <div class="d-flex align-center py-1">
+                        <h1 class="font_14">
+                          {{ index + 1 }} -
+                          {{ item.pay_text }}
+                          <br />
+                          <small class="grey--text">
+                            ثبت شده در:‌
+                            {{
+                              $toJalali(
+                                item.created_at,
+                                "YYYY-MM-DD",
+                                "jYYYY/jMM/jDD"
+                              )
+                            }}
+                          </small>
+                        </h1>
+                        <v-spacer></v-spacer>
 
-                        )
-                      </h1>
-                      <v-divider class="mx-3" style="border: 1px dashed #bdbdbd;"></v-divider>
-                    </div>
-        
-                    <v-card-text class="d-flex align-center">
-                      <v-row class="align-center justify-space-between pa-3 ">
-                        <h1 class="font_12">
-                          تاریخ ثبت :‌
-                          {{
-                            $toJalali(
-                              item.created_at,
-                              "YYYY-MM-DD",
-                              "jYYYY/jMM/jDD"
-                            )
-                          }}
-                        </h1>
-                        <h1 class="font_12">
-                          تاریخ پرداخت :
-                          {{
-                            $toJalali(
-                              item.paid_date,
-                              "YYYY-MM-DD",
-                              "jYYYY/jMM/jDD"
-                            )
-                          }}
-                        </h1>
-                        <h1 class="font_12">
-                          نوع :
-                          {{
-                            $getItemEnum(
-                              $store.state.static.wallet_kind,
-                              item.kind
-                            )
-                          }}
-                        </h1>
-                        <h1 class="font_12">
-                          مقدار :
-                          {{ $price(item.amount) }} (ریال)
-                        </h1>
-                      </v-row>
-                    </v-card-text>
-                  </v-card>
+                        <v-chip
+                          dark
+                          :color="
+                            item.type == 'put' ? 'green' : 'blue darken-2'
+                          "
+                          class="elevation-4 px-5"
+                        >
+                          <small>
+                            {{
+                              $getItemEnum(
+                                $store.state.static.wallet_type,
+                                item.type
+                              )
+                            }}
+                          </small>
+                        </v-chip>
+                      </div>
+
+                      <v-card-text class="">
+                        <v-divider></v-divider>
+                        <v-divider></v-divider>
+                        <v-row class="align-center justify-space-between my-1 mt-2">
+                          <b class="font_12">
+                            تاریخ پرداخت :
+                            {{
+                              $toJalali(
+                                item.paid_date,
+                                "YYYY-MM-DD",
+                                "jYYYY/jMM/jDD"
+                              )
+                            }}
+                          </b>
+                          <b class="font_12">
+                            نوع :
+                            {{
+                              $getItemEnum(
+                                $store.state.static.wallet_kind,
+                                item.kind
+                              )
+                            }}
+                          </b>
+                          <b class="font_12">
+                            مقدار :
+                            {{ $price(item.amount) }} (ریال)
+                          </b>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                  </v-alert>
                 </v-col>
               </v-row>
 
@@ -141,7 +140,6 @@ export default {
     loading: true,
   }),
   beforeMount() {
-    this.user = this.$store.state.auth.user;
     this.getWallet();
   },
   methods: {
@@ -179,34 +177,8 @@ export default {
         })
         .catch((err) => {
           this.loading = false;
-       
-          
         });
     },
   },
 };
 </script>
-<style scoped>
-strong {
-  font-size: 16px;
-}
-
-.card-style2 {
-  border: 1px solid #0000002f;
-}
-.see-all {
-  border: 1px solid #bdbdbd;
-  background-color: #8080803a;
-  border-radius: 8px;
-}
-.see-all:hover {
-  border: 1px solid #bdbdbd;
-  background-color: #63626267;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.card-style {
-  border: 6px double #201f1f44;
-  border-radius: 8px;
-}
-</style>

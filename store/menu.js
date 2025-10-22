@@ -684,6 +684,11 @@ let mnue_tree = [
         name: "کلید فینوتک",
         access: "setting/root",
         route: "/setting/finotech",
+      },       {
+        id: 99854558972,
+        name: "حق برداشت کارمزد ها",
+        access: "setting/root",
+        route: "/setting/fee-withdrawal",
       },
       // {
       //   id: 992654852,
