@@ -7,7 +7,7 @@ let mnue_tree = [
     id: 1,
     name: "کارتابل",
     access: "*",
-    route: "/panel",
+    route: "/bpmn-dashboard",
   },
   {
     id: 2,

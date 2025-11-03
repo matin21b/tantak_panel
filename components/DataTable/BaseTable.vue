@@ -280,6 +280,11 @@ export default {
       type: String,
       required: false,
     },
+    bpmnUrl: {
+      type: String,
+      required: false,
+      default: null
+    },
     createUrl: {
       type: String,
     },
@@ -443,6 +448,7 @@ export default {
     },
     btn_actions() {
       let items = [];
+
       if (this.BTNactions) {
         let actions = [...this.BTNactions];
         actions.forEach((element) => {
@@ -657,6 +663,7 @@ export default {
         );
       }
       this.loading = true;
+
       if (this.localData) {
         // paginate سمت کلاینت
         if (this.dataArray || this.storeState) {
@@ -929,7 +936,7 @@ export default {
             }
           } //-------- مرتب سازی در حالت آفلاین
         }
-        if (this.url) {
+        if (this.url && this.bpmnUrl == null) {
           //اطلاعات از سرور گرفته میشود ولی مرتب سازی و پیجینیت نمیشود
           let form = {
             filters: this.$store.state.dataTable.filters,
@@ -957,6 +964,47 @@ export default {
                   row_index: x_index + 1,
                 }));
                 this.total_item = response.length;
+              }
+              let page_count = parseInt(
+                Math.ceil(this.total_item / this.page_row)
+              );
+              this.page_count = page_count || 1;
+              this.$emit("getData", response);
+              this.loading = false;
+            })
+            .catch((error) => {
+              this.desserts = [];
+              this.loading = false;
+            });
+        }else if(this.bpmnUrl){
+          let form = {
+            filters: this.$store.state.dataTable.filters,
+            sortBy: this.$store.state.dataTable.pageInfo.sortBy,
+            orderBy: !this.$store.state.dataTable.pageInfo.orderBy,
+          };
+          if (this.filters) {
+            for (const key in this.filters) {
+              form.filters[key] = this.filters[key];
+            }
+          }
+          for (const key in this.rootBody) {
+            const element = this.rootBody[key];
+            if (form[key]) {
+              form[key] += "," + element;
+            } else {
+              form[key] = element;
+            }
+          }
+          this.$reqBpmn(this.bpmnUrl, 'get',form)
+            .then((response) => {
+              console.log('this.response',response)
+              {
+                this.desserts = response.data.map((x, x_index) => ({
+                  ...x,
+                  row_index: x_index + 1,
+                }));
+                console.log('this.desserts',this.desserts)
+                this.total_item = response.data.length;
               }
               let page_count = parseInt(
                 Math.ceil(this.total_item / this.page_row)
