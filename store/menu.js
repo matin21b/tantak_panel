@@ -517,7 +517,7 @@ let mnue_tree = [
       },
       {
         id: 19,
-        name: "اسلایدر",
+        name: "اسلایدر های فروشگاه آنلاین",
         access: "setting/root",
         route: "/setting/slider",
       },
