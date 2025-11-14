@@ -62,6 +62,8 @@
           @submit="confirmTaskAction"
           @action="handleTaskFormAction"
         />
+
+        <TaskHistoryDialog v-model="historyDialog" :task="historyTask" />
       </v-col>
     </v-row>
   </div>
@@ -70,11 +72,13 @@
 <script>
 import ProcessList from '~/components/BPMN/ProcessList.vue'
 import TaskActionDialog from '~/components/BPMN/TaskActionDialog.vue'
+import TaskHistoryDialog from '~/components/BPMN/TaskHistoryDialog.vue'
 
 export default {
   components: {
     ProcessList,
-    TaskActionDialog
+    TaskActionDialog,
+    TaskHistoryDialog
   },
   data() {
     return {
@@ -128,16 +132,16 @@ export default {
         },
         {
           color: "info",
-          icon: "info",
-          text: "جزئیات",
-          fun: "details",
-          fun: (task) => this.showTaskDetails(task),
+          icon: "history",
+          text: "تاریخچه",
+          fun: (task) => this.showTaskHistory(task),
         }
       ],
       
-      taskFilters: {
-        status: "ACTIVE"
-      }
+      taskFilters: {},
+
+      historyDialog: false,
+      historyTask: null
     }
   },
   
@@ -231,14 +235,6 @@ export default {
       }
     },
 
-    async handleTaskAction(action, task) {
-      if (action.fun === 'complete') {
-        await this.completeTask(task)
-      } else if (action.fun === 'details') {
-        this.showTaskDetails(task)
-      }
-    },
-
     async completeTask(task) {
       this.selectedTask = task
       
@@ -257,6 +253,7 @@ export default {
         this.taskVariables = Array.isArray(items) ? items : []
         const initialData = taskData?.data || {}
         this.taskFormData = {}
+        let data = {}
 
         this.taskVariables.forEach((variable) => {
           const name = variable?.config?.name
@@ -265,9 +262,12 @@ export default {
           }
           const hasExistingValue = Object.prototype.hasOwnProperty.call(initialData, name)
           const value = hasExistingValue ? initialData[name] : undefined
-          this.$set(this.taskFormData, name, this.normalizeFieldValue(value, variable))
+          this.$set(data, name, this.normalizeFieldValue(value, variable))
         })
         
+        this.$set(this.taskFormData, 'data', data)
+        this.$set(this.taskFormData, 'status', 'COMPLETED')
+
         this.taskActionDialog = true
       } catch (error) {
         this.$toast.error('خطا در دریافت اطلاعات وظیفه')
@@ -280,14 +280,14 @@ export default {
       try {
         // Complete the task with form data
         await this.$reqBpmn(
-          `/tasks/${this.selectedTask.id}/complete`, 
-          'post', 
+          `/tasks/${this.selectedTask.id}`, 
+          'put', 
           this.taskFormData
         )
         
         this.$toast.success('وظیفه با موفقیت انجام شد')
         this.taskActionDialog = false
-        
+       
         // Reload tasks
         await this.loadTasks()
         
@@ -299,9 +299,9 @@ export default {
       }
     },
 
-    showTaskDetails(task) {
-      console.log('task',task)
-      this.$toast.info(`جزئیات وظیفه: ${task.element_name}`)
+    showTaskHistory(task) {
+      this.historyTask = task
+      this.historyDialog = true
     },
 
     normalizeFieldValue(value, variable) {
