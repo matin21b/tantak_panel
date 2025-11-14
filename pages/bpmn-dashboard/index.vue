@@ -81,6 +81,7 @@ export default {
       loadingTasks: false,
       loadingProcesses: false,
       processingTask: false,
+      bpmn_user: {},
       tasks: [],
       processes: [],
       selectedProcess: null,
@@ -135,10 +136,7 @@ export default {
       ],
       
       taskFilters: {
-        status: {
-          op: "in",
-          value: ["in_progress", "pending"]
-        }
+        status: "ACTIVE"
       }
     }
   },
@@ -160,11 +158,13 @@ export default {
       let finalProcessList = []
       filteredProcessList.forEach(item => {
         item.start_events.forEach(start_event => {
-          finalProcessList.push({
-              'process':item,
-              'start_event_id': start_event.id,
-              'start_event_name': start_event.name,
-          })
+          if(this.hasAccess(start_event.assignedGroups,start_event.assignedUsers)){
+            finalProcessList.push({
+                'process':item,
+                'start_event_id': start_event.id,
+                'start_event_name': start_event.name,
+            })
+          }
         })
       })
       console.log('finalProcessList',finalProcessList)
@@ -188,6 +188,7 @@ export default {
         })
         
         this.processes = response.data || response
+        this.bpmn_user = response.bpmn_user
       } catch (error) {
         this.$toast.error('خطا در بارگذاری لیست فرآیندها')
         console.error('Error loading processes:', error)
@@ -211,9 +212,12 @@ export default {
       try {
         // Start the process - ProcessMaker typically starts with default variables
         const startResponse = await this.$reqBpmn(
-          `/process_events/${process.process.id}?event=${process.start_event_id}`, 
+          `/process_events/${process.process.id}`, 
           'post', 
-          {}
+          {},
+          {
+            'event': process.start_event_id
+          }
         )
         
         this.$toast.success(`فرآیند "${process.process.name}" با موفقیت شروع شد`)
@@ -240,7 +244,11 @@ export default {
       
       try {
         // Get task variables and form
-        const taskData = await this.$reqBpmn(`/tasks/${task.id}?include=screen,data`, 'get')
+        const taskData = await this.$reqBpmn(`/tasks/${task.id}`, 'get' , {}, 
+          {
+            'include': 'screen,data'
+          }
+        )
         const screenConfig = taskData?.screen?.config || []
         const items = Array.isArray(screenConfig) && screenConfig.length > 0
           ? screenConfig[0]?.items || []
@@ -295,6 +303,7 @@ export default {
       console.log('task',task)
       this.$toast.info(`جزئیات وظیفه: ${task.element_name}`)
     },
+
     normalizeFieldValue(value, variable) {
       const component = variable?.component
       const config = variable?.config || {}
@@ -349,9 +358,11 @@ export default {
       }
       return value
     },
+
     onTaskDialogCancel() {
       this.taskActionDialog = false
     },
+    
     handleTaskFormAction(button) {
       console.debug('Task form action triggered', button)
     },
@@ -361,6 +372,20 @@ export default {
       if (event && event.model && event.model.data) {
         this.tasks = event.model.data
       }
+    },
+
+    hasAccess(assignedGroups,assignedUsers) {
+      if(assignedUsers != ""){
+        return this.bpmn_user.bpmn_user_id == assignedUsers
+      }
+      else if(assignedGroups != ""){
+        let matched_roles = this.bpmn_user.bpmn_group_id.filter(role => {
+          return assignedGroups.includes(role) 
+        })
+
+        return matched_roles.length > 0
+      }
+      return false
     }
   }
 }
