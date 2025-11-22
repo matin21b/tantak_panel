@@ -5,20 +5,16 @@
       :only_me="false"
       @action="action"
     />
+
+    <TaskActionDialog
+      v-model="taskActionDialog"
+      :task="selectedTask"
+      @cancel="onTaskDialogCancel"
+      @completed="handleTaskCompleted"
+    />
+
+    <TaskHistoryDialog v-model="historyDialog" :task="selectedTask" />
   </div>
-
-  <TaskActionDialog
-    v-model="taskActionDialog"
-    :task="selectedTask"
-    :variables="taskVariables"
-    :form-data="taskFormData"
-    :loading="processingTask"
-    @cancel="onTaskDialogCancel"
-    @submit="confirmTaskAction"
-    @action="handleTaskFormAction"
-  />
-
-  <TaskHistoryDialog v-model="historyDialog" :task="selectedTask" />
 </template>
 
 <script>
@@ -34,6 +30,8 @@ export default {
   }),
   components: {
     BpmnBaseTable,
+    TaskActionDialog,
+    TaskHistoryDialog,
   },
   methods: {
     action(event){
@@ -44,6 +42,14 @@ export default {
         this.taskActionDialog = true
         this.selectedTask = event.row
       }
+    },
+    onTaskDialogCancel() {
+      this.taskActionDialog = false
+      this.selectedTask = null
+    },
+    handleTaskCompleted() {
+      this.taskActionDialog = false
+      this.selectedTask = null
     }
   }
 };

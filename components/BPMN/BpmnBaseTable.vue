@@ -43,7 +43,7 @@
           v-on="$listeners"
           :headers="tableHeaders"
           localData
-          :rootBody="rootBody"
+          :rootBody="rootRequestBody"
           :dataArray="[]"
           :bpmn-url="resolvedBpmnUrl"
           :BTNactions="resolvedRowActions"
@@ -116,6 +116,7 @@ export default {
     fixed_filters: {},
     available_action_keys: [],
     bpmn_url: null,
+    rootRequestBody: {},
   }),
   computed: {
     hasColumns() {
@@ -126,11 +127,6 @@ export default {
         return this.report_meta.title;
       }
       return "گزارش BPMN";
-    },
-    rootBody() {
-      return {
-        only_me: this.only_me
-      }
     },
     tableHeaders() {
       let headers = this.column_definitions.map((column_item) => {
@@ -201,6 +197,14 @@ export default {
     },
   },
   watch: {
+    only_me: {
+      immediate: true,
+      handler(value) {
+        this.rootRequestBody = {
+          only_me: value,
+        };
+      },
+    },
     report_slug: {
       immediate: true,
       handler(new_value) {

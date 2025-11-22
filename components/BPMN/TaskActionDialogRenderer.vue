@@ -51,7 +51,7 @@
     />
 
     <AmpUploadFileNew
-      v-else-if="item.component === 'FileUpload'"
+      v-else-if="item.component === 'FileUpload' || item.component === 'FormImage'"
       v-model="model"
       :title="inputLabel"
       :multiple="Boolean(item.config?.multipleUpload)"

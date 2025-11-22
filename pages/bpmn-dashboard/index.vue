@@ -55,12 +55,8 @@
         <TaskActionDialog
           v-model="taskActionDialog"
           :task="selectedTask"
-          :variables="taskVariables"
-          :form-data="taskFormData"
-          :loading="processingTask"
           @cancel="onTaskDialogCancel"
-          @submit="confirmTaskAction"
-          @action="handleTaskFormAction"
+          @completed="onTaskCompleted"
         />
 
         <TaskHistoryDialog v-model="historyDialog" :task="historyTask" />
@@ -84,7 +80,6 @@ export default {
     return {
       loadingTasks: false,
       loadingProcesses: false,
-      processingTask: false,
       bpmn_user: {},
       tasks: [],
       processes: [],
@@ -92,8 +87,6 @@ export default {
       selectedTask: null,
       processListDialog: false,
       taskActionDialog: false,
-      taskVariables: [],
-      taskFormData: {},
       processSearch: '',
       
       taskHeaders: [
@@ -177,7 +170,7 @@ export default {
   
   async mounted() {
     this.$store.dispatch('setPageTitle', 'داشبورد BPMN')
-    this.$refs.tasksTable.getDataFromApi()
+    this.loadTasks()
   },
   
   methods: {
@@ -234,68 +227,9 @@ export default {
       }
     },
 
-    async completeTask(task) {
+    completeTask(task) {
       this.selectedTask = task
-      
-      try {
-        // Get task variables and form
-        const taskData = await this.$reqBpmn(`/tasks/${task.id}`, 'get' , {}, 
-          {
-            'include': 'screen,data'
-          }
-        )
-        const screenConfig = taskData?.screen?.config || []
-        const items = Array.isArray(screenConfig) && screenConfig.length > 0
-          ? screenConfig[0]?.items || []
-          : []
-
-        this.taskVariables = Array.isArray(items) ? items : []
-        const initialData = taskData?.data || {}
-        this.taskFormData = {}
-        let data = {}
-
-        this.taskVariables.forEach((variable) => {
-          const name = variable?.config?.name
-          if (!name) {
-            return
-          }
-          const hasExistingValue = Object.prototype.hasOwnProperty.call(initialData, name)
-          const value = hasExistingValue ? initialData[name] : undefined
-          this.$set(data, name, this.normalizeFieldValue(value, variable))
-        })
-        
-        this.$set(this.taskFormData, 'data', data)
-        this.$set(this.taskFormData, 'status', 'COMPLETED')
-
-        this.taskActionDialog = true
-      } catch (error) {
-        this.$toast.error('خطا در دریافت اطلاعات وظیفه')
-        console.error('Error getting task details:', error)
-      }
-    },
-
-    async confirmTaskAction() {
-      this.processingTask = true
-      try {
-        // Complete the task with form data
-        await this.$reqBpmn(
-          `/tasks/${this.selectedTask.id}`, 
-          'put', 
-          this.taskFormData
-        )
-        
-        this.$toast.success('وظیفه با موفقیت انجام شد')
-        this.taskActionDialog = false
-       
-        // Reload tasks
-        await this.loadTasks()
-        
-      } catch (error) {
-        this.$toast.error('خطا در انجام وظیفه')
-        console.error('Error completing task:', error)
-      } finally {
-        this.processingTask = false
-      }
+      this.taskActionDialog = true
     },
 
     showTaskHistory(task) {
@@ -303,73 +237,27 @@ export default {
       this.historyDialog = true
     },
 
-    normalizeFieldValue(value, variable) {
-      const component = variable?.component
-      const config = variable?.config || {}
-
-      if (component === 'FormCheckbox') {
-        if (value === undefined || value === null || value === '') {
-          return Boolean(config.initiallyChecked)
-        }
-        if (typeof value === 'string') {
-          return ['true', '1', 'on', 'yes'].includes(value.toLowerCase())
-        }
-        if (typeof value === 'number') {
-          return value === 1
-        }
-        return Boolean(value)
-      }
-
-      if (component === 'FormSelectList') {
-        if (config.options?.allowMultiSelect) {
-          if (Array.isArray(value)) {
-            return value
-          }
-          if (value === undefined || value === null || value === '') {
-            return []
-          }
-          return [value]
-        }
-        if (value === undefined || value === null) {
-          return config.fieldValue ?? ''
-        }
-        return value
-      }
-
-      if (component === 'FileUpload') {
-        if (config.multipleUpload) {
-          if (Array.isArray(value)) {
-            return value
-          }
-          if (!value) {
-            return []
-          }
-          return [value]
-        }
-        if (value === undefined || value === null) {
-          return config.fieldValue ?? ''
-        }
-        return value
-      }
-
-      if (value === undefined || value === null) {
-        return config.fieldValue ?? ''
-      }
-      return value
-    },
-
     onTaskDialogCancel() {
       this.taskActionDialog = false
+      this.selectedTask = null
     },
-    
-    handleTaskFormAction(button) {
-      console.debug('Task form action triggered', button)
+
+    async onTaskCompleted() {
+      this.taskActionDialog = false
+      this.selectedTask = null
+      await this.loadTasks()
     },
 
     getTasksData(event) {
       // Handle table data if needed
       if (event && event.model && event.model.data) {
         this.tasks = event.model.data
+      }
+    },
+
+    async loadTasks() {
+      if (this.$refs.tasksTable && typeof this.$refs.tasksTable.getDataFromApi === 'function') {
+        await this.$refs.tasksTable.getDataFromApi()
       }
     },
 
