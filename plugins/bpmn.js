@@ -1,14 +1,15 @@
 let error_message = 'پاسخی از سمت سرور دریافت نشد'
 
 export default async ({ $axios, $toast, store }, inject) => {
-    inject('reqBpmn', (url, method = 'get', data = {}, query_param = {}, only_me = true, config = {}) => {
+    inject('reqBpmn', (url, method = 'get', data = {}, query_param = {}, only_me = true, extra_fields = {}, config = {}) => {
         return new Promise((resolve, reject) => {
             const requestData = {
                 url: url,
                 method: method.toLowerCase(),
                 data: data,
                 query_param: query_param,
-                only_me: only_me
+                only_me: only_me,
+                bpmn_user_id_list: extra_fields?.bpmn_user_id_list ?? []
             }
 
             // Add default parameters for specific endpoints

@@ -133,14 +133,17 @@ export default {
         const header_text = column_item.helper
           ? `${column_item.label} (${column_item.helper})`
           : column_item.label;
+        const column_path = this.resolveColumnPath(column_item);
         return {
           text: header_text,
-          value: this.resolveHeaderValue(column_item),
+          value: this.resolveHeaderValue(column_item, column_path),
           sortable: false,
           filterable: false,
           width: column_item.meta?.width,
+          dataPath: column_path,
         };
       });
+      console.log('tableHeaders',headers)
       return headers;
     },
     forwardedAttrs() {
@@ -317,23 +320,32 @@ export default {
         };
       });
     },
-    resolveHeaderValue(column_item) {
-      const column_path = column_item.meta?.path || column_item.key;
+    resolveColumnPath(column_item) {
+      if (!column_item) {
+        return null;
+      }
+      return column_item.meta?.path || column_item.key || null;
+    },
+    resolveHeaderValue(column_item, column_path = null) {
+      const resolvedPath =
+        column_path !== null && column_path !== undefined
+          ? column_path
+          : this.resolveColumnPath(column_item);
 
       const has_nested_path =
-        typeof column_path === "string" && column_path.includes(".");
+        typeof resolvedPath === "string" && resolvedPath.includes(".");
       
       const has_options =
         column_item.meta && typeof column_item.meta.options === "object";
 
       if (!has_nested_path && !has_options) {
-        return column_path;
+        return resolvedPath;
       }
 
       return (row_item) => {
         const base_value = has_nested_path
-          ? this.getNestedValue(row_item, column_path)
-          : row_item[column_path];
+          ? this.getNestedValue(row_item, resolvedPath)
+          : row_item[resolvedPath];
   
         return this.formatColumnValue(base_value, column_item.meta);
       };
