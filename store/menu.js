@@ -131,7 +131,18 @@ let mnue_tree = [
     access: "sms_templates/root",
     route: "/sms-template",
   }, 
- 
+  {
+    id: 199,
+    name: "فروش آنلاین",
+    children: [
+      {
+        id: 200,
+        access: "bpmn_dynamic_lists/3/sbd-hay-khryd",
+        name: "لیست سبد های خرید",
+        route: "/bpmn-dashboard/basket",
+      }
+    ],
+  },
   {
     id: 50,
     name: "مرکز فروش تلفنی",
