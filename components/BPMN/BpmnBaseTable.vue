@@ -73,6 +73,10 @@ const DEFAULT_ACTION_PALETTE = {
     text: "انجام",
     color: "primary",
     icon: "play_arrow",
+    disab_fun: (row) => {
+      console.log('disab_fun',row.active_tasks[0].user_id,this.$store.state.auth.user.bpmn_user_id)
+      return row.active_tasks[0].user_id != this.$store.state.auth.user.bpmn_user_id
+    }
   },
   history: {
     text: "تاریخچه",
@@ -139,11 +143,12 @@ export default {
           value: this.resolveHeaderValue(column_item, column_path),
           sortable: false,
           filterable: false,
-          width: column_item.meta?.width,
           dataPath: column_path,
+          sort: column_item.meta?.sort,
+          width: column_item.meta?.width,
         };
       });
-      console.log('tableHeaders',headers)
+      headers.sort(function(a,b){ return a.sort > b.sort })
       return headers;
     },
     forwardedAttrs() {
@@ -292,9 +297,7 @@ export default {
       if (!action_keys.length) {
         return [];
       }
-
       return action_keys.map((action_key) => {
-        console.log('action_key',action_key)
         const palette_item =
           this.action_palette[action_key] ||
           DEFAULT_ACTION_PALETTE[action_key] ||
@@ -386,11 +389,20 @@ export default {
       if (
         value !== null &&
         typeof value !== "undefined" &&
-        column_meta.options &&
+        Object.prototype.hasOwnProperty(column_meta,'options') &&
         Object.prototype.hasOwnProperty.call(column_meta.options, value)
       ) {
         return column_meta.options[value];
       }
+      
+      if (
+        value !== null &&
+        typeof value !== "undefined" &&
+        column_meta.type == "number"
+      ) {
+        return this.$price(value);
+      }
+
       return value;
     },
     resetState() {
