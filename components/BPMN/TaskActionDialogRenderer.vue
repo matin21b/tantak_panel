@@ -6,18 +6,39 @@
       v-html="item.config?.content"
     />
 
-    <amp-input
+    <template
       v-else-if="item.component === 'FormInput'"
-      v-model="model"
-      :text="inputLabel"
-      :rules="rules"
-      :type="item.config?.type || 'text'"
-      :placeholder="item.config?.placeholder || ''"
-      :readonly="Boolean(item.config?.readonly)"
-      :help-text="item.config?.helper || ''"
-      :is-number="isNumberFormat"
-      :is-float="isFloatFormat"
-    />
+    >
+
+      <label v-if="fieldName.endsWith('basket_id')" class="mr-3">
+        {{ inputLabel }}
+      </label>
+      <basket-items 
+        v-if="fieldName.endsWith('basket_id')"
+        :basket_id="model" 
+      />
+      <UserSelectForm
+        v-if="fieldName.endsWith('user_id')"
+        :rules="rules"
+        v-model="model"
+        url="user"
+        :readonly="Boolean(item.config?.readonly)"
+        :text="inputLabel"
+        :role-id="[]"
+      />
+      <amp-input
+        v-else
+        v-model="model"
+        :text="inputLabel"
+        :rules="rules"
+        :type="item.config?.type || 'text'"
+        :placeholder="item.config?.placeholder || ''"
+        :readonly="Boolean(item.config?.readonly)"
+        :help-text="item.config?.helper || ''"
+        :is-number="isNumberFormat"
+        :is-float="isFloatFormat"
+      />
+    </template>
 
     <amp-select
       v-else-if="item.component === 'FormSelectList'"
@@ -77,8 +98,15 @@
 </template>
 
 <script>
+import UserSelectForm from '../User/UserSelectForm.vue';
+import BasketItems from './BasketItems.vue'
+
 export default {
   name: 'TaskActionDialogRenderer',
+  components: {
+    BasketItems,
+    UserSelectForm
+  },
   props: {
     item: {
       type: Object,
