@@ -17,7 +17,7 @@
         v-if="fieldName.endsWith('basket_id')"
         :basket_id="model" 
       />
-      <UserSelectForm
+      <BpmnUserSelect
         v-if="fieldName.endsWith('user_id')"
         :rules="rules"
         v-model="model"
@@ -98,14 +98,14 @@
 </template>
 
 <script>
-import UserSelectForm from '../User/UserSelectForm.vue';
+import BpmnUserSelect from './BpmnUserSelect.vue'
 import BasketItems from './BasketItems.vue'
 
 export default {
   name: 'TaskActionDialogRenderer',
   components: {
     BasketItems,
-    UserSelectForm
+    BpmnUserSelect,
   },
   props: {
     item: {
