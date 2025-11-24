@@ -3,7 +3,7 @@
     <v-card>
       <v-progress-linear v-if="submitting" color="primary" height="2" indeterminate />
       <v-card-title>
-        <span class="headline">انجام وظیفه: {{ task?.name || task?.element_name || '---' }}</span>
+        <span class="headline">{{ task?.name || task?.element_name || '---' }}</span>
       </v-card-title>
       <v-card-text>
         <div v-if="!task">
@@ -48,9 +48,9 @@
           </v-form>
         </template>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions v-if="isTaskOwner">
         <v-spacer />
-        <amp-button text="انصراف" color="red" :disabled="submitting" @click="handleCancel" />
+        <amp-button text="خروج" color="red" :disabled="submitting" @click="handleCancel" />
         <template v-if="formButtons.length">
           <amp-button
             v-for="button in formButtons"
@@ -70,6 +70,10 @@
           :disabled="defaultSubmitDisabled"
           @click="submit"
         />
+      </v-card-actions>
+      <v-card-actions v-if="!isTaskOwner">
+        <v-spacer />
+        <amp-button text="خروج" color="red" :disabled="submitting" @click="handleCancel" />
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -111,6 +115,9 @@ export default {
       set(val) {
         this.$emit('input', val)
       },
+    },
+    isTaskOwner() {
+      return false
     },
     formFields() {
       return this.screenItems.filter((item) => !this.isButton(item))
@@ -267,6 +274,9 @@ export default {
     },
     handleButtonClick(button) {
       if (this.isSubmitButton(button)) {
+        console.log('button',button)
+        return
+        //this.$set(this.formValues, name, this.normalizeFieldValue(value, item))
         this.submit()
       } else {
         this.$emit('action', button)

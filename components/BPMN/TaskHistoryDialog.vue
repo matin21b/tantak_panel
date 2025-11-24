@@ -118,6 +118,10 @@ export default {
       type: Boolean,
       default: false
     },
+    process_request_id: {
+      type: Number,
+      default: null
+    },
     task: {
       type: Object,
       default: () => null
@@ -177,8 +181,8 @@ export default {
     },
     async loadHistory() {
       const processRequestId =
-        this.task?.process_request_id || this.task?.request_id
-
+        this.process_request_id || this.task?.process_request_id || this.task?.request_id
+      console.log('process_request_id',processRequestId,this.process_request_id)
       if (!processRequestId) {
         this.historyItems = []
         this.error = ''

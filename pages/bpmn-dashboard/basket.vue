@@ -13,7 +13,7 @@
       @completed="handleTaskCompleted"
     />
 
-    <TaskHistoryDialog v-model="historyDialog" :task="selectedTask" />
+    <TaskHistoryDialog v-model="historyDialog" :task="selectedTask" :process_request_id="processRequestId" />
   </div>
 </template>
 
@@ -26,6 +26,7 @@ export default {
   data: () => ({
     selectedTask: null,
     historyDialog: false,
+    processRequestId: null,
     taskActionDialog: false,
   }),
   components: {
@@ -37,10 +38,11 @@ export default {
     action(event){
       if(event.action == "history"){
         this.historyDialog = true
-        this.selectedTask = event.row
+        this.processRequestId = event.row.id
+        this.selectedTask = event.row.active_tasks[0]
       }else if(event.action == "do"){
         this.taskActionDialog = true
-        this.selectedTask = event.row
+        this.selectedTask = event.row.active_tasks[0]
       }
     },
     onTaskDialogCancel() {

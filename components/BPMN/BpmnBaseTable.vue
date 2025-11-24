@@ -73,10 +73,6 @@ const DEFAULT_ACTION_PALETTE = {
     text: "انجام",
     color: "primary",
     icon: "play_arrow",
-    disab_fun: (row) => {
-      console.log('disab_fun',row.active_tasks[0].user_id,this.$store.state.auth.user.bpmn_user_id)
-      return row.active_tasks[0].user_id != this.$store.state.auth.user.bpmn_user_id
-    }
   },
   history: {
     text: "تاریخچه",
