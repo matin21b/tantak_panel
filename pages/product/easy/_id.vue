@@ -68,19 +68,11 @@
         </v-stepper-content>
         <v-stepper-content step="2">
           <v-row>
-            <v-col cols="12" md="6">
-              <amp-autocomplete
-                chips
-                multiple
-                text="جستجوی دسته"
-                v-model="selectedCategories"
-                :items="categoryOptions"
-              />
-            </v-col>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="12">
               <v-treeview
                 dense
                 selectable
+                select-strategy="single-lead"
                 transition
                 open-on-click
                 :items="categoryTree"
@@ -236,6 +228,8 @@ export default {
       tags: [],
     },
     selectedCategories: [],
+    categoryParentMap: {},
+    categoryChildrenLookup: {},
     categoryTree: [],
     categoryOptions: [],
     variationSlots: [
@@ -294,6 +288,7 @@ export default {
     async initialize() {
       this.loading = true
       await Promise.all([this.fetchMeta(), this.fetchCategories()])
+      console.log('here')
       await this.hydrateIfNeeded()
       this.loading = false
       this.validateForm()
@@ -327,8 +322,25 @@ export default {
     async fetchCategories() {
       const response = await this.$reqApi('/category', { row_number: 1000 })
       const data = response?.model?.data || []
+      const parentMap = {}
+      const childrenLookup = {}
+      data.forEach((item) => {
+        const parentId =
+          typeof item.parent_id !== 'undefined' && item.parent_id !== null
+            ? item.parent_id
+            : typeof item.parent_category_id !== 'undefined' && item.parent_category_id !== null
+            ? item.parent_category_id
+            : null
+        parentMap[item.id] = parentId
+        if (parentId) {
+          childrenLookup[parentId] = true
+        }
+      })
+      this.categoryParentMap = parentMap
+      this.categoryChildrenLookup = childrenLookup
       this.categoryTree = this.buildTree(data)
-      this.categoryOptions = data.map((item) => ({
+      const leafItems = data.filter((item) => !childrenLookup[item.id])
+      this.categoryOptions = leafItems.map((item) => ({
         text: item.name,
         value: item.id,
       }))
@@ -343,7 +355,7 @@ export default {
         return
       }
       const payload = await this.$reqApi('/product/show', { id: idParam })
-      const product = payload?.product || payload?.data || {}
+      const product = payload?.model || {}
       this.form = {
         ...this.form,
         ...product,
@@ -352,8 +364,9 @@ export default {
       }
       const gallery = product.medias || product.product_images || []
       this.form.medias = this.normalizeMedias(gallery)
-      this.selectedCategories =
-        product.category_ids || (product.categories || []).map((cat) => cat.id)
+      console.log('here1')
+      this.setCategories(product.category_ids || (product.categories || []).map((cat) => cat.id))
+      console.log('here2')
       if (product.variations) {
         this.loadVariations(product.variations)
       }
@@ -456,7 +469,7 @@ export default {
       return value
     },
     setCategories(ids) {
-      this.selectedCategories = ids
+      this.selectedCategories = this.normalizeLeafSelection(ids)
     },
     setVariationType({ slot, variation_type_id }) {
       const target = this.variationSlots.find((item) => item.slot === slot)
@@ -517,7 +530,6 @@ export default {
       slot.quickValue = ''
     },
     updateVariationValue({ slot, id, patch }) {
-      console.log(slot,id,patch)
       const target = this.variationSlots.find((item) => item.slot === slot)
       if (!target) {
         return
@@ -782,8 +794,8 @@ export default {
         const response = this.form.id
           ? await this.$reqApi('/product/easy-update', payload)
           : await this.$reqApi('/product/easy-insert', payload)
-        this.applyTempMaps(response)
         this.$toast.success('ذخیره شد')
+        this.$router.push('product')
       } finally {
         this.saving = false
       }
@@ -817,10 +829,11 @@ export default {
         warranty_id: item.warranty_id,
       }))
       const medias = this.normalizeMedias(this.form.medias)
+      const categoryIds = this.expandCategoriesForPayload(this.selectedCategories)
       return {
         ...this.form,
         medias,
-        category_ids: this.selectedCategories,
+        category_ids: categoryIds,
         variations: {
           defaults: { ...this.variationDefaults },
           items: [...variations, ...this.deletedVariations],
@@ -856,6 +869,59 @@ export default {
       })
       this.deletedVariations = []
       this.deletedCombinations = []
+    },
+    normalizeLeafSelection(ids) {
+      // console.log('ids',ids)
+      if (!Array.isArray(ids)) {
+        return []
+      }
+      const seen = new Set()
+      const normalized = []
+      ids.forEach((raw) => {
+        const id = raw
+        if (!id || seen.has(id)) {
+          return
+        }
+        if (this.isLeafCategory(id)) {
+          seen.add(id)
+          normalized.push(id)
+        }
+      })
+      return normalized
+    },
+    isLeafCategory(id) {
+      if (!id) {
+        return false
+      }
+      return !this.categoryChildrenLookup[id]
+    },
+    expandCategoriesForPayload(ids) {
+      if (!Array.isArray(ids)) {
+        return []
+      }
+      const collected = []
+      const seen = new Set()
+      const append = (value) => {
+        if (!value || seen.has(value)) {
+          return
+        }
+        seen.add(value)
+        collected.push(value)
+      }
+      ids.forEach((id) => {
+        append(id)
+        let current = this.categoryParentMap[id]
+        let guard = 0
+        while (current) {
+          append(current)
+          current = this.categoryParentMap[current]
+          guard += 1
+          if (guard > 50) {
+            break
+          }
+        }
+      })
+      return collected
     },
   },
 }
