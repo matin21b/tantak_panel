@@ -102,6 +102,10 @@ export default {
       type: Array,
       default: null,
     },
+    extra_row_actions: {
+      type: Array,
+      default: () => [],
+    },
     action_palette: {
       type: Object,
       default: () => ({}),
@@ -197,7 +201,40 @@ export default {
       if (Array.isArray(this.row_actions) && this.row_actions.length) {
         return this.row_actions;
       }
-      return this.buildDefaultActions(this.available_action_keys);
+      const default_actions = this.buildDefaultActions(
+        this.available_action_keys
+      );
+      return [...default_actions, ...this.normalizedExtraActions];
+    },
+    normalizedExtraActions() {
+      if (!Array.isArray(this.extra_row_actions)) {
+        return [];
+      }
+      return this.extra_row_actions
+        .filter((action_item) => Boolean(action_item))
+        .map((action_item) => {
+          const show_fun =
+            typeof action_item.show_fun === "function"
+              ? action_item.show_fun
+              : () => true;
+          const disab_fun =
+            typeof action_item.disab_fun === "function"
+              ? action_item.disab_fun
+              : () => false;
+          const fun =
+            typeof action_item.fun === "function"
+              ? action_item.fun
+              : () => {};
+
+          return {
+            text: action_item.text || "---",
+            color: action_item.color || "primary",
+            icon: action_item.icon || null,
+            show_fun,
+            disab_fun,
+            fun,
+          };
+        });
     },
   },
   watch: {

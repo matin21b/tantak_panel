@@ -1,0 +1,585 @@
+<template>
+  <v-dialog v-model="dialogProxy" persistent max-width="960px">
+    <v-card>
+      <v-progress-linear
+        v-if="tipax_submit_loading"
+        color="primary"
+        height="2"
+        indeterminate
+      />
+      <v-card-title class="d-flex align-center">
+        <span>ثبت در تیپاکس</span>
+        <v-spacer />
+        <span v-if="basketRow" class="grey--text text--darken-1 text-subtitle-2">
+          سبد شماره {{ basketRow.id }}
+        </span>
+      </v-card-title>
+      <v-card-text>
+        <v-alert v-if="!tipax_has_permission" type="error" dense outlined>
+          شما مجاز به ثبت سفارش تیپاکس نیستید.
+        </v-alert>
+        <template v-else>
+          <v-alert
+            v-if="tipax_lists_error"
+            type="error"
+            dense
+            outlined
+            class="mb-4"
+          >
+            {{ tipax_lists_error }}
+            <amp-button
+              small
+              class="ml-2"
+              color="primary"
+              text="تلاش مجدد"
+              :loading="tipax_lists_loading"
+              @click="fetchTipaxResources"
+            />
+          </v-alert>
+          <div v-if="tipax_lists_loading && !tipax_data_loaded" class="py-6">
+            <v-skeleton-loader type="article" />
+          </div>
+          <v-form
+            v-else
+            ref="tipaxForm"
+            v-model="tipax_form_valid"
+            lazy-validation
+          >
+            <v-row dense>
+              <v-col cols="12" md="4">
+                <amp-select
+                  text="سرویس ارسال"
+                  :items="tipax_lists.services"
+                  v-model="tipax_form.service_id"
+                  rules="require"
+                  :loading="tipax_lists_loading"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-select
+                  text="نوع پرداخت"
+                  :items="tipax_lists.payment_types"
+                  v-model="tipax_form.payment_type"
+                  rules="require"
+                  :loading="tipax_lists_loading"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-select
+                  text="روش جمع آوری"
+                  :items="tipax_lists.pickup_types"
+                  v-model="tipax_form.pickup_type"
+                  rules="require"
+                  :loading="tipax_lists_loading"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-select
+                  text="روش تحویل"
+                  :items="tipax_lists.distribution_types"
+                  v-model="tipax_form.distribution_type"
+                  rules="require"
+                  :loading="tipax_lists_loading"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-select
+                  text="نوع بسته بندی"
+                  :items="tipax_lists.pack_types"
+                  v-model="tipax_form.pack_type"
+                  rules="require"
+                  :loading="tipax_lists_loading"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-autocomplete
+                  text="بسته بندی انتخابی"
+                  :items="filteredPackingOptions"
+                  v-model="tipax_form.packing_id"
+                  :disabled="!tipax_form.pack_type || !filteredPackingOptions.length"
+                  rules="require"
+                  :loading="tipax_lists_loading"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-autocomplete
+                  text="محتوای بسته"
+                  :items="filteredPackContentOptions"
+                  v-model="tipax_form.package_content_id"
+                  :disabled="!tipax_form.pack_type || !filteredPackContentOptions.length"
+                  rules="require"
+                  :loading="tipax_lists_loading"
+                />
+              </v-col>
+              <v-col cols="12">
+                <amp-textarea
+                  text="توضیحات اضافی"
+                  v-model="tipax_form.description"
+                  rows="2"
+                />
+              </v-col>
+            </v-row>
+
+            <v-divider class="my-4" />
+
+            <div class="font-weight-medium mb-3">اطلاعات مبدا</div>
+            <v-row dense>
+              <v-col cols="12" md="4">
+                <amp-autocomplete
+                  text="شهر مبدا"
+                  :items="tipax_lists.cities"
+                  v-model="tipax_form.origin.city_id"
+                  rules="require"
+                  :loading="tipax_lists_loading"
+                />
+              </v-col>
+              <v-col cols="12" md="8">
+                <amp-textarea
+                  text="آدرس کامل"
+                  v-model="tipax_form.origin.full_address"
+                  rows="2"
+                  rules="require"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="طبقه"
+                  v-model="tipax_form.origin.floor"
+                  is-number
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="واحد"
+                  v-model="tipax_form.origin.unit"
+                  is-number
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="کد پستی"
+                  v-model="tipax_form.origin.postal_code"
+                  rules="postCode"
+                  cClass="ltr-item"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="پلاک"
+                  v-model="tipax_form.origin.no"
+                />
+              </v-col>
+              <v-col cols="12" md="8">
+                <amp-textarea
+                  text="توضیحات"
+                  v-model="tipax_form.origin.description"
+                  rows="2"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="نام و نام خانوادگی"
+                  v-model="tipax_form.origin.full_name"
+                  rules="require"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="تلفن ثابت"
+                  v-model="tipax_form.origin.phone"
+                  rules="phone_no_city"
+                  cClass="ltr-item"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="موبایل"
+                  v-model="tipax_form.origin.mobile"
+                  rules="mobile"
+                  cClass="ltr-item"
+                />
+              </v-col>
+            </v-row>
+
+            <v-divider class="my-4" />
+
+            <div class="font-weight-medium mb-3">اطلاعات مقصد</div>
+            <v-row dense>
+              <v-col cols="12" md="4">
+                <amp-autocomplete
+                  text="شهر مقصد"
+                  :items="tipax_lists.cities"
+                  v-model="tipax_form.destination.city_id"
+                  rules="require"
+                  :loading="tipax_lists_loading"
+                />
+              </v-col>
+              <v-col cols="12" md="8">
+                <amp-textarea
+                  text="آدرس کامل"
+                  v-model="tipax_form.destination.full_address"
+                  rows="2"
+                  rules="require"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="طبقه"
+                  v-model="tipax_form.destination.floor"
+                  is-number
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="واحد"
+                  v-model="tipax_form.destination.unit"
+                  is-number
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="کد پستی"
+                  v-model="tipax_form.destination.postal_code"
+                  rules="postCode"
+                  cClass="ltr-item"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="پلاک"
+                  v-model="tipax_form.destination.no"
+                />
+              </v-col>
+              <v-col cols="12" md="8">
+                <amp-textarea
+                  text="توضیحات"
+                  v-model="tipax_form.destination.description"
+                  rows="2"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="نام و نام خانوادگی"
+                  v-model="tipax_form.destination.full_name"
+                  rules="require"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="تلفن ثابت"
+                  v-model="tipax_form.destination.phone"
+                  rules="phone_no_city"
+                  cClass="ltr-item"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="موبایل"
+                  v-model="tipax_form.destination.mobile"
+                  rules="mobile"
+                  cClass="ltr-item"
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+        </template>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <amp-button
+          text="انصراف"
+          color="red"
+          :disabled="tipax_submit_loading"
+          @click="closeDialog"
+        />
+        <amp-button
+          v-if="tipax_has_permission"
+          text="ثبت در تیپاکس"
+          color="primary"
+          :loading="tipax_submit_loading"
+          :disabled="tipax_submit_disabled"
+          @click="submitTipaxForm"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script>
+const TIPAX_PERMISSION = "basket/insert_order_tipax";
+
+const createAddressModel = () => ({
+  city_id: null,
+  full_address: "",
+  floor: "",
+  unit: "",
+  postal_code: "",
+  no: "",
+  description: "",
+  phone: "",
+  full_name: "",
+  mobile: "",
+});
+
+const createTipaxForm = () => ({
+  basket_id: null,
+  service_id: null,
+  payment_type: null,
+  pickup_type: null,
+  distribution_type: null,
+  pack_type: null,
+  packing_id: null,
+  package_content_id: null,
+  description: "",
+  origin: createAddressModel(),
+  destination: createAddressModel(),
+});
+
+export default {
+  name: "TipaxDialog",
+  props: {
+    value: {
+      type: Boolean,
+      default: false,
+    },
+    basketRow: {
+      type: Object,
+      default: null,
+    },
+  },
+  data: () => ({
+    tipax_form_valid: false,
+    tipax_submit_loading: false,
+    tipax_lists_loading: false,
+    tipax_lists_error: null,
+    tipax_data_loaded: false,
+    tipax_form: createTipaxForm(),
+    tipax_lists: {
+      cities: [],
+      services: [],
+      payment_types: [],
+      pickup_types: [],
+      distribution_types: [],
+      pack_types: [],
+      packing_items: [],
+      pack_content_items: [],
+    },
+  }),
+  computed: {
+    dialogProxy: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      },
+    },
+    tipax_has_permission() {
+      if (typeof this.$checkAccess === "function") {
+        return this.$checkAccess(TIPAX_PERMISSION);
+      }
+      return false;
+    },
+    filteredPackingOptions() {
+      if (!this.tipax_form.pack_type) {
+        return [];
+      }
+      return this.tipax_lists.packing_items
+        .filter(
+          (item) => String(item.pack_type) === String(this.tipax_form.pack_type)
+        )
+        .map((item) => ({ text: item.text, value: item.value }));
+    },
+    filteredPackContentOptions() {
+      if (!this.tipax_form.pack_type) {
+        return [];
+      }
+      return this.tipax_lists.pack_content_items
+        .filter(
+          (item) => String(item.pack_type) === String(this.tipax_form.pack_type)
+        )
+        .map((item) => ({ text: item.text, value: item.value }));
+    },
+    tipax_submit_disabled() {
+      return (
+        this.tipax_submit_loading ||
+        this.tipax_lists_loading ||
+        !this.tipax_form_valid ||
+        !this.tipax_data_loaded
+      );
+    },
+  },
+  watch: {
+    value(new_value) {
+      if (new_value) {
+        this.tipax_form.basket_id = this.basketRow?.id || null;
+        if (this.tipax_has_permission) {
+          this.ensureTipaxResources();
+        }
+      } else {
+        this.resetDialog();
+      }
+    },
+    basketRow: {
+      handler(new_value) {
+        if (new_value) {
+          this.tipax_form.basket_id = new_value.id || null;
+        }
+      },
+      deep: true,
+    },
+    "tipax_form.pack_type"() {
+      this.tipax_form.packing_id = null;
+      this.tipax_form.package_content_id = null;
+    },
+  },
+  methods: {
+    closeDialog() {
+      this.dialogProxy = false;
+    },
+    resetDialog() {
+      this.tipax_form = createTipaxForm();
+      this.tipax_form_valid = false;
+      this.tipax_submit_loading = false;
+      this.tipax_lists_error = null;
+      if (this.$refs.tipaxForm && typeof this.$refs.tipaxForm.resetValidation === "function") {
+        this.$refs.tipaxForm.resetValidation();
+      }
+    },
+    ensureTipaxResources() {
+      if (this.tipax_data_loaded || this.tipax_lists_loading) {
+        return;
+      }
+      this.fetchTipaxResources();
+    },
+    async fetchTipaxResources() {
+      this.tipax_lists_loading = true;
+      this.tipax_lists_error = null;
+      try {
+        const [
+          cities,
+          services,
+          payment_types,
+          pickup_types,
+          distribution_types,
+          pack_types,
+          packing_items,
+          pack_content_items,
+        ] = await Promise.all([
+          this.$reqApi("shop/tipax/get-cities", {}),
+          this.$reqApi("shop/tipax/list-service", {}),
+          this.$reqApi("shop/tipax/list-payment-type", {}),
+          this.$reqApi("shop/tipax/list-pickup-type", {}),
+          this.$reqApi("shop/tipax/list-distribution-type", {}),
+          this.$reqApi("shop/tipax/get-pack-type", {}),
+          this.$reqApi("shop/tipax/list-packing", {}),
+          this.$reqApi("shop/tipax/list-pack-content", {}),
+        ]);
+
+        this.tipax_lists.cities = this.mapCityItems(cities);
+        this.tipax_lists.services = this.mapToSelectItems(services);
+        this.tipax_lists.payment_types = this.mapToSelectItems(payment_types);
+        this.tipax_lists.pickup_types = this.mapToSelectItems(pickup_types);
+        this.tipax_lists.distribution_types = this.mapToSelectItems(
+          distribution_types
+        );
+        this.tipax_lists.pack_types = this.mapToSelectItems(pack_types?.data);
+        this.tipax_lists.packing_items = this.mapPackingItems(
+          packing_items?.result
+        );
+        this.tipax_lists.pack_content_items = this.mapPackContentItems(
+          pack_content_items?.result
+        );
+        this.tipax_data_loaded = true;
+      } catch (error) {
+        this.tipax_lists_error = "خطا در دریافت اطلاعات تیپاکس";
+      } finally {
+        this.tipax_lists_loading = false;
+      }
+    },
+    mapToSelectItems(list_source) {
+      const list = Array.isArray(list_source) ? list_source : [];
+      return list.map((item) => ({
+        text: item.title || item.name || item.text || item.id,
+        value: item.id ?? item.value ?? null,
+      }));
+    },
+    mapCityItems(list_source) {
+      const list = Array.isArray(list_source) ? list_source : [];
+      return list.map((item) => ({
+        text: item.title || item.name || item.id,
+        value: item.id,
+      }));
+    },
+    mapPackingItems(list_source) {
+      const list = Array.isArray(list_source) ? list_source : [];
+      return list.map((item) => ({
+        text: item.title || item.id,
+        value: item.id,
+        pack_type: item.packType,
+      }));
+    },
+    mapPackContentItems(list_source) {
+      const list = Array.isArray(list_source) ? list_source : [];
+      return list.map((item) => ({
+        text: item.title || item.id,
+        value: item.id,
+        pack_type: item.packType,
+      }));
+    },
+    submitTipaxForm() {
+      if (!this.tipax_has_permission) {
+        return;
+      }
+      if (
+        this.$refs.tipaxForm &&
+        typeof this.$refs.tipaxForm.validate === "function"
+      ) {
+        const is_valid = this.$refs.tipaxForm.validate();
+        if (!is_valid) {
+          return;
+        }
+      }
+      this.tipax_submit_loading = true;
+      const payload = this.buildTipaxPayload();
+      this.$reqApi("tipax/insert-order", payload)
+        .then(() => {
+          this.$toast.success("درخواست با موفقیت ثبت شد");
+          this.closeDialog();
+        })
+        .finally(() => {
+          this.tipax_submit_loading = false;
+        });
+    },
+    buildTipaxPayload() {
+      return {
+        basket_id: this.tipax_form.basket_id,
+        origin: [this.buildAddressPayload(this.tipax_form.origin)],
+        destination: [this.buildAddressPayload(this.tipax_form.destination)],
+        description: this.tipax_form.description,
+        serviceId: this.tipax_form.service_id,
+        paymentType: this.tipax_form.payment_type,
+        pickupType: this.tipax_form.pickup_type,
+        distributionType: this.tipax_form.distribution_type,
+        packType: this.tipax_form.pack_type,
+        packingId: this.tipax_form.packing_id,
+        packageContentId: this.tipax_form.package_content_id,
+      };
+    },
+    buildAddressPayload(address) {
+      return {
+        cityId: address.city_id,
+        fullAddress: address.full_address,
+        floor: address.floor,
+        unit: address.unit,
+        postalCode: address.postal_code,
+        no: address.no,
+        description: address.description,
+        phone: address.phone,
+        fullName: address.full_name,
+        mobile: address.mobile,
+      };
+    },
+  },
+};
+</script>
