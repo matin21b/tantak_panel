@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import TipaxDialog from "~/components/BPMN/TipaxDialog.vue";
+import TipaxDialog from "~/components/BPMN/TipaxDialog.vue";
 import BpmnBaseTable from "~/components/BPMN/BpmnBaseTable.vue";
 import TaskActionDialog from "~/components/BPMN/TaskActionDialog.vue";
 import TaskHistoryDialog from "~/components/BPMN/TaskHistoryDialog.vue";

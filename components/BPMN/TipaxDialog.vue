@@ -126,19 +126,30 @@
             <v-row dense>
               <v-col cols="12" md="4">
                 <amp-autocomplete
+                  text="انبار مرکزی"
+                  :items="tipax_lists.center_stocks"
+                  v-model="tipax_selected_center_stock"
+                  :loading="tipax_lists_loading"
+                  clearable
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-autocomplete
                   text="شهر مبدا"
                   :items="tipax_lists.cities"
                   v-model="tipax_form.origin.city_id"
                   rules="require"
                   :loading="tipax_lists_loading"
+                  :disabled="isOriginFieldDisabled('city_id')"
                 />
               </v-col>
-              <v-col cols="12" md="8">
+              <v-col cols="12" md="12">
                 <amp-textarea
                   text="آدرس کامل"
                   v-model="tipax_form.origin.full_address"
                   rows="2"
                   rules="require"
+                  :disabled="isOriginFieldDisabled('full_address')"
                 />
               </v-col>
               <v-col cols="12" md="4">
@@ -146,6 +157,7 @@
                   text="طبقه"
                   v-model="tipax_form.origin.floor"
                   is-number
+                  :disabled="isOriginFieldDisabled('floor')"
                 />
               </v-col>
               <v-col cols="12" md="4">
@@ -153,6 +165,7 @@
                   text="واحد"
                   v-model="tipax_form.origin.unit"
                   is-number
+                  :disabled="isOriginFieldDisabled('unit')"
                 />
               </v-col>
               <v-col cols="12" md="4">
@@ -161,12 +174,14 @@
                   v-model="tipax_form.origin.postal_code"
                   rules="postCode"
                   cClass="ltr-item"
+                  :disabled="isOriginFieldDisabled('postal_code')"
                 />
               </v-col>
               <v-col cols="12" md="4">
                 <amp-input
                   text="پلاک"
                   v-model="tipax_form.origin.no"
+                  :disabled="isOriginFieldDisabled('no')"
                 />
               </v-col>
               <v-col cols="12" md="8">
@@ -174,6 +189,7 @@
                   text="توضیحات"
                   v-model="tipax_form.origin.description"
                   rows="2"
+                  :disabled="isOriginFieldDisabled('description')"
                 />
               </v-col>
               <v-col cols="12" md="4">
@@ -181,6 +197,7 @@
                   text="نام و نام خانوادگی"
                   v-model="tipax_form.origin.full_name"
                   rules="require"
+                  :disabled="isOriginFieldDisabled('full_name')"
                 />
               </v-col>
               <v-col cols="12" md="4">
@@ -189,6 +206,7 @@
                   v-model="tipax_form.origin.phone"
                   rules="phone_no_city"
                   cClass="ltr-item"
+                  :disabled="isOriginFieldDisabled('phone')"
                 />
               </v-col>
               <v-col cols="12" md="4">
@@ -197,6 +215,7 @@
                   v-model="tipax_form.origin.mobile"
                   rules="mobile"
                   cClass="ltr-item"
+                  :disabled="isOriginFieldDisabled('mobile')"
                 />
               </v-col>
             </v-row>
@@ -354,6 +373,8 @@ export default {
     tipax_lists_error: null,
     tipax_data_loaded: false,
     tipax_form: createTipaxForm(),
+    tipax_selected_center_stock: null,
+    tipax_origin_disabled_fields: {},
     tipax_lists: {
       cities: [],
       services: [],
@@ -363,6 +384,7 @@ export default {
       pack_types: [],
       packing_items: [],
       pack_content_items: [],
+      center_stocks: [],
     },
   }),
   computed: {
@@ -432,6 +454,9 @@ export default {
       this.tipax_form.packing_id = null;
       this.tipax_form.package_content_id = null;
     },
+    tipax_selected_center_stock(new_value) {
+      this.applyCenterStockSelection(new_value);
+    },
   },
   methods: {
     closeDialog() {
@@ -442,6 +467,8 @@ export default {
       this.tipax_form_valid = false;
       this.tipax_submit_loading = false;
       this.tipax_lists_error = null;
+      this.tipax_selected_center_stock = null;
+      this.tipax_origin_disabled_fields = {};
       if (this.$refs.tipaxForm && typeof this.$refs.tipaxForm.resetValidation === "function") {
         this.$refs.tipaxForm.resetValidation();
       }
@@ -459,22 +486,24 @@ export default {
         const [
           cities,
           services,
-          payment_types,
-          pickup_types,
-          distribution_types,
-          pack_types,
-          packing_items,
-          pack_content_items,
-        ] = await Promise.all([
-          this.$reqApi("shop/tipax/get-cities", {}),
-          this.$reqApi("shop/tipax/list-service", {}),
-          this.$reqApi("shop/tipax/list-payment-type", {}),
-          this.$reqApi("shop/tipax/list-pickup-type", {}),
-          this.$reqApi("shop/tipax/list-distribution-type", {}),
-          this.$reqApi("shop/tipax/get-pack-type", {}),
-          this.$reqApi("shop/tipax/list-packing", {}),
-          this.$reqApi("shop/tipax/list-pack-content", {}),
-        ]);
+        payment_types,
+        pickup_types,
+        distribution_types,
+        pack_types,
+        packing_items,
+        pack_content_items,
+        center_stocks,
+      ] = await Promise.all([
+        this.$reqApi("shop/tipax/get-cities", {}),
+        this.$reqApi("shop/tipax/list-service", {}),
+        this.$reqApi("shop/tipax/list-payment-type", {}),
+        this.$reqApi("shop/tipax/list-pickup-type", {}),
+        this.$reqApi("shop/tipax/list-distribution-type", {}),
+        this.$reqApi("shop/tipax/get-pack-type", {}),
+        this.$reqApi("shop/tipax/list-packing", {}),
+        this.$reqApi("shop/tipax/list-pack-content", {}),
+        this.$reqApi("center-stock/limited", {}),
+      ]);
 
         this.tipax_lists.cities = this.mapCityItems(cities);
         this.tipax_lists.services = this.mapToSelectItems(services);
@@ -489,6 +518,9 @@ export default {
         );
         this.tipax_lists.pack_content_items = this.mapPackContentItems(
           pack_content_items?.result
+        );
+        this.tipax_lists.center_stocks = this.mapCenterStockItems(
+          center_stocks?.model?.data || center_stocks?.data || center_stocks
         );
         this.tipax_data_loaded = true;
       } catch (error) {
@@ -511,6 +543,14 @@ export default {
         value: item.id,
       }));
     },
+    mapCenterStockItems(list_source) {
+      const list = Array.isArray(list_source) ? list_source : [];
+      return list.map((item) => ({
+        text: item.name || item.title || item.id,
+        value: item.id,
+        extra_config: item.extra_config ?? null,
+      }));
+    },
     mapPackingItems(list_source) {
       const list = Array.isArray(list_source) ? list_source : [];
       return list.map((item) => ({
@@ -526,6 +566,70 @@ export default {
         value: item.id,
         pack_type: item.packType,
       }));
+    },
+    extractOriginFromExtraConfig(extra_config) {
+      const origin = createAddressModel();
+      const disabledFields = {};
+      if (!extra_config) {
+        return { origin, disabledFields };
+      }
+      let parsedConfig = extra_config;
+      if (typeof extra_config === "string") {
+        try {
+          parsedConfig = JSON.parse(extra_config);
+        } catch (error) {
+          parsedConfig = null;
+        }
+      }
+      if (parsedConfig && typeof parsedConfig === "object") {
+        const mapping = {
+          city_id: "cityId",
+          full_address: "fullAddress",
+          floor: "floor",
+          unit: "unit",
+          postal_code: "postalCode",
+          no: "no",
+          description: "description",
+          phone: "phone",
+          full_name: "fullName",
+          mobile: "mobile",
+        };
+        Object.keys(mapping).forEach((targetKey) => {
+          const sourceKey = mapping[targetKey];
+          const value =
+            parsedConfig[sourceKey] !== undefined
+              ? parsedConfig[sourceKey]
+              : parsedConfig[targetKey];
+          if (value !== undefined && value !== null && value !== "") {
+            origin[targetKey] = value;
+            disabledFields[targetKey] = true;
+          }
+        });
+      }
+      return { origin, disabledFields };
+    },
+    applyCenterStockSelection(center_stock_id) {
+      if (!center_stock_id) {
+        this.tipax_form.origin = createAddressModel();
+        this.tipax_origin_disabled_fields = {};
+        return;
+      }
+      const selected = this.tipax_lists.center_stocks.find(
+        (item) => String(item.value) === String(center_stock_id)
+      );
+      if (!selected) {
+        this.tipax_form.origin = createAddressModel();
+        this.tipax_origin_disabled_fields = {};
+        return;
+      }
+      const { origin, disabledFields } = this.extractOriginFromExtraConfig(
+        selected.extra_config
+      );
+      this.tipax_form.origin = origin;
+      this.tipax_origin_disabled_fields = disabledFields;
+    },
+    isOriginFieldDisabled(field_key) {
+      return Boolean(this.tipax_origin_disabled_fields[field_key]);
     },
     submitTipaxForm() {
       if (!this.tipax_has_permission) {
