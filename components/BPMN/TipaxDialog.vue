@@ -157,6 +157,7 @@
                   text="طبقه"
                   v-model="tipax_form.origin.floor"
                   is-number
+                  rules="require"
                   :disabled="isOriginFieldDisabled('floor')"
                 />
               </v-col>
@@ -165,6 +166,7 @@
                   text="واحد"
                   v-model="tipax_form.origin.unit"
                   is-number
+                  rules="require"
                   :disabled="isOriginFieldDisabled('unit')"
                 />
               </v-col>
@@ -172,7 +174,7 @@
                 <amp-input
                   text="کد پستی"
                   v-model="tipax_form.origin.postal_code"
-                  rules="postCode"
+                  :rules="['postCode','require']"
                   cClass="ltr-item"
                   :disabled="isOriginFieldDisabled('postal_code')"
                 />
@@ -181,6 +183,7 @@
                 <amp-input
                   text="پلاک"
                   v-model="tipax_form.origin.no"
+                  rules="require"
                   :disabled="isOriginFieldDisabled('no')"
                 />
               </v-col>
@@ -326,6 +329,7 @@
 
 <script>
 const TIPAX_PERMISSION = "basket/insert_order_tipax";
+const TIPAX_USER_PREFS_KEY = "tipax_user_defaults";
 
 const createAddressModel = () => ({
   city_id: null,
@@ -435,6 +439,8 @@ export default {
     value(new_value) {
       if (new_value) {
         this.tipax_form.basket_id = this.basketRow?.id || null;
+        this.populateDestinationFromBasket(this.basketRow);
+        this.applyUserTipaxPreferences();
         if (this.tipax_has_permission) {
           this.ensureTipaxResources();
         }
@@ -446,6 +452,8 @@ export default {
       handler(new_value) {
         if (new_value) {
           this.tipax_form.basket_id = new_value.id || null;
+          this.populateDestinationFromBasket(new_value);
+          this.applyUserTipaxPreferences();
         }
       },
       deep: true,
@@ -631,6 +639,22 @@ export default {
     isOriginFieldDisabled(field_key) {
       return Boolean(this.tipax_origin_disabled_fields[field_key]);
     },
+    populateDestinationFromBasket(basket_row) {
+      if (!basket_row || !basket_row.data || !basket_row.data.delivery_info) {
+        this.tipax_form.destination = createAddressModel();
+        return;
+      }
+      const delivery = basket_row.data.delivery_info || {};
+      const destination = createAddressModel();
+      destination.full_address = delivery.address || "";
+      destination.postal_code = delivery.postal_code || "";
+      const fullName = `${delivery.first_name || ""} ${delivery.last_name || ""}`.trim();
+      destination.full_name = fullName;
+      destination.phone = delivery.phone_number || "";
+      destination.mobile = delivery.phone_number || "";
+      destination.description = delivery.delivery_time || "";
+      this.tipax_form.destination = destination;
+    },
     submitTipaxForm() {
       if (!this.tipax_has_permission) {
         return;
@@ -649,6 +673,7 @@ export default {
       this.$reqApi("tipax/insert-order", payload)
         .then(() => {
           this.$toast.success("درخواست با موفقیت ثبت شد");
+          this.saveUserTipaxPreferences();
           this.closeDialog();
         })
         .finally(() => {
@@ -683,6 +708,42 @@ export default {
         fullName: address.full_name,
         mobile: address.mobile,
       };
+    },
+    saveUserTipaxPreferences() {
+      try {
+        const prefs = {
+          service_id: this.tipax_form.service_id,
+          payment_type: this.tipax_form.payment_type,
+          pickup_type: this.tipax_form.pickup_type,
+          distribution_type: this.tipax_form.distribution_type,
+        };
+        if (typeof localStorage !== "undefined") {
+          localStorage.setItem(TIPAX_USER_PREFS_KEY, JSON.stringify(prefs));
+        }
+      } catch (error) {
+        // ignore localStorage errors
+      }
+    },
+    applyUserTipaxPreferences() {
+      try {
+        if (typeof localStorage === "undefined") {
+          return;
+        }
+        const saved = localStorage.getItem(TIPAX_USER_PREFS_KEY);
+        if (!saved) {
+          return;
+        }
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === "object") {
+          this.tipax_form.service_id = parsed.service_id ?? this.tipax_form.service_id;
+          this.tipax_form.payment_type = parsed.payment_type ?? this.tipax_form.payment_type;
+          this.tipax_form.pickup_type = parsed.pickup_type ?? this.tipax_form.pickup_type;
+          this.tipax_form.distribution_type =
+            parsed.distribution_type ?? this.tipax_form.distribution_type;
+        }
+      } catch (error) {
+        // ignore parse/storage errors
+      }
     },
   },
 };
