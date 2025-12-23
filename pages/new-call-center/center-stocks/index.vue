@@ -47,84 +47,106 @@
           <div v-if="tipax_loading" class="text-center py-6">
             <v-progress-circular indeterminate color="primary" />
           </div>
-          <v-form
-            v-else
-            ref="tipaxForm"
-            v-model="tipax_form_valid"
-            lazy-validation
-          >
-            <v-row dense>
-              <v-col cols="12">
-                <amp-autocomplete
-                  text="شهر"
-                  :items="tipax_cities"
-                  v-model="tipax_form.cityId"
-                  rules="require"
-                  :loading="tipax_cities_loading"
-                />
-              </v-col>
-              <v-col cols="12">
-                <amp-textarea
-                  text="آدرس کامل"
-                  rows="2"
-                  v-model="tipax_form.fullAddress"
-                  rules="require"
-                />
-              </v-col>
-              <v-col cols="12" md="6">
-                <amp-input
-                  text="طبقه"
-                  v-model="tipax_form.floor"
-                  rules="require"
-                />
-              </v-col>
-              <v-col cols="12" md="6">
-                <amp-input
-                  text="واحد"
-                  v-model="tipax_form.unit"
-                  rules="require"
-                />
-              </v-col>
-              <v-col cols="12" md="6">
-                <amp-input
-                  text="کد پستی"
-                  v-model="tipax_form.postalCode"
-                  rules="require"
-                  cClass="ltr-item"
-                />
-              </v-col>
-              <v-col cols="12" md="6">
-                <amp-input
-                  text="پلاک"
-                  v-model="tipax_form.no"
-                  rules="require"
-                />
-              </v-col>
-              <v-col cols="12" md="6">
-                <amp-input
-                  text="شماره تلفن"
-                  v-model="tipax_form.phone"
-                  rules="require"
-                  cClass="ltr-item"
-                />
-              </v-col>
-              <v-col cols="12" md="6">
-                <amp-input
-                  text="نام و نام خانوادگی"
-                  v-model="tipax_form.fullName"
-                  rules="require"
-                />
-              </v-col>
-              <v-col cols="12" md="6">
-                <amp-input
-                  text="تلفن جایگزین"
-                  v-model="tipax_form.mobile"
-                  rules="require"
-                  cClass="ltr-item"
-                />
-              </v-col>
-            </v-row>
-          </v-form>
+      <v-form
+        v-else
+        ref="tipaxForm"
+        v-model="tipax_form_valid"
+        lazy-validation
+      >
+        <v-row dense>
+          <v-col cols="12">
+            <amp-autocomplete
+              text="شهر"
+              :items="tipax_cities"
+              v-model="tipax_form.cityId"
+              rules="require"
+              :loading="tipax_cities_loading"
+            />
+          </v-col>
+          <v-col cols="12">
+            <amp-textarea
+              text="آدرس کامل"
+              rows="2"
+              v-model="tipax_form.fullAddress"
+              rules="require"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <amp-input
+              text="طبقه"
+              v-model="tipax_form.floor"
+              rules="require"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <amp-input
+              text="واحد"
+              v-model="tipax_form.unit"
+              rules="require"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <amp-input
+              text="کد پستی"
+              v-model="tipax_form.postalCode"
+              rules="require"
+              cClass="ltr-item"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <amp-input
+              text="پلاک"
+              v-model="tipax_form.no"
+              rules="require"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <amp-input
+              text="شماره تلفن"
+              v-model="tipax_form.phone"
+              rules="require"
+              cClass="ltr-item"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <amp-input
+              text="نام و نام خانوادگی"
+              v-model="tipax_form.fullName"
+              rules="require"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <amp-input
+              text="تلفن جایگزین"
+              v-model="tipax_form.mobile"
+              rules="require"
+              cClass="ltr-item"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <amp-input
+              text="عرض جغرافیایی (lat)"
+              v-model="tipax_form.lat"
+              cClass="ltr-item"
+              rules="number_float"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <amp-input
+              text="طول جغرافیایی (long)"
+              v-model="tipax_form.long"
+              cClass="ltr-item"
+              rules="number_float"
+            />
+          </v-col>
+          <v-col cols="12" v-if="showTipaxMapSelector">
+            <SelectLocationDialog
+              v-model="tipax_location"
+              :disabled="false"
+            />
+          </v-col>
+        </v-row>
+      </v-form>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -162,10 +184,12 @@ const createTipaxConfigForm = () => ({
   phone: "",
   fullName: "",
   mobile: "",
+  lat: "",
+  long: "",
 });
 
 export default {
-  components: { Dialog , VarComExcel },
+  components: { Dialog , VarComExcel, SelectLocationDialog: () => import("@/components/Base/SelectLocationDialog.vue") },
   data: () => ({
     headers: [],
     extra_btn: [],
@@ -185,7 +209,21 @@ export default {
     tipax_form: createTipaxConfigForm(),
     tipax_cities: [],
     tipax_row_id: null,
+    tipax_location: [],
   }),
+  computed: {
+    showTipaxMapSelector() {
+      return !this.tipax_form.lat || !this.tipax_form.long;
+    },
+  },
+  watch: {
+    tipax_location(newVal) {
+      if (Array.isArray(newVal) && newVal.length >= 2) {
+        this.tipax_form.lat = newVal[0] || "";
+        this.tipax_form.long = newVal[1] || "";
+      }
+    },
+  },
   beforeMount() {
     this.headers = [
       { text: "نام مدیر", value: "first_name_manager" },
@@ -268,6 +306,7 @@ export default {
       this.tipax_loading = false;
       this.tipax_submit_loading = false;
       this.tipax_cities_loading = false;
+      this.tipax_location = [];
       if (this.$refs.tipaxForm && typeof this.$refs.tipaxForm.resetValidation === "function") {
         this.$refs.tipaxForm.resetValidation();
       }
@@ -296,6 +335,11 @@ export default {
         }
       }
       this.tipax_form = defaults;
+      if (defaults.lat && defaults.long) {
+        this.tipax_location = [defaults.lat, defaults.long];
+      } else {
+        this.tipax_location = [];
+      }
     },
     async openTipaxSettings(body) {
       if (!body || !body.id) {
@@ -348,6 +392,8 @@ export default {
           phone: this.tipax_form.phone,
           fullName: this.tipax_form.fullName,
           mobile: this.tipax_form.mobile,
+          lat: this.tipax_form.lat,
+          long: this.tipax_form.long,
         }),
       };
       this.$reqApi("center-stock/update-extra-config", payload)
